@@ -585,7 +585,10 @@ Scheduler.plugin(function(e) {
                 _ = e._get_timeline_event_height(t, this),
                 d = _ - 2;
             t._inner || "full" != this.event_dy || (d = (d + 2) * (t._count - i) - 2), d += 3;
-            var s = e._get_timeline_event_y(t._sorder, _),
+            // var s = e._get_timeline_event_y(t._sorder, _),
+            //     l = _ + s + 2;
+            // Leo: update as _order
+            var s = e._get_timeline_event_y(t._order, _),
                 l = _ + s + 2;
             (!this._events_height[n] || this._events_height[n] < l) && (this._events_height[n] = l);
             var c = e.templates.event_class(t.start_date, t.end_date, t);
@@ -655,6 +658,7 @@ Scheduler.plugin(function(e) {
                         return e.start_date.valueOf() == t.start_date.valueOf() ? e.id > t.id ? 1 : -1 : e.start_date > t.start_date ? 1 : -1
                     });
                     for (var a = [], n = t.length, i = -1, r = null, o = 0; o < n; o++) {
+                        t[o]._order = o;    // Leo: add _order variable
                         var _ = t[o];
                         _._inner = !1;
                         var d = this.round_position ? e._timeline_get_rounded_date.apply(this, [_.start_date, !1]) : _.start_date;
