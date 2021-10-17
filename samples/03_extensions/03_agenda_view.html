@@ -1,0 +1,49 @@
+<!doctype html>
+<head>
+	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+	<title>Agenda view</title>
+
+	<script src="../../codebase/dhtmlxscheduler.js?v=5.3.12" type="text/javascript" charset="utf-8"></script>
+	<script src="../../codebase/ext/dhtmlxscheduler_agenda_view.js?v=5.3.12" type="text/javascript" charset="utf-8"></script>
+	<link rel="stylesheet" href="../../codebase/dhtmlxscheduler_material.css?v=5.3.12" type="text/css" charset="utf-8">
+
+	<style type="text/css" >
+		html, body {
+			margin: 0;
+			padding: 0;
+			height: 100%;
+			overflow: hidden;
+		}
+	</style>
+
+	<script type="text/javascript" charset="utf-8">
+		function init() {
+			// Following config options are optional
+			// If you remove them current date will be used as start period
+			// and current date + 1 year as the end
+			scheduler.config.agenda_start = new Date(2017, 7, 1);
+			scheduler.config.agenda_end = new Date(2019, 7, 1);
+
+			scheduler.init('scheduler_here', new Date(2018, 0, 10), "agenda");
+			scheduler.load("../common/events.json");
+		}
+	</script>
+</head>
+<body onload="init();">
+<div id="scheduler_here" class="dhx_cal_container" style='width:100%; height:100%;'>
+	<div class="dhx_cal_navline">
+		<div class="dhx_cal_prev_button">&nbsp;</div>
+		<div class="dhx_cal_next_button">&nbsp;</div>
+		<div class="dhx_cal_today_button"></div>
+		<div class="dhx_cal_date"></div>
+		<div class="dhx_cal_tab" name="day_tab" style="right:204px;"></div>
+		<div class="dhx_cal_tab" name="week_tab" style="right:140px;"></div>
+		<div class="dhx_cal_tab" name="agenda_tab" style="right:280px;"></div>
+		<div class="dhx_cal_tab" name="month_tab" style="right:76px;"></div>
+	</div>
+	<div class="dhx_cal_header">
+	</div>
+	<div class="dhx_cal_data">
+	</div>
+</div>
+</body>

@@ -1,0 +1,52 @@
+<!doctype html>
+<head>
+	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+	<title>Customizing the scheduler header</title>
+	<script src="../../codebase/dhtmlxscheduler.js?v=5.3.12" type="text/javascript" charset="utf-8"></script>
+	<link rel="stylesheet" href="../../codebase/dhtmlxscheduler_material.css?v=5.3.12" type="text/css" charset="utf-8">
+
+	
+	<style type="text/css" >
+		html, body{
+			margin:0px;
+			padding:0px;
+			height:100%;
+			overflow:hidden;
+		}	
+	</style>
+
+	<script type="text/javascript" charset="utf-8">
+		window.addEventListener("DOMContentLoaded", function(){
+			
+			var i=0;
+			scheduler.templates.week_scale_date=function(date){
+				i++;
+				return i+" some <br/> multi line </br> content";
+			}
+			
+			scheduler.xy.scale_height=50;
+			scheduler.xy.nav_height=0;
+			
+			scheduler.init('scheduler_here',new Date(2017,11,18),"week");
+			scheduler.load("../common/events.json");
+			
+		});
+	</script>
+</head>
+<body>
+	<div id="scheduler_here" class="dhx_cal_container" style='width:100%; height:100%;'>
+		<div class="dhx_cal_navline" style='display:none;'>
+			<div class="dhx_cal_prev_button">&nbsp;</div>
+			<div class="dhx_cal_next_button">&nbsp;</div>
+			<div class="dhx_cal_today_button"></div>
+			<div class="dhx_cal_date"></div>
+			<div class="dhx_cal_tab" name="day_tab" style="right:204px;"></div>
+			<div class="dhx_cal_tab" name="week_tab" style="right:140px;"></div>
+			<div class="dhx_cal_tab" name="month_tab" style="right:76px;"></div>
+		</div>
+		<div class="dhx_cal_header">
+		</div>
+		<div class="dhx_cal_data">
+		</div>		
+	</div>
+</body>

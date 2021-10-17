@@ -1,0 +1,108 @@
+<!doctype html>
+<head>
+	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+	<title>Days as Timeline rows</title>
+
+	<script src='../../codebase/dhtmlxscheduler.js?v=5.3.12' type="text/javascript" charset="utf-8"></script>
+	<script src='../../codebase/ext/dhtmlxscheduler_timeline.js?v=5.3.12' type="text/javascript" charset="utf-8"></script>
+	<script src='../../codebase/ext/dhtmlxscheduler_daytimeline.js?v=5.3.12' type="text/javascript" charset="utf-8"></script>
+
+	<link rel='stylesheet' type='text/css' href='../../codebase/dhtmlxscheduler_material.css?v=5.3.12'>
+
+	<style type="text/css" >
+		html, body{
+			margin:0;
+			padding:0;
+			height:100%;
+			overflow:hidden;
+		}
+
+		.dhx_matrix_scell:hover {
+			text-decoration: underline;
+		}
+	</style>
+
+	<script type="text/javascript" charset="utf-8">
+		function init() {
+
+			scheduler.locale.labels.timeline_tab = "Timeline";
+			scheduler.locale.labels.section_custom="Section";
+			scheduler.config.details_on_create=true;
+			scheduler.config.details_on_dblclick=true;
+
+			//===============
+			//Configuration
+			//===============
+
+
+			scheduler.createTimelineView({
+				name:	"timeline",
+				x_unit:	"minute",
+				x_date:	"%H:%i",
+				x_step:	30,
+				x_size: 24,
+				x_start: 16,
+				render:"days",
+				days:18
+			});
+
+			var view_name = 'timeline';
+			scheduler.attachEvent("onBeforeViewChange", function(old_mode,old_date,mode,date){
+				var year = date.getFullYear();
+				var month= (date.getMonth() + 1);
+				var d = new Date(year, month, 0);
+
+				scheduler.matrix[view_name].days = d.getDate();//numbers of day in month;
+				return true;
+			});
+			scheduler.date['add_' + view_name] = function(date, step){
+				if(step > 0){
+					step = 1;
+				}else if(step < 0){
+					step = -1;
+				}
+				return scheduler.date.add(date, step, "month")
+			};
+
+			scheduler.date[view_name + "_start"] = function (date) {
+				var view = scheduler.matrix.timeline;
+				date = scheduler.date.month_start(date);
+				date = scheduler.date.add(date, view.x_step*view.x_start, view.x_unit);
+				return date;
+			};
+
+			scheduler.attachEvent("onYScaleClick", function (index, section, e){
+				if(scheduler.getState().mode == view_name){
+					scheduler.setCurrentView(new Date(section.key), "day");
+				}
+			});
+
+			scheduler.init('scheduler_here',new Date(2017,5,30),"timeline");
+			scheduler.parse([
+				{ "id": "2", "start_date": "2017-06-30 12:00", "end_date": "2017-06-30 14:00", "text": "Section A test"},
+				{ "id": "3", "start_date": "2017-07-03 10:00", "end_date": "2017-07-06 11:00", "text": "Section B test"},
+				{ "id": "4", "start_date": "2017-06-30 16:00", "end_date": "2017-06-30 18:00", "text": "Section C test"},
+				{ "id": "5", "start_date": "2017-06-30 10:00", "end_date": "2017-06-30 15:00", "text": "Section D test"},
+				{ "id": "6", "start_date": "2017-06-29 12:00", "end_date": "2017-06-29 14:00", "text": "day before test"},
+				{ "id": "7", "start_date": "2017-07-01 12:00", "end_date": "2017-07-01 14:00", "text": "day after test"}]);
+		}
+	</script>
+</head>
+<body onload="init();">
+<div id="scheduler_here" class="dhx_cal_container" style='width:100%; height:100%;'>
+	<div class="dhx_cal_navline">
+		<div class="dhx_cal_prev_button">&nbsp;</div>
+		<div class="dhx_cal_next_button">&nbsp;</div>
+		<div class="dhx_cal_today_button"></div>
+		<div class="dhx_cal_date"></div>
+		<div class="dhx_cal_tab" name="day_tab" style="right:204px;"></div>
+		<div class="dhx_cal_tab" name="week_tab" style="right:140px;"></div>
+		<div class="dhx_cal_tab" name="timeline_tab" style="right:280px;"></div>
+		<div class="dhx_cal_tab" name="month_tab" style="right:76px;"></div>
+	</div>
+	<div class="dhx_cal_header">
+	</div>
+	<div class="dhx_cal_data">
+	</div>
+</div>
+</body>

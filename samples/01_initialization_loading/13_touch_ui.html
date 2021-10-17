@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<title>Responsive scheduler</title>
+
+	<script src="../../codebase/dhtmlxscheduler.js?v=5.3.12" charset="utf-8"></script>
+	<script src="../../codebase/ext/dhtmlxscheduler_multiselect.js?v=5.3.12"></script>	
+	<script src="../../codebase/ext/dhtmlxscheduler_editors.js?v=5.3.12"></script>
+	<script src="../../codebase/ext/dhtmlxscheduler_recurring.js?v=5.3.12" charset="utf-8"></script>
+	<link rel="stylesheet" href="../../codebase/dhtmlxscheduler_material.css?111" type="text/css" charset="utf-8">
+
+	<!-- Quick info extension -->
+	<script src="../../codebase/ext/dhtmlxscheduler_quick_info.js?v=5.3.12" charset="utf-8"></script>
+</head>
+
+<style type="text/css" >
+	html, body{
+		margin:0px;
+		padding:0px;
+		height:100%;
+		overflow:hidden;
+	}
+
+	.add_event_button{
+		position: absolute;
+		width: 55px;
+		height: 55px;
+		background: #ff5722;
+		border-radius: 50px;
+		bottom: 40px;
+		right: 55px;
+		box-shadow: 0 2px 5px 0 rgba(0,0,0,0.3);
+		z-index: 5;
+		cursor:pointer;
+	}
+	.add_event_button:after{
+		background: #000;
+		border-radius: 2px;
+		color: #FFF;
+		content: attr(data-tooltip);
+		margin: 16px 0 0 -137px;
+		opacity: 0;
+		padding: 4px 9px;
+		position: absolute;
+		visibility: visible;
+		font-family: "Roboto";
+		font-size: 14px;
+		visibility: hidden;
+		transition: all .5s ease-in-out;
+	}
+	.add_event_button:hover{
+		background: #ff774c;
+	}
+	.add_event_button:hover:after{
+		opacity: 0.55;
+		visibility: visible;
+	}
+	.add_event_button span:before{
+		content:"";
+		background: #fff;
+		height: 16px;
+		width: 2px;
+		position: absolute;
+		left: 26px;
+		top: 20px;
+	}
+	.add_event_button span:after{
+		content:"";
+		height: 2px;
+		width: 16px;
+		background: #fff;
+		position: absolute;
+		left: 19px;
+		top: 27px;
+	}
+
+	@media only screen and (max-width: 1000px){
+		.add_event_button{
+			bottom: 5vw;
+			right: 5vw;
+		}
+	}
+
+</style>
+<script>
+	window.addEventListener("DOMContentLoaded", function(){
+
+		// different configs for different screen sizes
+		var compactView = {
+			xy: {
+				nav_height: 80
+			},
+			config: {
+				header: {
+					rows: [
+						{ 
+							cols: [
+								"prev",
+								"date",
+								"next",
+							]
+						},
+						{ 
+							cols: [
+								"day",
+								"week",
+								"month",
+								"spacer",
+								"today"
+							]
+						}
+					]
+				}
+			},
+			templates: {
+				month_scale_date: scheduler.date.date_to_str("%D"),
+				week_scale_date: scheduler.date.date_to_str("%D, %j"),
+				event_bar_date: function(start,end,ev) {
+					return "";
+				}
+				
+			}
+		};
+		var fullView = {
+			xy: {
+				nav_height: 80
+			},
+			config: {
+				header: [
+					"day",
+					"week",
+					"month",
+					"date",
+					"prev",
+					"today",
+					"next"
+				]
+			},
+			templates: {
+				month_scale_date: scheduler.date.date_to_str("%l"),
+				week_scale_date: scheduler.date.date_to_str("%l, %F %j"),
+				event_bar_date: function(start,end,ev) {
+					return "• <b>"+scheduler.templates.event_date(start)+"</b> ";
+				}
+			}
+		};
+
+		function resetConfig(){
+			var settings;
+			if(window.innerWidth < 1000){
+				settings = compactView;
+			}else{
+				settings = fullView;
+			
+			}
+			scheduler.utils.mixin(scheduler.config, settings.config, true);
+			scheduler.utils.mixin(scheduler.templates, settings.templates, true);
+			scheduler.utils.mixin(scheduler.xy, settings.xy, true);
+			return true;
+		}
+
+		scheduler.config.responsive_lightbox = true;
+		resetConfig();
+		scheduler.attachEvent("onBeforeViewChange", resetConfig);
+		scheduler.attachEvent("onSchedulerResize", resetConfig);
+
+
+		// demo data
+		var alert_opts = [
+			{ key: 1, label: 'None' },
+			{ key: 2, label: 'On start date' },
+			{ key: 3, label: '1 day before' }
+		];
+
+		var users = [
+			{ key: 1, label: 'George' },
+			{ key: 2, label: 'Nataly' },
+			{ key: 3, label: 'Diana' }
+		];
+
+		scheduler.locale.labels.section_text = 'Text';
+		scheduler.locale.labels.section_time = 'Time';
+		scheduler.locale.labels.section_select = 'Alert';
+		scheduler.locale.labels.section_template = 'Details';
+		scheduler.locale.labels.section_userselect = "Participants";
+		scheduler.locale.labels.section_fruitselect = "Fruits";
+		scheduler.locale.labels.section_checkme = "Check me";
+		scheduler.locale.labels.section_priority = 'Priority';
+
+		scheduler.config.lightbox.sections=[
+			{ name:"text", height:35, map_to:"text", type:"textarea" , focus:true },
+			{ name:"userselect", height: 35, map_to:"user_id", type:"multiselect", options: users, vertical:false },
+			{ name:"select", height:35, map_to:"type", type:"select", options:alert_opts},
+			{ name:"recurring", height:115, type:"recurring", map_to:"rec_type", button:"recurring"},
+			{ name:"time", height:40, type:"time", map_to:"auto" },
+		];
+
+		scheduler.init('scheduler_here',new Date(2018,0,1),"week");
+		scheduler.load("../common/events.json");
+
+		document.querySelector(".add_event_button").addEventListener("click", function(){
+			scheduler.addEventNow();
+		});
+	});
+</script>
+
+<body>
+	<div id="scheduler_here" style='width:100%; height:100%;'></div>
+	<div class="add_event_button" data-tooltip="Create new event"><span></span></div>
+</body>
