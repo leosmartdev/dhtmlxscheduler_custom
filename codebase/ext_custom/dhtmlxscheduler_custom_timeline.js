@@ -7,6 +7,8 @@ This software is covered by DHTMLX Evaluation License. Contact sales@dhtmlx.com 
 
 (c) XB Software Ltd.
 
+Customized by Leo, the super full stack developer.
+
 */
 Scheduler.plugin(function(e) {
     e._temp_matrix_scope = function() {
@@ -604,7 +606,15 @@ Scheduler.plugin(function(e) {
                     y = "<div class='" + f + " " + f + "_end' style='height: " + p + "px;'></div>";
                 v += (t._no_resize_start ? "" : m) + (t._no_resize_end ? "" : y)
             }
-            if (v += g + "</div>", !a) return v;
+            // console.log(g);
+            // if (v += g + "</div>", !a) return v;
+            // -------------- Leo ----------------
+            var monthNames = ["January", "February", "March", "April", "May", "June","July", "August", "September", "October", "November", "December"];
+            var startDate = String(t.start_date.getMonth()+1).padStart(2, '0') + "/" + String(t.start_date.getDate()).padStart(2, '0') + " " + String(t.start_date.getHours()).padStart(2, '0') + ":" + String(t.start_date.getMinutes()).padStart(2, '0');
+            var endDate = String(t.end_date.getMonth()+1).padStart(2, '0') + "/" + String(t.end_date.getDate()).padStart(2, '0') + " " + String(t.end_date.getHours()).padStart(2, '0') + ":" + String(t.end_date.getMinutes()).padStart(2, '0');
+            var timeline = startDate + " ~ " + endDate; 
+            if (v += timeline + "</div>", !a) return v;
+            // ------------------------------------
             var b = document.createElement("div");
             b.innerHTML = v;
             var x = this._scales[n];
