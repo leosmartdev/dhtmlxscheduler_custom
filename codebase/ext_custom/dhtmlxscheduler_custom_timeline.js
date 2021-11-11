@@ -394,8 +394,8 @@ Scheduler.plugin(function(e) {
                     render: "cell",
                     dx: 200,
                     dy: 50,
-                    event_dy: e.xy.bar_height - 5,
-                    event_min_dy: e.xy.bar_height - 5,
+                    event_dy: /*e.xy.bar_height - 5 */ 14,          // Leo: 14
+                    event_min_dy: /*e.xy.bar_height - 5*/ 14,      // Leo
                     resize_events: !0,
                     fit_events: !0,
                     show_unassigned: !1,
@@ -576,7 +576,7 @@ Scheduler.plugin(function(e) {
             return "full" == t.event_dy && (n = t.section_autoheight ? t._section_height[a] - 6 : t.dy - 3), t.resize_events && (n = Math.max(Math.floor(n / (e._count || 1)), t.event_min_dy)), n
         }, e._get_timeline_event_y = function(t, a) {
             var n = t || 0,
-                i = 2 + n * a + (n ? 2 * n : 0);
+                i = 2 + 2 * n * a + (n ? 2 * n : 0);    // Leo: 2 *
             return e.config.cascade_event_display && (i = 2 + n * e.config.cascade_event_margin + (n ? 2 * n : 0)), i
         }, e.render_timeline_event = function(t, a) {
             var n = t[this.y_property];
@@ -585,20 +585,22 @@ Scheduler.plugin(function(e) {
                 r = e._timeline_getX(t, !1, this),
                 o = e._timeline_getX(t, !0, this),
                 _ = e._get_timeline_event_height(t, this),
-                d = _ - 2;
+                d = _ * 2 - 2;      // Leo * 2
+            // console.log(t, r, o);
             t._inner || "full" != this.event_dy || (d = (d + 2) * (t._count - i) - 2), d += 3;
             // var s = e._get_timeline_event_y(t._sorder, _),
             //     l = _ + s + 2;
-            // Leo: update as _order
-            var s = e._get_timeline_event_y(t._order, _),
-                l = _ + s + 2;
-            (!this._events_height[n] || this._events_height[n] < l) && (this._events_height[n] = l);
+            // Leo: update as _order to _iorder
+            var s = e._get_timeline_event_y(t._iorder, _),
+                l = _ * 2 + s + 2;   // Leo: 2 *
+            (!this._events_height[n] || this._events_height[n] < l) && (this._events_height[n] = l);  
+            // console.log(this._events_height, n, "render_timeline_event");
             var c = e.templates.event_class(t.start_date, t.end_date, t);
             c = "dhx_cal_event_line " + (c || ""), e.getState().select_id == t.id && (c += " dhx_cal_event_selected"), t._no_drag_move && (c += " no_drag_move");
             var h = t.color ? "background:" + t.color + ";" : "",
                 u = t.textColor ? "color:" + t.textColor + ";" : "",
                 g = e.templates.event_bar_text(t.start_date, t.end_date, t),
-                v = "<div " + e._waiAria.eventBarAttrString(t) + " event_id='" + t.id + "' class='" + c + "' style='" + h + u + "position:absolute; top:" + s + "px; height: " + d + "px; " + (e.config.rtl ? "right:" : "left:") + r + "px; width:" + Math.max(0, o - r) + "px;" + (t._text_style || "") + "'>";
+                v = "<div " + e._waiAria.eventBarAttrString(t) + " event_id='" + t.id + "' class='" + c + "' style='" + h + u + "position:absolute; top:" + s + "px; height: " + d + "px; " + (e.config.rtl ? "right:" : "left:") + r + "px; width:" + Math.max(0, o - r) + "px;  line-height: " + ( _ -2 ) + "px; " + (t._text_style || "") + "'>";
             if (e.config.drag_resize && !e.config.readonly) {
                 var f = "dhx_event_resize",
                     p = d + 1,
@@ -608,12 +610,28 @@ Scheduler.plugin(function(e) {
             }
             // console.log(g);
             // if (v += g + "</div>", !a) return v;
+            var title = "<div class='dhx_cal_event_title' style='color: #5d5d5d; font-weight: 500; position:absolute; z-index:100; top:" + s + "px; height: " + d + "px; line-height:" + d + "px;" + (e.config.rtl ? "right:" : "left:") + (Number(r) + Math.max(0, o - r) + 10) + "px; '>" + g + "</div>";
             // -------------- Leo ----------------
             var monthNames = ["January", "February", "March", "April", "May", "June","July", "August", "September", "October", "November", "December"];
-            var startDate = String(t.start_date.getMonth()+1).padStart(2, '0') + "/" + String(t.start_date.getDate()).padStart(2, '0') + " " + String(t.start_date.getHours()).padStart(2, '0') + ":" + String(t.start_date.getMinutes()).padStart(2, '0');
-            var endDate = String(t.end_date.getMonth()+1).padStart(2, '0') + "/" + String(t.end_date.getDate()).padStart(2, '0') + " " + String(t.end_date.getHours()).padStart(2, '0') + ":" + String(t.end_date.getMinutes()).padStart(2, '0');
-            var timeline = startDate + " ~ " + endDate; 
-            if (v += timeline + "</div>", !a) return v;
+            var startD_hour = t.start_date.getHours();
+            var startDate = /* String(t.start_date.getMonth()+1).padStart(2, '0') + "/" + String(t.start_date.getDate()).padStart(2, '0') + " " + */ (startD_hour>12)?startD_hour-12:((startD_hour==0)?12:startD_hour);
+            startDate += t.start_date.getMinutes() != 0 ? ":" + String(t.start_date.getMinutes()).padStart(2, '0'):"";
+            startDate += (startD_hour>=12)?" pm":" am";
+            var endD_hour = t.end_date.getHours();
+            var endDate = /* String(t.end_date.getMonth()+1).padStart(2, '0') + "/" + String(t.end_date.getDate()).padStart(2, '0') + " " + */ (endD_hour>12)?endD_hour-12:((endD_hour==0)?12:endD_hour);
+            endDate += (t.end_date.getMinutes() != 0) ? ":" + String(t.end_date.getMinutes()).padStart(2, '0'):"";
+            endDate += (endD_hour>=12)?" pm":" am";
+            var timeline = "<div><span style='font-size: 10px; color: #efefef;'>" + startDate + " - " + endDate + "</span></div>"; 
+            // console.log(t.end_date - t.start_date);
+            var content = "";
+            // if (t.end_date - t.start_date >= 86400000) {    // if all-day (or multi-day) task
+                content += "<div><span style='font-size: 10px;'>" + g + "</span></div>" + "" + timeline;
+                title = "";
+            // }
+            // else {
+            //     content += timeline;
+            // }
+            if (v += content + "</div>" + title, !a) return v;
             // ------------------------------------
             var b = document.createElement("div");
             b.innerHTML = v;
@@ -636,15 +654,17 @@ Scheduler.plugin(function(e) {
                     d = a ? t.end_date : t.start_date;
                 d.valueOf() > e._max_date.valueOf() && (d = e._max_date);
                 var s = d - e._min_date_timeline;
+                // console.log(s,r,n);
                 if (s > 0) {
                     var l = e._get_date_index(n, d);
                     e._ignores[l] && (o = !0);
                     for (var c = 0; c < l; c++) i += e._cols[c];
                     var h = e._timeline_get_rounded_date.apply(n, [d, !1]);
                     o ? +d > +h && a && (_ = e._cols[l]) : (s = d - h,
-                        n.first_hour || n.last_hour ? (s -= n._start_correction, s < 0 && (s = 0), (_ = Math.round(s / r)) > e._cols[l] && (_ = e._cols[l])) : _ = Math.round(s / r))
+                        n.first_hour || n.last_hour ? (s -= n._start_correction, s < 0 && (s = 0), (_ = Math.round(s / r)) + 10 > e._cols[l] && (_ = e._cols[l])) : _ = Math.round(s / r)) + 10
                 }
                 e._border_box_events();
+                // console.log(i, _);   // Leo: timeline end position
                 return i += a ? 0 === s || o ? _ - 2 : _ : _ + 1
             }, e._timeline_get_rounded_date = function(t, a) {
                 var n = e._get_date_index(this, t),
@@ -667,7 +687,19 @@ Scheduler.plugin(function(e) {
                     e._timeline_skip_ignored.call(this, t), t.sort(this.sort || function(e, t) {
                         return e.start_date.valueOf() == t.start_date.valueOf() ? e.id > t.id ? 1 : -1 : e.start_date > t.start_date ? 1 : -1
                     });
-                    for (var a = [], n = t.length, i = -1, r = null, o = 0; o < n; o++) {
+                    // Leo: cur_date, io, _iorder ---------------
+                    var cur_date = null;
+                    if(t.length > 0) {
+                        cur_date = t[0].start_date;
+                    }
+                    for (var a = [], n = t.length, i = -1, r = null, o = 0, io = 0, max_io = -1; o < n; o++, io++) {
+                        // calculate iorder --------------------
+                        if(t[o].start_date.getMonth() != cur_date.getMonth() || t[o].start_date.getDate() != cur_date.getDate()) {
+                            cur_date = t[o].start_date;
+                            io = 0;
+                        }
+                        t[o]._iorder = io;
+                        //  ------------------------------------
                         t[o]._order = o;    // Leo: add _order variable
                         var _ = t[o];
                         _._inner = !1;
@@ -700,10 +732,16 @@ Scheduler.plugin(function(e) {
                                     _._inner = !0
                                 } else {
                                     for (var v = a[0]._sorder, f = 1; f < a.length; f++) a[f]._sorder > v && (v = a[f]._sorder);
-                                    _._sorder = v + 1, i < _._sorder && (i = _._sorder, r = _), _._inner = !1
+                                    _._sorder = v + 1, i < _._sorder && (i = _._sorder/* Leo: , r = _*/), _._inner = !1
                                 }
                         else _._sorder = 0;
                         a.push(_), a.length > (a.max_count || 0) ? (a.max_count = a.length, _._count = a.length) : _._count = _._count ? _._count : 1
+
+                        // Leo: re-calculate r regarding _iorder
+                        if (_._iorder > max_io) {
+                            max_io = _._iorder;
+                            r = _;
+                        }
                     }
                     for (var p = 0; p < t.length; p++) t[p]._count = a.max_count, e._register_copy && e._register_copy(t[p]);
                     (r || t[0]) && e.render_timeline_event.call(this, r || t[0], !1)
@@ -756,6 +794,7 @@ Scheduler.plugin(function(e) {
             },
             e._timeline_get_fit_events_stats = function(e, t, a) {
                 if (e.fit_events) {
+                    // console.log(e._events_height, e.y_unit[t].key, "_timeline_get_fit_events_stats");
                     var n = e._events_height[e.y_unit[t].key] || 0;
                     a.height = n > a.height ? n : a.height, a.style_height = "height:" + a.height + "px;", a.style_line_height = "line-height:" + (a.height - 1) + "px;", e._section_height[e.y_unit[t].key] = a.height
                 }
@@ -810,6 +849,7 @@ Scheduler.plugin(function(e) {
                     o = "<div class='dhx_timeline_data_wrapper" + n + "' style='" + a.style_data_wrapper + "'><div class='dhx_timeline_data_col'>";
                 e._load_mode && e._load(), e._timeline_smart_render.clearPreparedEventsCache(_);
                 var _ = e._timeline_smart_render.getPreparedEvents(this);
+                // console.log(_);   // Leo 
                 e._timeline_smart_render.cachePreparedEvents(_);
                 for (var d = 0, s = 0; s < e._cols.length; s++) d += e._cols[s];
                 var l = new Date,

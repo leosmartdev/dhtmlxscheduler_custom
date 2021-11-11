@@ -1,0 +1,1341 @@
+<!doctype html>
+<head>
+	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+	<title>Bar mode</title>
+
+	<!-- <script src="https://docs.dhtmlx.com/scheduler/codebase/dhtmlxscheduler.js"></script>
+	<script src = "https://docs.dhtmlx.com/scheduler/codebase/ext/dhtmlxscheduler_timeline.js"></script>
+	<script src = "https://docs.dhtmlx.com/scheduler/codebase/ext/dhtmlxscheduler_outerdrag.js"></script>
+	<link rel="stylesheet" type="text/css" href="https://docs.dhtmlx.com/scheduler/codebase/dhtmlxscheduler_material.css"> -->
+	
+	<!-- <meta name="description" content="">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" charset="utf-8">
+	
+	<link rel="shortcut icon" href="./common/favicon/favicon.ico" type="image/x-icon" />
+	<link rel="icon" href="./common/favicon/icon-16.png" sizes="16x16" />
+	<link rel="icon" href="./common/favicon/icon-32.png" sizes="32x32" />
+	<link rel="icon" href="./common/favicon/icon-48.png" sizes="48x48" />
+	<link rel="icon" href="./common/favicon/icon-96.png" sizes="96x96" />
+	<link rel="icon" href="./common/favicon/icon-144.png" sizes="144x144" />
+
+    <script src="../../codebase/tree.js?v=7.2.4"></script>
+	<link rel="stylesheet" type="text/css" href="../../codebase/tree.css?v=7.2.4">
+
+	<link rel="stylesheet" href="./common/index.css?v=7.2.4"> -->
+
+
+	<script src='../../codebase/dhtmlxscheduler.js?v=5.3.12' type="text/javascript" charset="utf-8"></script>
+	<script src='../../codebase/ext_custom/dhtmlxscheduler_custom_timeline.js?v=5.3.12' type="text/javascript" charset="utf-8"></script>
+	<script src = "../../codebase/ext/dhtmlxscheduler_outerdrag.js"></script>
+	<link rel='stylesheet' type='text/css' href='../../codebase/dhtmlxscheduler_material.css?v=5.3.12'>
+
+	<script src="../../codebase/dhtmlx.js?v=5.3.12"></script>
+	<link rel="stylesheet" type="text/css" href="../../codebase/dhtmlx.css?v=5.3.12">
+	
+	<style type="text/css" >
+		html, body{
+			margin:0;
+			padding:0;
+			height:100%;
+			overflow:hidden;
+		}
+	</style>
+
+	<style>
+		html, body{
+			padding:0;
+			margin: 0;
+		}
+		.dhx_cal_event_line.changeable_false{ 
+			background-color: red;
+		}
+		.gray_section {
+			background-color: rgba(194, 185, 185, 0.5);
+		}
+		.event_copy{
+			position: absolute;
+			width: 80%;
+			height: 10px;
+			margin-top: -5px;
+			background-color: red;
+			cursor: copy;
+		}
+		/* #treeBox{
+			overflow-y: scroll !important;
+			overflow-x: hidden !important;
+		} */
+		/* #crews_scheduler .dhx_cal_data{
+			top: 142px !important;
+		}
+
+		#crews_scheduler .dhx_cal_event_line,#scheduler_here .dhx_cal_event_line{
+			padding:5px 0 1px 10px;
+		} */
+	</style>
+
+</head>
+<body>
+	<div id="treeBox" style="position: fixed; top:200px; left:0px; width:250px; height: calc(90vh - 170px);"></div>
+	<div id="crews_scheduler" class="dhx_cal_container" style="left: 250px;width:calc(100% - 250px); height:50vh;">
+		<div class="dhx_cal_navline">
+			<div class="dhx_cal_prev_button">&nbsp;</div>
+			<div class="dhx_cal_next_button">&nbsp;</div>
+			<div class="dhx_cal_today_button"></div>
+			<div class="dhx_cal_date"></div>
+		</div>
+		<div class="dhx_cal_header">
+		</div>
+		<div class="dhx_cal_data">
+		</div>
+	</div>
+	<div id="scheduler_here" class="dhx_cal_container" style="left: 250px;width:calc(100% - 250px); height:100%;">
+		<div class="dhx_cal_navline">
+		</div>
+		<div class="dhx_cal_header">
+		</div>
+		<div class="dhx_cal_data">
+		</div>
+	</div>
+
+	<script type="text/javascript" charset="utf-8">
+		var treebox;
+		treebox = new dhtmlXTreeObject("treeBox","100%","100%",0);
+		// treebox = new dhx.Tree("treeBox", {
+		// 	editable: false,
+		// 	dragMode: "both",
+		// 	checkbox: false
+		// });
+		//alert("create new event in a gray row")
+		//crewsScheduler is an instance that shows on top 'Employee' section
+		crewsScheduler = Scheduler.getSchedulerInstance();
+
+		//scheduler is a timeline that shows all Groups below Employee section.
+		scheduler.locale.labels.timeline_tab = "Timeline";
+		scheduler.locale.labels.section_custom = "Section";
+		scheduler.config.details_on_create=true;
+		scheduler.config.details_on_dblclick=true;
+		//scheduler.config.full_day = true; //define whether include Full Day option
+		scheduler.config.hour_date = "%h:%i %A";
+		scheduler.config.scroll_hour = 8; //sets the initial position of the vertical scroll in the scheduler (an hour in the 24-hour clock format)
+		scheduler.config.start_on_monday = true;
+		//Seema(2020-12-07): Set time_step to 30 as it does not allow to drag event that start at 9:30AM with correct date/time to other place.
+		//scheduler.config.time_step = 120;
+		scheduler.config.time_step = 30;
+		scheduler.config.event_duration = 30; // set default event duration
+		//scheduler.config.auto_end_date = true;
+		scheduler.locale.labels.section_project = "Project&nbsp;<span class='required'>*</span>";
+		scheduler.locale.labels.section_locationmap = "Location";
+		scheduler.locale.labels.section_employeeCheck = "Member&nbsp;<span class='required'>*</span>";
+		scheduler.locale.labels.section_custom = "&nbsp;";
+		scheduler.locale.labels.section_checkme = "Link Tasks";
+		scheduler.locale.labels.section_formap="&nbsp;";
+		var crew =  [
+				{
+					"key": "1",
+					"label": "Site Prep",
+					"open": "1",
+					"children": [
+						{
+							"key": "1_3210",
+							"label": "Becky Behan"
+						},
+						{
+							"key": "1_3191",
+							"label": "Carlton Simmons"
+						},
+						{
+							"key": "1_2513",
+							"label": "Chris Jackson"
+						},
+						{
+							"key": "1_19043",
+							"label": "Dale Hugh"
+						},
+						{
+							"key": "1_3180",
+							"label": "Daniel Stich"
+						},
+						{
+							"key": "1_3185",
+							"label": "Donald Hambric"
+						},
+						{
+							"key": "1_3196",
+							"label": "Steven Foster"
+						},
+						{
+							"key": "1_3221",
+							"label": "Wandi Blanco"
+						},
+						{
+							"key": "1_19685",
+							"label": "WT 20200128"
+						}
+					]
+				},
+				{
+					"key": "11",
+					"label": "Roofing Crew",
+					"open": "1",
+					"children": [
+						{
+							"key": "11_2513",
+							"label": "Chris Jackson"
+						},
+						{
+							"key": "11_3186",
+							"label": "Clint Gerke"
+						},
+						{
+							"key": "11_3185",
+							"label": "Donald Hambric"
+						},
+						{
+							"key": "11_3222",
+							"label": "Tomy Coffey"
+						},
+						{
+							"key": "11_19685",
+							"label": "WT 20200128"
+						}
+					]
+				},
+				{
+					"key": "17",
+					"label": "Lexington, KY Branch",
+					"open": "1",
+					"children": [
+						{
+							"key": "17_3215",
+							"label": "Carol Fischer"
+						},
+						{
+							"key": "17_3186",
+							"label": "Clint Gerke"
+						},
+						{
+							"key": "17_3179",
+							"label": "Daniel Hyun"
+						},
+						{
+							"key": "17_3190",
+							"label": "Maureen Cary"
+						},
+						{
+							"key": "17_3198",
+							"label": "Sammy Fan"
+						},
+						{
+							"key": "17_19685",
+							"label": "WT 20200128"
+						}
+					]
+				},
+				{
+					"key": "18",
+					"label": "Louisville Sales Division",
+					"open": "1",
+					"children": [
+						{
+							"key": "18_3180",
+							"label": "Daniel Stich"
+						},
+						{
+							"key": "18_3185",
+							"label": "Donald Hambric"
+						},
+						{
+							"key": "18_3223",
+							"label": "Gavin Washburn"
+						},
+						{
+							"key": "18_3188",
+							"label": "John Sardi"
+						},
+						{
+							"key": "18_3190",
+							"label": "Maureen Cary"
+						},
+						{
+							"key": "18_3211",
+							"label": "Rita Williams"
+						},
+						{
+							"key": "18_3944",
+							"label": "Seema Weenggs"
+						}
+					]
+				},
+				{
+					"key": "19",
+					"label": "Estimating Department",
+					"open": "1",
+					"children": [
+						{
+							"key": "19_3195",
+							"label": "Bob Page"
+						},
+						{
+							"key": "19_3179",
+							"label": "Daniel Hyun"
+						},
+						{
+							"key": "19_3192",
+							"label": "Fred Ladue"
+						},
+						{
+							"key": "19_3205",
+							"label": "Tim Gallivan"
+						},
+						{
+							"key": "19_19277",
+							"label": "Tus'har N\"N"
+						},
+						{
+							"key": "19_3221",
+							"label": "Wandi Blanco"
+						}
+					]
+				},
+				{
+					"key": "118",
+					"label": "Guy's Roofing Crew",
+					"open": "1",
+					"children": [
+						{
+							"key": "118_3195",
+							"label": "Bob Page"
+						},
+						{
+							"key": "118_8238",
+							"label": "Bradly Olufsen"
+						},
+						{
+							"key": "118_3220",
+							"label": "Darlene Peer"
+						},
+						{
+							"key": "118_3183",
+							"label": "Landon Olson"
+						}
+					]
+				},
+				{
+					"key": "204",
+					"label": "One of Each Type",
+					"open": "1",
+					"children": [
+						{
+							"key": "204_6932",
+							"label": "Billy Dixon"
+						},
+						{
+							"key": "204_3613",
+							"label": "David Parker (Alabama Brick Delivery, Inc.)"
+						},
+						{
+							"key": "204_3216",
+							"label": "Guy Armstrong"
+						},
+						{
+							"key": "204_21311",
+							"label": "Keith Starita (Automatic Door Service)"
+						},
+						{
+							"key": "204_3419",
+							"label": "Vijay Ratnam (Sterling Moving & Storage)"
+						}
+					]
+				},
+				{
+					"key": "442",
+					"label": "test",
+					"open": "1",
+					"children": [
+						{
+							"key": "442_21662",
+							"label": "Adam Smith"
+						},
+						{
+							"key": "442_3193",
+							"label": "Adrian Robinson"
+						},
+						{
+							"key": "442_21042",
+							"label": "Al O'Malley"
+						},
+						{
+							"key": "442_8378",
+							"label": "Android Employee"
+						},
+						{
+							"key": "442_3210",
+							"label": "Becky Behan"
+						},
+						{
+							"key": "442_3219",
+							"label": "Brad Bell"
+						},
+						{
+							"key": "442_14511",
+							"label": "Brad Ader"
+						},
+						{
+							"key": "442_2513",
+							"label": "Chris Jackson"
+						},
+						{
+							"key": "442_3216",
+							"label": "Guy Armstrong"
+						}
+					]
+				}
+			];
+		var sections=[
+				{
+					"id": "1783",
+					"title": "",
+					"start_date": "2021-10-20 10:00:00",
+					"end_date": "2021-10-21 11:00:00",
+					"days_span": "0",
+					"rec_type": "",
+					"event_pid": "",
+					"event_length": "",
+					"full_day": "",
+					"company_id": "1",
+					"user_id": "14511",
+					"description": "",
+					"date_added": "2021-02-24",
+					"date_modified": "2021-02-24 09:10:14",
+					"from": "panel",
+					"location": "",
+					"event_type": "1",
+					"time_off": "",
+					"project_id": "custom_maintenance_1",
+					"rec_pattern": "",
+					"assigned_to": "",
+					"is_deleted": "0",
+					"group_id": "0",
+					"emp_id": "14511",
+					"parent_event_id": "",
+					"has_updated": "0",
+					"is_linked": "1",
+					"single_assignee": "",
+					"primary_id": "1783",
+					"project_name": "Custom Maintenance",
+					"emp_count": "0",
+					"text": "",
+					"event_days": "0",
+					"assignee_name": "Brad Ader",
+					"assignee_names": "Brad Ader",
+					"assignee_title": "BA: ",
+					"assignee_initial": "BA",
+					"empColor": "#000000",
+					"color": "#0288d1",
+					"textColor": "#ffffff",
+					"unformated_start_date_only": "2021-02-27",
+					"start_date_only": "2021-10-20",
+					"end_date_only": "2021-10-21",
+					"start_time_only": "10:00 AM",
+					"end_time_only": "02:00 PM",
+					"parent_full_day": "",
+					"module_id": "60",
+					"sub_type": "",
+					"associated_child_events": "0",
+					"crew_id": "0_14511",
+					"prj_address1": "",
+					"prj_address2": "",
+					"prj_city": "",
+					"prj_state": "",
+					"prj_zip": "",
+					"event_parent_id": "0",
+					"is_time_off_requests": "0",
+					"emp_act_status": "",
+					"emp_act_status_name": ""
+				},
+				{
+					"id": "1959",
+					"title": "This is desc",
+					"start_date": "2021-10-17 12:00:00",
+					"end_date": "2021-10-18 17:30:00",
+					"days_span": "0",
+					"rec_type": "",
+					"event_pid": "",
+					"event_length": "",
+					"full_day": "",
+					"company_id": "1",
+					"user_id": "2513",
+					"description": "",
+					"date_added": "2021-05-13",
+					"date_modified": "2021-05-13 04:50:02",
+					"from": "panel",
+					"location": "",
+					"event_type": "1",
+					"time_off": "",
+					"project_id": "exp_oo7_5",
+					"rec_pattern": "",
+					"assigned_to": "",
+					"is_deleted": "0",
+					"group_id": "1",
+					"emp_id": "3196",
+					"parent_event_id": "",
+					"has_updated": "0",
+					"is_linked": "1",
+					"single_assignee": "",
+					"primary_id": "1959",
+					"project_name": "Exp OO7",
+					"emp_count": "0",
+					"text": "This is desc",
+					"event_days": "0",
+					"assignee_name": "Steven Foster",
+					"assignee_names": "Steven Foster",
+					"assignee_title": "SF: This is desc",
+					"assignee_initial": "SF",
+					"empColor": "",
+					"color": "#0288d1",
+					"textColor": "#ffffff",
+					"unformated_start_date_only": "2021-05-11",
+					"start_date_only": "2021-05-11",
+					"end_date_only": "2021-05-11",
+					"start_time_only": "12:00 PM",
+					"end_time_only": "05:30 PM",
+					"parent_full_day": "",
+					"module_id": "60",
+					"sub_type": "",
+					"associated_child_events": "0",
+					"crew_id": "0_3196",
+					"prj_address1": "",
+					"prj_address2": "",
+					"prj_city": "",
+					"prj_state": "",
+					"prj_zip": "",
+					"event_parent_id": "0",
+					"is_time_off_requests": "0",
+					"emp_act_status": "",
+					"emp_act_status_name": ""
+				},
+				{
+					"id": "1960",
+					"title": "This is the desc",
+					"start_date": "2021-05-27 12:00:00",
+					"end_date": "2021-05-27 17:30:00",
+					"days_span": "0",
+					"rec_type": "",
+					"event_pid": "",
+					"event_length": "",
+					"full_day": "",
+					"company_id": "1",
+					"user_id": "2513",
+					"description": "",
+					"date_added": "2021-05-24",
+					"date_modified": "2021-05-24 09:55:40",
+					"from": "panel",
+					"location": "",
+					"event_type": "1",
+					"time_off": "",
+					"project_id": "exp_oo7_5",
+					"rec_pattern": "",
+					"assigned_to": "",
+					"is_deleted": "0",
+					"group_id": "1",
+					"emp_id": "19685",
+					"parent_event_id": "",
+					"has_updated": "0",
+					"is_linked": "1",
+					"single_assignee": "",
+					"primary_id": "1960",
+					"project_name": "Exp OO7",
+					"emp_count": "0",
+					"text": "This is the desc",
+					"event_days": "0",
+					"assignee_name": "WT 20200128",
+					"assignee_names": "WT 20200128",
+					"assignee_title": "W2: This is the desc",
+					"assignee_initial": "W2",
+					"empColor": "#0e64a0",
+					"color": "#0288d1",
+					"textColor": "#ffffff",
+					"unformated_start_date_only": "2021-05-27",
+					"start_date_only": "2021-05-27",
+					"end_date_only": "2021-05-27",
+					"start_time_only": "12:00 PM",
+					"end_time_only": "05:30 PM",
+					"parent_full_day": "",
+					"module_id": "60",
+					"sub_type": "",
+					"associated_child_events": "0",
+					"crew_id": "0_19685",
+					"prj_address1": "",
+					"prj_address2": "",
+					"prj_city": "",
+					"prj_state": "",
+					"prj_zip": "",
+					"event_parent_id": "0",
+					"is_time_off_requests": "0",
+					"emp_act_status": "",
+					"emp_act_status_name": ""
+				},
+				{
+					"id": "1971",
+					"title": "",
+					"start_date": "2021-08-27 13:30:00",
+					"end_date": "2021-08-28 10:30:00",
+					"days_span": "0",
+					"rec_type": "",
+					"event_pid": "",
+					"event_length": "",
+					"full_day": "0",
+					"company_id": "1",
+					"user_id": "2513",
+					"description": "",
+					"date_added": "2021-08-24",
+					"date_modified": "2021-08-24 09:35:26",
+					"from": "panel",
+					"location": "",
+					"event_type": "1",
+					"time_off": "",
+					"project_id": "exp_oo7_5",
+					"rec_pattern": "",
+					"assigned_to": "",
+					"is_deleted": "0",
+					"group_id": "0",
+					"emp_id": "8244",
+					"parent_event_id": "",
+					"has_updated": "1",
+					"is_linked": "1",
+					"single_assignee": "",
+					"primary_id": "1971",
+					"project_name": "Exp OO7",
+					"emp_count": "0",
+					"text": "",
+					"event_days": "1",
+					"assignee_name": "Mr Bean",
+					"assignee_names": "Mr Bean",
+					"assignee_title": "MB: ",
+					"assignee_initial": "MB",
+					"empColor": "#d509cf",
+					"color": "#0288d1",
+					"textColor": "#ffffff",
+					"unformated_start_date_only": "2021-08-27",
+					"start_date_only": "2021-08-27",
+					"end_date_only": "2021-08-28",
+					"start_time_only": "01:30 PM",
+					"end_time_only": "10:30 AM",
+					"parent_full_day": "",
+					"module_id": "60",
+					"sub_type": "",
+					"associated_child_events": "0",
+					"crew_id": "0_8244",
+					"prj_address1": "",
+					"prj_address2": "",
+					"prj_city": "",
+					"prj_state": "",
+					"prj_zip": "",
+					"event_parent_id": "0",
+					"is_time_off_requests": "0",
+					"emp_act_status": "",
+					"emp_act_status_name": ""
+				},
+				{
+					"id": "1755",
+					"title": "New event",
+					"start_date": "2021-01-23 10:00:00",
+					"end_date": "2021-01-23 14:00:00",
+					"days_span": "0",
+					"rec_type": "",
+					"event_pid": "",
+					"event_length": "",
+					"full_day": "",
+					"company_id": "1",
+					"user_id": "2513",
+					"description": "",
+					"date_added": "2021-01-23",
+					"date_modified": "2021-01-23 06:17:17",
+					"from": "panel",
+					"location": "",
+					"event_type": "1",
+					"time_off": "",
+					"project_id": "timecard_office_warehouse",
+					"rec_pattern": "",
+					"assigned_to": "0_3183",
+					"is_deleted": "0",
+					"group_id": "0",
+					"emp_id": "0",
+					"parent_event_id": "0",
+					"has_updated": "0",
+					"is_linked": "1",
+					"single_assignee": "0_3183",
+					"primary_id": "1755",
+					"project_name": "Office Warehouse",
+					"emp_count": "0",
+					"text": "New event",
+					"event_days": "0",
+					"assignee_name": "",
+					"assignee_names": "",
+					"assignee_title": "New event",
+					"assignee_initial": "",
+					"empColor": "",
+					"color": "#0288d1",
+					"textColor": "#ffffff",
+					"unformated_start_date_only": "2021-01-23",
+					"start_date_only": "2021-01-23",
+					"end_date_only": "2021-01-23",
+					"start_time_only": "10:00 AM",
+					"end_time_only": "02:00 PM",
+					"parent_full_day": "",
+					"module_id": "60",
+					"sub_type": "",
+					"associated_child_events": "1756",
+					"crew_id": "0",
+					"prj_address1": "",
+					"prj_address2": "",
+					"prj_city": "",
+					"prj_state": "",
+					"prj_zip": "",
+					"event_parent_id": "0",
+					"is_time_off_requests": "0",
+					"emp_act_status": "",
+					"emp_act_status_name": ""
+				},
+				{
+					"id": "1756",
+					"title": "New event",
+					"start_date": "2021-01-23 10:00:00",
+					"end_date": "2021-01-23 14:00:00",
+					"days_span": "0",
+					"rec_type": "",
+					"event_pid": "",
+					"event_length": "",
+					"full_day": "",
+					"company_id": "1",
+					"user_id": "2513",
+					"description": "",
+					"date_added": "2021-01-23",
+					"date_modified": "2021-01-23 06:17:18",
+					"from": "panel",
+					"location": "",
+					"event_type": "1",
+					"time_off": "",
+					"project_id": "timecard_office_warehouse",
+					"rec_pattern": "",
+					"assigned_to": "0_3183",
+					"is_deleted": "0",
+					"group_id": "0",
+					"emp_id": "3183",
+					"parent_event_id": "1755",
+					"has_updated": "0",
+					"is_linked": "1",
+					"single_assignee": "0_3183",
+					"primary_id": "1756",
+					"project_name": "Office Warehouse",
+					"emp_count": "0",
+					"text": "New event",
+					"event_days": "0",
+					"assignee_name": "Landon Olson",
+					"assignee_names": "Landon Olson",
+					"assignee_title": "LO: New event",
+					"assignee_initial": "LO",
+					"empColor": "",
+					"color": "#0288d1",
+					"textColor": "#ffffff",
+					"unformated_start_date_only": "2021-01-23",
+					"start_date_only": "2021-01-23",
+					"end_date_only": "2021-01-23",
+					"start_time_only": "10:00 AM",
+					"end_time_only": "02:00 PM",
+					"parent_full_day": "",
+					"module_id": "60",
+					"sub_type": "",
+					"associated_child_events": "0",
+					"crew_id": "0_3183",
+					"prj_address1": "",
+					"prj_address2": "",
+					"prj_city": "",
+					"prj_state": "",
+					"prj_zip": "",
+					"event_parent_id": "1755",
+					"is_time_off_requests": "0",
+					"emp_act_status": "",
+					"emp_act_status_name": ""
+				},
+				{
+					"id": "1614",
+					"title": "test",
+					"start_date": "2021-01-01 10:00:00",
+					"end_date": "2021-01-01 14:00:00",
+					"days_span": "0",
+					"rec_type": "",
+					"event_pid": "",
+					"event_length": "",
+					"full_day": "0",
+					"company_id": "1",
+					"user_id": "2513",
+					"description": "",
+					"date_added": "2021-01-06",
+					"date_modified": "2021-01-06 09:18:16",
+					"from": "panel",
+					"location": "",
+					"event_type": "1",
+					"time_off": "",
+					"project_id": "timecard_travel",
+					"rec_pattern": "",
+					"assigned_to": "",
+					"is_deleted": "0",
+					"group_id": "0",
+					"emp_id": "3191",
+					"parent_event_id": "",
+					"has_updated": "1",
+					"is_linked": "1",
+					"single_assignee": "",
+					"primary_id": "1614",
+					"project_name": "Travel",
+					"emp_count": "0",
+					"text": "test",
+					"event_days": "0",
+					"assignee_name": "Carlton Simmons",
+					"assignee_names": "Carlton Simmons",
+					"assignee_title": "CS: test",
+					"assignee_initial": "CS",
+					"empColor": "",
+					"color": "#0288d1",
+					"textColor": "#ffffff",
+					"unformated_start_date_only": "2021-01-01",
+					"start_date_only": "2021-01-01",
+					"end_date_only": "2021-01-01",
+					"start_time_only": "10:00 AM",
+					"end_time_only": "02:00 PM",
+					"parent_full_day": "",
+					"module_id": "60",
+					"sub_type": "",
+					"associated_child_events": "0",
+					"crew_id": "0_3191",
+					"prj_address1": "",
+					"prj_address2": "",
+					"prj_city": "",
+					"prj_state": "",
+					"prj_zip": "",
+					"event_parent_id": "0",
+					"is_time_off_requests": "0",
+					"emp_act_status": "",
+					"emp_act_status_name": ""
+				},
+				{
+					"id": "1617",
+					"title": "",
+					"start_date": "2021-01-01 12:30:00",
+					"end_date": "2021-01-01 16:30:00",
+					"days_span": "0",
+					"rec_type": "",
+					"event_pid": "",
+					"event_length": "",
+					"full_day": "0",
+					"company_id": "1",
+					"user_id": "2513",
+					"description": "",
+					"date_added": "2021-01-06",
+					"date_modified": "2021-01-06 09:19:29",
+					"from": "panel",
+					"location": "",
+					"event_type": "1",
+					"time_off": "",
+					"project_id": "133370",
+					"rec_pattern": "",
+					"assigned_to": "",
+					"is_deleted": "0",
+					"group_id": "11",
+					"emp_id": "19685",
+					"parent_event_id": "",
+					"has_updated": "1",
+					"is_linked": "1",
+					"single_assignee": "",
+					"primary_id": "1617",
+					"project_name": "test",
+					"emp_count": "0",
+					"text": "",
+					"event_days": "0",
+					"assignee_name": "WT 20200128",
+					"assignee_names": "WT 20200128",
+					"assignee_title": "W2: ",
+					"assignee_initial": "W2",
+					"empColor": "#0e64a0",
+					"color": "#0E64A0",
+					"textColor": "#ffffff",
+					"unformated_start_date_only": "2021-01-01",
+					"start_date_only": "2021-01-01",
+					"end_date_only": "2021-01-01",
+					"start_time_only": "12:30 PM",
+					"end_time_only": "04:30 PM",
+					"parent_full_day": "",
+					"module_id": "60",
+					"sub_type": "",
+					"associated_child_events": "0",
+					"crew_id": "0_19685",
+					"prj_address1": "",
+					"prj_address2": "",
+					"prj_city": "",
+					"prj_state": "",
+					"prj_zip": "",
+					"event_parent_id": "0",
+					"is_time_off_requests": "0",
+					"emp_act_status": "",
+					"emp_act_status_name": ""
+				},
+				{
+					"id": "1620",
+					"title": "",
+					"start_date": "2021-01-06 12:30:00",
+					"end_date": "2021-01-06 16:30:00",
+					"days_span": "0",
+					"rec_type": "",
+					"event_pid": "",
+					"event_length": "",
+					"full_day": "0",
+					"company_id": "1",
+					"user_id": "2513",
+					"description": "",
+					"date_added": "2021-01-06",
+					"date_modified": "2021-01-06 09:41:15",
+					"from": "panel",
+					"location": "",
+					"event_type": "1",
+					"time_off": "",
+					"project_id": "133370",
+					"rec_pattern": "",
+					"assigned_to": "",
+					"is_deleted": "0",
+					"group_id": "11",
+					"emp_id": "3191",
+					"parent_event_id": "",
+					"has_updated": "1",
+					"is_linked": "1",
+					"single_assignee": "",
+					"primary_id": "1620",
+					"project_name": "test",
+					"emp_count": "0",
+					"text": "",
+					"event_days": "0",
+					"assignee_name": "Carlton Simmons",
+					"assignee_names": "Carlton Simmons",
+					"assignee_title": "CS: ",
+					"assignee_initial": "CS",
+					"empColor": "",
+					"color": "#0E64A0",
+					"textColor": "#ffffff",
+					"unformated_start_date_only": "2021-01-06",
+					"start_date_only": "2021-01-06",
+					"end_date_only": "2021-01-06",
+					"start_time_only": "12:30 PM",
+					"end_time_only": "04:30 PM",
+					"parent_full_day": "",
+					"module_id": "60",
+					"sub_type": "",
+					"associated_child_events": "0",
+					"crew_id": "0_3191",
+					"prj_address1": "",
+					"prj_address2": "",
+					"prj_city": "",
+					"prj_state": "",
+					"prj_zip": "",
+					"event_parent_id": "0",
+					"is_time_off_requests": "0",
+					"emp_act_status": "",
+					"emp_act_status_name": ""
+				},
+				{
+					"id": "1621",
+					"title": "",
+					"start_date": "2021-01-06 12:30:00",
+					"end_date": "2021-01-06 16:30:00",
+					"days_span": "0",
+					"rec_type": "",
+					"event_pid": "",
+					"event_length": "",
+					"full_day": "",
+					"company_id": "1",
+					"user_id": "2513",
+					"description": "",
+					"date_added": "2021-01-06",
+					"date_modified": "2021-01-06 09:18:49",
+					"from": "panel",
+					"location": "",
+					"event_type": "1",
+					"time_off": "",
+					"project_id": "133287",
+					"rec_pattern": "",
+					"assigned_to": "",
+					"is_deleted": "0",
+					"group_id": "11",
+					"emp_id": "19685",
+					"parent_event_id": "",
+					"has_updated": "0",
+					"is_linked": "1",
+					"single_assignee": "0",
+					"primary_id": "1621",
+					"project_name": "Project for SC retainage",
+					"emp_count": "0",
+					"text": "",
+					"event_days": "0",
+					"assignee_name": "WT 20200128",
+					"assignee_names": "WT 20200128",
+					"assignee_title": "W2: ",
+					"assignee_initial": "W2",
+					"empColor": "#0e64a0",
+					"color": "#0E64A0",
+					"textColor": "#ffffff",
+					"unformated_start_date_only": "2021-01-06",
+					"start_date_only": "2021-01-06",
+					"end_date_only": "2021-01-06",
+					"start_time_only": "12:30 PM",
+					"end_time_only": "04:30 PM",
+					"parent_full_day": "",
+					"module_id": "60",
+					"sub_type": "",
+					"associated_child_events": "0",
+					"crew_id": "0_19685",
+					"prj_address1": "2100 Carolina Place Drive",
+					"prj_address2": "Unit A1A",
+					"prj_city": "Fort Mill",
+					"prj_state": "SC",
+					"prj_zip": "29708",
+					"event_parent_id": "0",
+					"is_time_off_requests": "0",
+					"emp_act_status": "",
+					"emp_act_status_name": ""
+				},
+				{
+					"id": "1632",
+					"title": "",
+					"start_date": "2021-01-01 04:00:00",
+					"end_date": "2021-01-01 14:00:00",
+					"days_span": "0",
+					"rec_type": "",
+					"event_pid": "",
+					"event_length": "",
+					"full_day": "0",
+					"company_id": "1",
+					"user_id": "14511",
+					"description": "",
+					"date_added": "2021-01-06",
+					"date_modified": "2021-01-06 09:52:14",
+					"from": "panel",
+					"location": "",
+					"event_type": "1",
+					"time_off": "",
+					"project_id": "timecard_sales",
+					"rec_pattern": "",
+					"assigned_to": "",
+					"is_deleted": "0",
+					"group_id": "0",
+					"emp_id": "3186",
+					"parent_event_id": "",
+					"has_updated": "1",
+					"is_linked": "1",
+					"single_assignee": "",
+					"primary_id": "1632",
+					"project_name": "Sales",
+					"emp_count": "0",
+					"text": "",
+					"event_days": "1",
+					"assignee_name": "Clint Gerke",
+					"assignee_names": "Clint Gerke",
+					"assignee_title": "CG: ",
+					"assignee_initial": "CG",
+					"empColor": "",
+					"color": "#0288d1",
+					"textColor": "#ffffff",
+					"unformated_start_date_only": "2021-01-01",
+					"start_date_only": "2021-01-01",
+					"end_date_only": "2021-01-01",
+					"start_time_only": "04:00 AM",
+					"end_time_only": "02:00 PM",
+					"parent_full_day": "",
+					"module_id": "60",
+					"sub_type": "",
+					"associated_child_events": "0",
+					"crew_id": "0_3186",
+					"prj_address1": "",
+					"prj_address2": "",
+					"prj_city": "",
+					"prj_state": "",
+					"prj_zip": "",
+					"event_parent_id": "0",
+					"is_time_off_requests": "0",
+					"emp_act_status": "",
+					"emp_act_status_name": ""
+				},
+				{
+						"id": "1634",
+						"title": "",
+						"start_date": "2021-01-01 04:00:00",
+						"end_date": "2021-01-01 14:00:00",
+						"days_span": "0",
+						"rec_type": "",
+						"event_pid": "",
+						"event_length": "",
+						"full_day": "0",
+						"company_id": "1",
+						"user_id": "14511",
+						"description": "",
+						"date_added": "2021-01-06",
+						"date_modified": "2021-01-06 09:57:40",
+						"from": "panel",
+						"location": "",
+						"event_type": "1",
+						"time_off": "",
+						"project_id": "timecard_sales",
+						"rec_pattern": "",
+						"assigned_to": "",
+						"is_deleted": "0",
+						"group_id": "0",
+						"emp_id": "3198",
+						"parent_event_id": "",
+						"has_updated": "1",
+						"is_linked": "1",
+						"single_assignee": "",
+						"primary_id": "1634",
+						"project_name": "Sales",
+						"emp_count": "0",
+						"text": "",
+						"event_days": "1",
+						"assignee_name": "Sammy Fan",
+						"assignee_names": "Sammy Fan",
+						"assignee_title": "SF: ",
+						"assignee_initial": "SF",
+						"empColor": "",
+						"color": "#0288d1",
+						"textColor": "#ffffff",
+						"unformated_start_date_only": "2021-01-01",
+						"start_date_only": "2021-01-01",
+						"end_date_only": "2021-01-01",
+						"start_time_only": "04:00 AM",
+						"end_time_only": "02:00 PM",
+						"parent_full_day": "",
+						"module_id": "60",
+						"sub_type": "",
+						"associated_child_events": "0",
+						"crew_id": "0_3198",
+						"prj_address1": "",
+						"prj_address2": "",
+						"prj_city": "",
+						"prj_state": "",
+						"prj_zip": "",
+						"event_parent_id": "0",
+						"is_time_off_requests": "0",
+						"emp_act_status": "",
+						"emp_act_status_name": ""
+					}
+			];
+		var recent_project = [
+				{
+					"id": "timecard_shop",
+					"name": "Shop"
+				},
+				{
+					"id": "timecard_general_oh",
+					"name": "General OH"
+				},
+				{
+					"id": "timecard_maintenance",
+					"name": "Maintenance"
+				},
+				{
+					"id": "timecard_travel",
+					"name": "Travel"
+				},
+				{
+					"id": "timecard_office",
+					"name": "Office"
+				},
+				{
+					"id": "timecard_sales",
+					"name": "Sales"
+				},
+				{
+					"id": "timecard_service_ticket",
+					"name": "Service Ticket"
+				},
+				{
+					"id": "custom_maintenance_1",
+					"name": "Custom Maintenance"
+				},
+				{
+					"id": "custom_office_2",
+					"name": "Custom Office1"
+				},
+				{
+					"id": "service_work_3",
+					"name": "Service Work"
+				},
+				{
+					"id": "custom_wt_pro_4",
+					"name": "Custom WT Pro"
+				},
+				{
+					"id": "exp_oo7_5",
+					"name": "Exp OO7"
+				},
+				{
+					"id": "timecard_office_warehouse",
+					"name": "Office Warehouse"
+				},
+				{
+						"id": "131621",
+						"name": "Ios test for retainge"
+					},
+			];
+			//https://docs.dhtmlx.com/scheduler/api__scheduler_locale_other.html
+			//scheduler.locale.labels.confirm_deleting = "Do you want to delete other linked events?";
+		scheduler.templates.lightbox_header = function(start,end,ev){
+			return `${scheduler.templates.event_header(ev.start_date,ev.end_date,ev)} ${ev.text}`;
+		};
+		scheduler.templates.event_bar_text=function(start,end,event){
+		var mode = scheduler.getState().mode;
+		if(mode == "timeline") 
+			return `${event.text} </br> <div class="event_copy"></div>`;
+		return event.text;
+		}
+
+		scheduler.xy.nav_height = 0;
+		scheduler.xy.scale_height = 0;
+		
+		scheduler.createTimelineView({
+			section_autoheight: false,
+			name:   "timeline",
+			x_unit: "day",
+			x_date: "%D<br>%j",
+			x_step: 1,
+			x_size: 7,
+			y_unit:crew,
+			y_property: "user_id",
+			folder_events_available: true,
+			render: "tree",
+			folder_dy:30,
+			// event_dy:"full",
+			first_hour: '11.0000',
+			last_hour: '16.0000',
+			second_scale:{
+				x_unit: "month", // the measuring unit of the axis (by default, 'minute')
+				x_date: "%F %Y" //the date format of the axis ("July 01")
+			},
+			dy:30
+		});
+
+		treeJsAry = [], treeJsAry2 = [];
+		recent_project.forEach(function (ary, index) {
+			if (ary['id'].toString() != '' && ary['id'].toString() != '0') {
+				treeJsAry.push([ary['id'], 0, ary['name']]);
+				treeJsAry2.push({id: ary['id'], value: ary['name']});
+			}
+		});
+
+		treebox.enableDragAndDrop(true);
+		treebox.setSkin("dhx_terrace");
+		treebox.attachEvent("onDrag", function () {
+			return false;
+		});
+		treebox.setImagePath("//cdn.dhtmlx.com/edge/imgs/dhxtree_material/");
+		treebox.loadJSArray(treeJsAry);
+		treebox.parse(treeJsAry, "jsarray");
+		// treebox.events.on("BeforeDrop", function(data, e){
+		// 	console.log(data);
+		// 	console.log("The item with the id "+ data +" was dragged.");
+		// 	return false;
+		// });
+		// treebox.data.parse(treeJsAry2);
+				
+		scheduler.init('scheduler_here',new Date(2021, 9, 19),"timeline");
+			
+		var crewsScheduler;
+			crewsScheduler = Scheduler.getSchedulerInstance();
+			crewsScheduler.locale.labels.section_project = "Project&nbsp;<span class='required'>*</span>";
+			crewsScheduler.locale.labels.section_locationmap = "Location";
+			crewsScheduler.locale.labels.section_employeeCheck = "Member&nbsp;<span class='required'>*</span>";
+			crewsScheduler.locale.labels.section_custom = "&nbsp;";
+			crewsScheduler.locale.labels.section_checkme = "Link Tasks";
+			crewsScheduler.locale.labels.section_template = 'Details';// sets the name of the section
+			crewsScheduler.locale.labels.section_formap="&nbsp;";
+
+		crewsScheduler.config.hour_date = "%h:%i %A"; 
+			crewsScheduler.config.start_on_monday =  true;
+			crewsScheduler.config.scroll_hour = 8; //sets the initial position of the vertical scroll in the scheduler (an hour in the 24-hour clock format)
+			crewsScheduler.config.event_duration = 30; // set default event duration
+		crewsScheduler.config.time_step = 30;
+
+		var crew_employee = [
+				{
+					"key": "0_35611",
+					"label": "ABC ABC",
+					"user_id": "35611",
+					"groups": ""
+				},
+				{
+					"key": "0_19837",
+					"label": "io 0909",
+					"user_id": "19837",
+					"groups": ""
+				},
+				{
+					"key": "0_8244",
+					"label": "Mr Bean",
+					"user_id": "8244",
+					"groups": ""
+				},
+				{
+					"key": "0_19691",
+					"label": "test 0000",
+					"user_id": "19691",
+					"groups": ""
+				}
+			];
+
+		// crewsScheduler.xy.scale_height = 40;
+
+		crewsScheduler.serverList("timelineSections", [ // original hierarhical array to display
+			{key:0, label:"Employees", open:true, children: crew_employee}
+		]);
+
+		crewsScheduler.createTimelineView({
+			section_autoheight: false,
+			name:   "timeline",
+			x_unit: "day",
+			x_date: "%D<br>%j",
+			x_step: 1,
+			x_size: 7,
+			y_unit: crew_employee,
+			y_property: "user_id",
+			folder_events_available: true,
+			render: "tree",
+			folder_dy:30,
+			// event_dy:"full",
+			first_hour: '11.0000',
+			last_hour: '16.0000',
+			second_scale:{
+				x_unit: "month", // the measuring unit of the axis (by default, 'minute')
+				x_date: "%F %Y" //the date format of the axis ("July 01")
+			},
+			dy:30
+		});
+
+		crewsScheduler.init('crews_scheduler', new Date(2021, 9, 19), "timeline");
+
+		crewsScheduler.attachEvent("onExternalDragIn", function (id, source, e) {
+			console.log("on external drag");
+			var project_id = treebox._dragged[0].id;
+			var project_name = treebox._dragged[0].label;
+			console.log("on external drag >>",project_name);
+			eventStartDate = crewsScheduler.getEvent(id).start_date;  
+			let d = new Date();
+			if(crewsScheduler.matrix['timeline'].last_hour == 0) {
+				d.setDate(eventStartDate.getDate() + 1); 
+			}
+			else{
+				d = eventStartDate;
+			}
+			crewsScheduler.getEvent(id).project_id = project_id;
+			crewsScheduler.getEvent(id).text = project_name;
+			crewsScheduler.getEvent(id).start_date = new Date(eventStartDate.getFullYear(), eventStartDate.getMonth(), eventStartDate.getDate(), crewsScheduler.matrix['timeline'].first_hour);
+			crewsScheduler.getEvent(id).end_date = new Date(d.getFullYear(), d.getMonth(), d.getDate(), crewsScheduler.matrix['timeline'].last_hour);
+			return true;
+		});
+	</script>
+</body>
