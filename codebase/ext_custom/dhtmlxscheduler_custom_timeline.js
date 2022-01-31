@@ -1,13 +1,13 @@
 /*
 
 @license
-dhtmlxScheduler v.5.3.12 Professional Evaluation
+dhtmlxScheduler v.5.3.12 Professional
 
-This software is covered by DHTMLX Evaluation License. Contact sales@dhtmlx.com to get Commercial or Enterprise license. Usage without proper license is prohibited.
+This software is covered by DHTMLX Enterprise License. Usage without proper license is prohibited.
 
 (c) XB Software Ltd.
 
-Customized by Leo, the super full stack developer.
+Customized by Leo Sultanov, Super full stack developer.
 
 */
 Scheduler.plugin(function(e) {
@@ -394,7 +394,7 @@ Scheduler.plugin(function(e) {
                     render: "cell",
                     dx: 200,
                     dy: 50,
-                    event_dy: /*e.xy.bar_height - 5 */ 14,          // Leo: 14
+                    event_dy: /*e.xy.bar_height - 5 */ 14,         // Leo: 14
                     event_min_dy: /*e.xy.bar_height - 5*/ 14,      // Leo
                     resize_events: !0,
                     fit_events: !0,
@@ -611,7 +611,7 @@ Scheduler.plugin(function(e) {
             // console.log(g);
             // if (v += g + "</div>", !a) return v;
             var title = "<div class='dhx_cal_event_title' style='color: #5d5d5d; font-weight: 500; position:absolute; z-index:100; top:" + s + "px; height: " + d + "px; line-height:" + d + "px;" + (e.config.rtl ? "right:" : "left:") + (Number(r) + Math.max(0, o - r) + 10) + "px; '>" + g + "</div>";
-            // -------------- Leo ----------------
+            // --------- Leo ---------
             var monthNames = ["January", "February", "March", "April", "May", "June","July", "August", "September", "October", "November", "December"];
             var startD_hour = t.start_date.getHours();
             var startDate = /* String(t.start_date.getMonth()+1).padStart(2, '0') + "/" + String(t.start_date.getDate()).padStart(2, '0') + " " + */ (startD_hour>12)?startD_hour-12:((startD_hour==0)?12:startD_hour);
