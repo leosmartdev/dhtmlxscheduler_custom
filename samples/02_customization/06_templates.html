@@ -3,8 +3,8 @@
 	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
 	<title>Styling events with templates</title>
 </head>
-	<script src="../../codebase/dhtmlxscheduler.js?v=5.3.12" type="text/javascript" charset="utf-8"></script>
-	<link rel="stylesheet" href="../../codebase/dhtmlxscheduler_material.css?v=5.3.12" type="text/css" charset="utf-8">
+	<script src="../../codebase/dhtmlxscheduler.js" type="text/javascript" charset="utf-8"></script>
+	<link rel="stylesheet" href="../../codebase/dhtmlxscheduler.css" type="text/css" charset="utf-8">
 
 	
 <style type="text/css" >
@@ -28,11 +28,11 @@
 	.dhx_cal_event_clear.past_event{
 		color:purple !important;
 	}	
-
 </style>
 
 <script type="text/javascript" charset="utf-8">
 	function init() {
+		scheduler.config.xml_date="%Y-%m-%d %H:%i";
 
 		scheduler.init('scheduler_here',new Date(2018,0,10),"week");
 		//define how text inside event bar looks
@@ -43,7 +43,7 @@
 			if (event.text) //if event have description
 				return "past_event"; //then set special css class for it
 		};
-		scheduler.load("../common/events.json");
+		scheduler.load("./data/events.xml");
 		
 	}
 </script>

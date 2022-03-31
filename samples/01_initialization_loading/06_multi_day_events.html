@@ -2,54 +2,39 @@
 <head>
 	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
 	<title>Multi-day events</title>
-	<script src="../../codebase/dhtmlxscheduler.js?v=5.3.12" type="text/javascript" charset="utf-8"></script>
-	<link rel="stylesheet" href="../../codebase/dhtmlxscheduler_material.css?v=5.3.12" type="text/css" charset="utf-8">
-	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-	<link rel="stylesheet" href="../common/controls_styles.css?v=5.3.12">
-	
-	<style>
-		html, body{
-			margin:0px;
-			padding:0px;
-			height:100%;
-			overflow:hidden;
-		}	
-	</style>
-
-	<script>
-		function updateView(input){
-			scheduler.config.multi_day = input.checked;
-			scheduler.updateView();
-			updateIcon(input)
-		}
-
-		function updateIcon(el){
-			el.parentElement.classList.toggle("checked_label");
-
-			var iconEl = el.parentElement.querySelector("i"),
-				checked = "check_box",
-				unchecked = "check_box_outline_blank",
-				className = "icon_color";
-
-			iconEl.textContent = iconEl.textContent==checked?unchecked:checked;
-			iconEl.classList.toggle(className);
-		}
-
-		window.addEventListener("DOMContentLoaded", function(){
-			scheduler.config.multi_day = true;
-			scheduler.xy.margin_top = 40;
-			scheduler.init('scheduler_here',new Date(2017,11,18),"week");
-			scheduler.load("../common/events.json");
-			
-		});
-	</script>
 </head>
-<body>
-	<div class="sch_control">
-		<label for="mod1" class="checked_label">
-			<input type="checkbox" class="sch_radio" id="mod1" checked onchange="updateView(this)">
-			<i class="material-icons icon_color">check_box</i>Show multiday events
-		</label>
+	<script src="../../codebase/dhtmlxscheduler.js" type="text/javascript" charset="utf-8"></script>
+	<link rel="stylesheet" href="../../codebase/dhtmlxscheduler.css" type="text/css" charset="utf-8">
+
+	
+<style type="text/css" >
+	html, body{
+		margin:0px;
+		padding:0px;
+		height:100%;
+		overflow:hidden;
+	}	
+</style>
+
+<script type="text/javascript" charset="utf-8">
+	function update_view(input){
+		scheduler.config.multi_day = input.checked;
+		scheduler.updateView();
+	}
+
+	function init() {
+		scheduler.config.xml_date="%Y-%m-%d %H:%i";
+		scheduler.config.multi_day = true;
+		scheduler.xy.margin_top = 40;
+		scheduler.init('scheduler_here',new Date(2017,11,18),"week");
+		scheduler.load("./data/events.xml");
+		
+	}
+</script>
+
+<body onload="init();">
+	<div style='padding:5px 20px; height:30px; line-height:30px; font-family:Tahoma;'>
+		<input type='checkbox' id='mod1' checked onchange='update_view(this)'><label for='mod1'> Show multiday events</label>
 	</div>
 	<div id="scheduler_here" class="dhx_cal_container" style='width:100%; height:100%;'>
 		<div class="dhx_cal_navline">
@@ -64,6 +49,6 @@
 		<div class="dhx_cal_header">
 		</div>
 		<div class="dhx_cal_data">
-		</div>
+		</div>		
 	</div>
 </body>

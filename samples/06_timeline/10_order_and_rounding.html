@@ -3,13 +3,13 @@
 	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
 	<title>Managing the order of events in the cell</title>
 
-	<script src='../../codebase/dhtmlxscheduler.js?v=5.3.12' type="text/javascript" charset="utf-8"></script>
-	<script src='../../codebase/ext/dhtmlxscheduler_timeline.js?v=5.3.12' type="text/javascript" charset="utf-8"></script>
+	<script src='../../codebase/dhtmlxscheduler.js' type="text/javascript" charset="utf-8"></script>
+	<script src='../../codebase/ext/dhtmlxscheduler_timeline.js' type="text/javascript" charset="utf-8"></script>
 
-	<script src="../../codebase/ext/dhtmlxscheduler_editors.js?v=5.3.12" type="text/javascript" charset="utf-8"></script>
+	<script src="../../codebase/ext/dhtmlxscheduler_editors.js" type="text/javascript" charset="utf-8"></script>
 
-	<link rel='stylesheet' type='text/css' href='../../codebase/dhtmlxscheduler_material.css?v=5.3.12'>
-	<link rel="stylesheet" href="../../codebase/dhtmlxscheduler_material.css?v=5.3.12" type="text/css"
+	<link rel='stylesheet' type='text/css' href='../../codebase/dhtmlxscheduler.css'>
+	<link rel="stylesheet" href="../../codebase/dhtmlxscheduler.css" type="text/css"
 	     charset="utf-8">
 
 	<style type="text/css" >
@@ -29,6 +29,7 @@
 			scheduler.locale.labels.new_event = "Task ";
 			scheduler.config.details_on_create = true;
 			scheduler.config.details_on_dblclick = true;
+			scheduler.config.xml_date = "%Y-%m-%d %H:%i";
 
 			//===============
 			//Configuration
@@ -130,7 +131,7 @@
 				{ start_date: "2017-11-07 10:00", end_date: "2017-11-07 16:00", text: "Task C-89Q411", section_id: 3, important: 1 },
 				{ start_date: "2017-11-07 10:00", end_date: "2017-11-07 14:00", text: "Task C-64T168", section_id: 3 },
 				{ start_date: "2017-11-07 16:05", end_date: "2017-11-07 17:00", text: "Task C-465P98", section_id: 3, important: 1 }
-			]);
+			], "json");
 		}
 	</script>
 </head>

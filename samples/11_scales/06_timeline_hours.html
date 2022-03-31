@@ -3,10 +3,10 @@
 	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
 	<title>Changing the time interval for the view cells  </title>
 
-	<script src='../../codebase/dhtmlxscheduler.js?v=5.3.12' type="text/javascript" charset="utf-8"></script>
-	<script src='../../codebase/ext/dhtmlxscheduler_timeline.js?v=5.3.12' type="text/javascript" charset="utf-8"></script>
+	<script src='../../codebase/dhtmlxscheduler.js' type="text/javascript" charset="utf-8"></script>
+	<script src='../../codebase/ext/dhtmlxscheduler_timeline.js' type="text/javascript" charset="utf-8"></script>
 	
-	<link rel='stylesheet' type='text/css' href='../../codebase/dhtmlxscheduler_material.css?v=5.3.12'>
+	<link rel='stylesheet' type='text/css' href='../../codebase/dhtmlxscheduler.css'>
 	
 	<style type="text/css" >
 		html, body{
@@ -24,6 +24,7 @@
 			scheduler.locale.labels.section_custom="Section";
 			scheduler.config.details_on_create=true;
 			scheduler.config.details_on_dblclick=true;
+			scheduler.config.xml_date="%Y-%m-%d %H:%i";
 			scheduler.config.limit_time_select = true;
 			var format = scheduler.date.date_to_str("%H:%i");
 			scheduler.templates.event_bar_text = function(sd, ed, ev){
@@ -77,7 +78,7 @@
 				{ start_date: "2017-06-30 12:00", end_date: "2017-07-01 16:00", text:"Task D-52688", section_id:4},
 				{ start_date: "2017-06-30 10:00", end_date: "2017-06-30 14:00", text:"Task D-46588", section_id:4},
 				{ start_date: "2017-06-30 14:00", end_date: "2017-06-30 18:00", text:"Task D-12458", section_id:4}
-			]);
+			],"json");
 
 			dhtmlx.message({
 				text:"Each day shows only time from 08:00 to 18:00<br>Event length preserved during DND",

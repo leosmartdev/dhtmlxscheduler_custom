@@ -3,8 +3,8 @@
 	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
 	<title>Displaying several weeks in Week view</title>
 </head>
-	<script src="../../codebase/dhtmlxscheduler.js?v=5.3.12" type="text/javascript" charset="utf-8"></script>
-	<link rel="stylesheet" href="../../codebase/dhtmlxscheduler_material.css?v=5.3.12" type="text/css" charset="utf-8">
+	<script src="../../codebase/dhtmlxscheduler.js" type="text/javascript" charset="utf-8"></script>
+	<link rel="stylesheet" href="../../codebase/dhtmlxscheduler.css" type="text/css" charset="utf-8">
 
 	
 <style type="text/css" >
@@ -22,6 +22,7 @@
 <script type="text/javascript" charset="utf-8">
 	function init() {
 		
+		scheduler.config.xml_date="%Y-%m-%d %H:%i";
 		scheduler.locale.labels.workweek_tab = "2 x Week";
 		scheduler.config.first_hour = 8;
 		scheduler.config.limit_time_select = true;
@@ -46,7 +47,7 @@
 		};
 
 		scheduler.init('scheduler_here',new Date(2018,0,10),"workweek");
-		scheduler.load("../common/events.json");
+		scheduler.load("./data/events.xml");
 	}
 </script>
 

@@ -3,9 +3,9 @@
 	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
 	<title>Multiselect control in the lightbox </title>
 
-	<script src="../../codebase/dhtmlxscheduler.js?v=5.3.12" type="text/javascript" charset="utf-8"></script>
-	<script src="../../codebase/ext/dhtmlxscheduler_multiselect.js?v=5.3.12" type="text/javascript" charset="utf-8"></script>
-	<link rel="stylesheet" href="../../codebase/dhtmlxscheduler_material.css?v=5.3.12" type="text/css" charset="utf-8">
+	<script src="../../codebase/dhtmlxscheduler.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../../codebase/ext/dhtmlxscheduler_multiselect.js" type="text/javascript" charset="utf-8"></script>
+	<link rel="stylesheet" href="../../codebase/dhtmlxscheduler.css" type="text/css" charset="utf-8">
 	
 <style type="text/css" >
 	html, body{
@@ -27,49 +27,34 @@
 <script type="text/javascript" charset="utf-8">
 	function init() {
 		
+		scheduler.config.xml_date="%Y-%m-%d %H:%i";
 		scheduler.config.prevent_cache = true;
 		scheduler.config.first_hour=4;
 		scheduler.config.limit_time_select = true;
 		scheduler.config.details_on_create=true;
 		scheduler.config.details_on_dblclick=true;
 
-		scheduler.templates.event_text = function(start, end, event) {
-			var result = event.text+"<br/>Users: ";
-			
-			var users=[];
-			if (event.user_id){
-				users = event.user_id.split(",");
-				for (var i=0; i < users.length; i++)
-					users[i] = scheduler.getLabel("user_id",users[i])
-			}
-			result += users.join(",");
-			
-			return result;
-		};
+		
+		scheduler.init('scheduler_here',new Date(2017,8,5),"week");
+		scheduler.load("data/events_multiselect_options.php", function(){
+			scheduler.showLightbox(108);
+		});
+		var dp = new dataProcessor("data/events_multiselect_options.php");
+		dp.init(scheduler);
 
-		scheduler.locale.labels.section_userselect = "Users";
+		scheduler.locale.labels.section_userselect = "Participants";
 		scheduler.locale.labels.section_fruitselect = "Fruits";
 		scheduler.locale.labels.section_description = "Name";
 		scheduler.locale.labels.section_location = "Location";
 
 		scheduler.config.lightbox.sections=[	
 			{ name:"description", height:50, map_to:"text", type:"textarea", focus:true },
-			{ name:"userselect", height:32, map_to:"user_id", type:"multiselect", options: scheduler.serverList("users"), vertical:false  },
-			{ name:"fruitselect", height:100, map_to:"fruit_id", type:"multiselect", options: scheduler.serverList("fruits"), vertical:true },
+			{ name:"userselect", height:22, map_to:"user_id", type:"multiselect", options: scheduler.serverList("user_id"), script_url: 'data/events_multiselect_options.php', vertical:"false" },
+			{ name:"fruitselect", height:100, map_to:"fruit_id", type:"multiselect", options: scheduler.serverList("fruit_id"), script_url: 'data/events_multiselect_options.php', vertical:"true" },
 			{ name:"location", height:43, type:"textarea", map_to:"details" },
 			{ name:"time", height:72, type:"time", map_to:"auto"}	
-		];
-
-		scheduler.init('scheduler_here',new Date(2019,8,5),"week");
-		scheduler.load("/scheduler/backend/multiselect-events", function(){
-			scheduler.showLightbox(108);
-		});
-
-		var dp = new dataProcessor("/scheduler/backend/multiselect-events");
-		dp.init(scheduler);
-		dp.setTransactionMode("REST", false);
-
-
+		]
+		
 	}
 </script>
 </head>

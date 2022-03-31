@@ -1,56 +1,39 @@
 <!doctype html>
-
 <head>
 	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
-	<title>Integration with dhtmlxLayout</title>
-
-	<script src="../../codebase/dhtmlxscheduler.js?v=5.3.12" charset="utf-8"></script>
-	<link rel="stylesheet" href="../../codebase/dhtmlxscheduler_material.css?v=5.3.12" type="text/css" charset="utf-8">
-
-	<script src="https://cdn.dhtmlx.com/suite/edge/suite.js?v=5.3.12"></script>
-	<link rel="stylesheet" href="https://cdn.dhtmlx.com/suite/edge/suite.css?v=5.3.12" type="text/css">
-
-	<style>
-		html,
-		body {
-			margin: 0px;
-			padding: 0px;
-			height: 100%;
-		}
-
-		.dhx_layout-cell-content {
-			height: 100%;
-			position:relative;
-		}
-		.dhx_layout-cell-header + .dhx_layout-cell-content {
-			height: calc(100% - 37px);
-		}
-	</style>
-
-	<script>
-		window.addEventListener('DOMContentLoaded', function (event) {
-			var layout = new dhx.Layout("layout", {
-				rows: [{
-					id: "scheduler-cell",
-					header: "Appointment Scheduler",
-					html:"<div></div>"
-				}]
-			});
-
-			scheduler.config.multi_day = true;
-			scheduler.attachEvent("onSchedulerReady", function () {
-				requestAnimationFrame(function(){
-					scheduler.setCurrentView(new Date(2017,5,3), "week");
-					scheduler.load("../common/events.json");
-				});
-				
-			});
-
-			layout.cell("scheduler-cell").attach(scheduler);
-		});
-	</script>
+	<title>Integration with dhtmlxLayout (dhx_skyblue skin)</title>
 </head>
+	<script src="../../codebase/dhtmlxscheduler.js" type="text/javascript" charset="utf-8"></script>
+	<link rel="stylesheet" href="../../codebase/dhtmlxscheduler.css" type="text/css" charset="utf-8">
 
+	<script src='../common/dhtmlxCommon/dhtmlxcommon.js'></script>
+	<script src='../common/dhtmlxCommon/dhtmlxcontainer.js'></script>
+	<script type="text/javascript" src="../common/dhtmlxLayout/dhtmlxlayout.js"></script>
+	
+	<link rel="stylesheet" type="text/css" href="../common/dhtmlxLayout/skins/dhtmlxlayout_dhx_skyblue.css">
 
-<body>
+<style type="text/css" >
+	html, body{
+		margin:0px;
+		padding:0px; height:100%;
+	}	
+</style>
+
+<script type="text/javascript" charset="utf-8">
+	function init() {
+
+		var dhxLayout = new dhtmlXLayoutObject(document.body, "2U");
+
+		scheduler.config.multi_day = true;
+		scheduler.config.xml_date="%Y-%m-%d %H:%i";
+		dhxLayout.cells("a").attachScheduler(new Date(2017,05,30), "week");
+		scheduler.load("./data/events.xml")
+		
+
+		
+	}
+</script>
+
+<body onload="init();">
+
 </body>

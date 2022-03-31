@@ -3,12 +3,12 @@
 	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
 	<title>Full week in Timeline row</title>
 
-	<script src='../../codebase/dhtmlxscheduler.js?v=5.3.12' type="text/javascript" charset="utf-8"></script>
-	<script src='../../codebase/ext/dhtmlxscheduler_timeline.js?v=5.3.12' type="text/javascript" charset="utf-8"></script>
-	<script src='../../codebase/ext/dhtmlxscheduler_daytimeline.js?v=5.3.12' type="text/javascript" charset="utf-8"></script>
+	<script src='../../codebase/dhtmlxscheduler.js' type="text/javascript" charset="utf-8"></script>
+	<script src='../../codebase/ext/dhtmlxscheduler_timeline.js' type="text/javascript" charset="utf-8"></script>
+	<script src='../../codebase/ext/dhtmlxscheduler_daytimeline.js' type="text/javascript" charset="utf-8"></script>
 
 
-	<link rel='stylesheet' type='text/css' href='../../codebase/dhtmlxscheduler_material.css?v=5.3.12'>
+	<link rel='stylesheet' type='text/css' href='../../codebase/dhtmlxscheduler_flat.css'>
 
 	<style type="text/css" >
 		html, body{
@@ -26,6 +26,7 @@
 			scheduler.locale.labels.section_custom="Section";
 			scheduler.config.details_on_create=true;
 			scheduler.config.details_on_dblclick=true;
+			scheduler.config.xml_date="%Y-%m-%d %H:%i";
 
 			//===============
 			//Configuration
@@ -57,7 +58,7 @@
 				{ "id": "4", "start_date": "2017-06-30 16:00", "end_date": "2017-06-30 18:00", "text": "Section C test"},
 				{ "id": "5", "start_date": "2017-06-30 10:00", "end_date": "2017-06-30 15:00", "text": "Section D test"},
 				{ "id": "6", "start_date": "2017-06-29 12:00", "end_date": "2017-06-29 14:00", "text": "day before test"},
-				{ "id": "7", "start_date": "2017-07-01 12:00", "end_date": "2017-07-01 14:00", "text": "day after test"}]);
+				{ "id": "7", "start_date": "2017-07-01 12:00", "end_date": "2017-07-01 14:00", "text": "day after test"}], 'json');
 		}
 	</script>
 </head>

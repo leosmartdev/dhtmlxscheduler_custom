@@ -3,9 +3,9 @@
 	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
 	<title>Radio button in the lightbox</title>
 
-	<script src="../../codebase/dhtmlxscheduler.js?v=5.3.12" type="text/javascript" charset="utf-8"></script>
-	<link rel="stylesheet" href="../../codebase/dhtmlxscheduler_material.css?v=5.3.12" type="text/css" charset="utf-8">
-	<script src="../../codebase/ext/dhtmlxscheduler_editors.js?v=5.3.12" type="text/javascript" charset="utf-8"></script>
+	<script src="../../codebase/dhtmlxscheduler.js" type="text/javascript" charset="utf-8"></script>
+	<link rel="stylesheet" href="../../codebase/dhtmlxscheduler.css" type="text/css" charset="utf-8">
+	<script src="../../codebase/ext/dhtmlxscheduler_editors.js" type="text/javascript" charset="utf-8"></script>
 
 	
 	<style type="text/css" >
@@ -38,13 +38,14 @@
 			
 			scheduler.config.lightbox.sections=[	
 				{ name:"description", height:50, map_to:"text", type:"textarea", focus:true },
-				{ name:"selectme", height: 110, options: pizza_size, map_to:"radiobutton_option", type:"radio", vertical: true },
+				{ name:"selectme", height: 58, options: pizza_size, map_to:"radiobutton_option", type:"radio", vertical: true },	
 				{ name:"time", height:72, type:"time", map_to:"auto"}
 				
 			];
 			
+			scheduler.config.xml_date="%Y-%m-%d %H:%i";
 			scheduler.init('scheduler_here',new Date(2018,2,1),"week");
-			scheduler.load("../common/events.json", function(){
+			scheduler.load("./data/events.xml", function(){
 				scheduler.showLightbox("1261150564");
 			});
 			

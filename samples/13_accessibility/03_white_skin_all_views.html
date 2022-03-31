@@ -3,17 +3,17 @@
 <head>
 	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
 	<title>Keyboard Navigation and WAI-ARIA - High contrast Light</title>
-	<script src='../../codebase/dhtmlxscheduler.js?v=5.3.12' type="text/javascript" charset="utf-8"></script>
-	<link rel='STYLESHEET' type='text/css' href='../../codebase/dhtmlxscheduler_contrast_white.css?v=5.3.12'>
+	<script src='../../codebase/dhtmlxscheduler.js' type="text/javascript" charset="utf-8"></script>
+	<link rel='STYLESHEET' type='text/css' href='../../codebase/dhtmlxscheduler_contrast_white.css'>
 
-	<script src="../../codebase/ext/dhtmlxscheduler_recurring.js?v=5.3.12" type="text/javascript" charset="utf-8"></script>
-	<script src="../../codebase/ext/dhtmlxscheduler_units.js?v=5.3.12" type="text/javascript" charset="utf-8"></script>
-	<script src="../../codebase/ext/dhtmlxscheduler_year_view.js?v=5.3.12" type="text/javascript" charset="utf-8"></script>
-	<script src='../../codebase/ext/dhtmlxscheduler_timeline.js?v=5.3.12' type="text/javascript" charset="utf-8"></script>
-	<script src='../../codebase/ext/dhtmlxscheduler_tooltip.js?v=5.3.12' type="text/javascript" charset="utf-8"></script>
+	<script src="../../codebase/ext/dhtmlxscheduler_recurring.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../../codebase/ext/dhtmlxscheduler_units.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../../codebase/ext/dhtmlxscheduler_year_view.js" type="text/javascript" charset="utf-8"></script>
+	<script src='../../codebase/ext/dhtmlxscheduler_timeline.js' type="text/javascript" charset="utf-8"></script>
+	<script src='../../codebase/ext/dhtmlxscheduler_tooltip.js' type="text/javascript" charset="utf-8"></script>
 
-	<script src="../../codebase/ext/dhtmlxscheduler_minical.js?v=5.3.12" type="text/javascript" charset="utf-8"></script>
-	<script src="../../codebase/ext/dhtmlxscheduler_key_nav.js?v=5.3.12" type="text/javascript" charset="utf-8"></script>
+	<script src="../../codebase/ext/dhtmlxscheduler_minical.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../../codebase/ext/dhtmlxscheduler_key_nav.js" type="text/javascript" charset="utf-8"></script>
 
 		
 <style type="text/css" >
@@ -25,7 +25,7 @@
 	}
 	
 	.dhx_calendar_click {
-		/* background-color: #C2D5FC !important; */
+		background-color: #C2D5FC !important;
 	}
 </style>
 
@@ -71,6 +71,7 @@
 
 		scheduler.config.first_hour = 6;
 		scheduler.config.multi_day = true;
+		scheduler.config.xml_date="%Y-%m-%d %H:%i";
 
 		scheduler.config.lightbox.sections = [
 			{ name:"description", height:200, map_to:"text", type:"textarea" , focus:true },
@@ -123,7 +124,7 @@
 			{ start_date: "2017-06-27 09:20", end_date: "2017-06-27 12:20", text:"Task D-52688", section_id:4},
 			{ start_date: "2017-06-28 11:40", end_date: "2017-06-28 16:30", text:"Task D-46588", section_id:4},
 			{ start_date: "2017-06-26 12:00", end_date: "2017-06-26 18:00", text:"Task D-12458", section_id:4}
-		]);
+		],"json");
 		
 		var calendar = scheduler.renderCalendar({
 			container:"cal_here", 

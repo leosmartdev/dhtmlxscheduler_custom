@@ -3,15 +3,15 @@
 	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
 	<title>Multisection events and Recurrings</title>
 
-	<script src="../../codebase/dhtmlxscheduler.js?v=5.3.12" type="text/javascript" charset="utf-8"></script>
-	<script src="../../codebase/ext/dhtmlxscheduler_multisection.js?v=5.3.12" type="text/javascript" charset="utf-8"></script>
+	<script src="../../codebase/dhtmlxscheduler.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../../codebase/ext/dhtmlxscheduler_multisection.js" type="text/javascript" charset="utf-8"></script>
 
-	<link rel="stylesheet" href="../../codebase/dhtmlxscheduler_material.css?v=5.3.12" type="text/css" charset="utf-8">
+	<link rel="stylesheet" href="../../codebase/dhtmlxscheduler.css" type="text/css" charset="utf-8">
 
-	<script src="../../codebase/ext/dhtmlxscheduler_recurring.js?v=5.3.12" type="text/javascript" charset="utf-8"></script>
-	<script src='../../codebase/ext/dhtmlxscheduler_timeline.js?v=5.3.12' type="text/javascript" charset="utf-8"></script>
-	<script src="../../codebase/ext/dhtmlxscheduler_units.js?v=5.3.12" type="text/javascript" charset="utf-8"></script>
-	<script src="../../codebase/ext/dhtmlxscheduler_multiselect.js?v=5.3.12" type="text/javascript" charset="utf-8"></script>
+	<script src="../../codebase/ext/dhtmlxscheduler_recurring.js" type="text/javascript" charset="utf-8"></script>
+	<script src='../../codebase/ext/dhtmlxscheduler_timeline.js' type="text/javascript" charset="utf-8"></script>
+	<script src="../../codebase/ext/dhtmlxscheduler_units.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../../codebase/ext/dhtmlxscheduler_multiselect.js" type="text/javascript" charset="utf-8"></script>
 
 
 
@@ -33,6 +33,8 @@
 			scheduler.config.occurrence_timestamp_in_utc = true;
 			scheduler.config.include_end_by = true;
 			scheduler.config.repeat_precise = true;
+
+			scheduler.config.xml_date = "%Y-%m-%d %H:%i";
 
 			scheduler.locale.labels.timeline_tab = "Timeline";
 			scheduler.locale.labels.unit_tab = "Unit";
@@ -96,7 +98,7 @@
 
 				{ start_date: "2017-07-05 11:40", end_date: "2017-07-05 16:30", text:"Sections 4,2,3", section_id:'4,2,3'},
 				{ start_date: "2017-07-06 12:00", end_date: "2017-07-06 18:00", text:"Task D-12458", section_id:'4'}
-			]);
+			],"json");
 		}
 	</script>
 

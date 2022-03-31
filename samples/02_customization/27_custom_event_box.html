@@ -3,8 +3,8 @@
 	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
 	<title>Custom event box</title>
 
-	<script src="../../codebase/dhtmlxscheduler.js?v=5.3.12" type="text/javascript" charset="utf-8"></script>
-	<link rel="stylesheet" href="../../codebase/dhtmlxscheduler_material.css?v=5.3.12" type="text/css"  title="no title"
+	<script src="../../codebase/dhtmlxscheduler.js" type="text/javascript" charset="utf-8"></script>
+	<link rel="stylesheet" href="../../codebase/dhtmlxscheduler.css" type="text/css"  title="no title"
 	      charset="utf-8">
 
 	<style type="text/css" >
@@ -19,11 +19,6 @@
 			border: 1px solid #778899;
 			overflow: hidden;
 		}
-
-		.dhx_cal_event_clear.my_event {
-			height: 22px;
-		}
-
 		/* disabling default color for select menu */
 		.dhx_cal_select_menu.my_event div {
 			border: 0;
@@ -59,6 +54,7 @@
 	<script type="text/javascript" charset="utf-8">
 		function init() {
 			scheduler.config.multi_day = false;
+			scheduler.config.xml_date = "%Y-%m-%d %H:%i";
 			scheduler.config.first_hour = 4;
 			scheduler.config.limit_time_select = true;
 			scheduler.config.details_on_create = true;

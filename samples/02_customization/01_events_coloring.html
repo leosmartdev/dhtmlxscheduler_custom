@@ -3,8 +3,8 @@
 	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
 	<title>Coloring events</title>
 
-	<script src="../../codebase/dhtmlxscheduler.js?v=5.3.12" type="text/javascript" charset="utf-8"></script>
-	<link rel="stylesheet" href="../../codebase/dhtmlxscheduler_material.css?v=5.3.12" type="text/css" charset="utf-8">
+	<script src="../../codebase/dhtmlxscheduler.js" type="text/javascript" charset="utf-8"></script>
+	<link rel="stylesheet" href="../../codebase/dhtmlxscheduler.css" type="text/css" charset="utf-8">
 	
 	<style type="text/css" >
 		html, body{
@@ -36,44 +36,26 @@
 			opacity: 1;
 		}
 
-		.dhx_cal_event.event_math div,
-		.dhx_cal_event_line.event_math{
-			background-color: #FF5722 !important;
-			border-color: #732d16 !important;
+		.dhx_cal_event.event_math div, .dhx_cal_event_line.event_math{
+			background-color: orange !important;
+			border-color: #a36800 !important;
 		}
-
-		.dhx_cal_event.dhx_cal_editor.event_math{
-			background-color: #FF5722 !important;
-		}
-
 		.dhx_cal_event_clear.event_math{
-			color:#FF5722 !important;
+			color:orange !important;
 		}
 
-		.dhx_cal_event.event_science div,
-		.dhx_cal_event_line.event_science{
-			background-color: #0FC4A7 !important;
+		.dhx_cal_event.event_science div, .dhx_cal_event_line.event_science{
+			background-color: #36BD14 !important;
 			border-color: #698490 !important;
 		}
-
-		.dhx_cal_event.dhx_cal_editor.event_science{
-			background-color: #0FC4A7 !important;
-		}
-
 		.dhx_cal_event_clear.event_science{
-			color:#0FC4A7 !important;
+			color:#36BD14 !important;
 		}
 
-		.dhx_cal_event.event_english div,
-		.dhx_cal_event_line.event_english{
-			background-color: #684f8c !important;
-			border-color: #9575CD !important;
+		.dhx_cal_event.event_english div, .dhx_cal_event_line.event_english{
+			background-color: #FC5BD5 !important;
+			border-color: #839595 !important;
 		}
-
-		.dhx_cal_event.dhx_cal_editor.event_english{
-			background-color: #684f8c !important;
-		}
-
 		.dhx_cal_event_clear.event_english{
 			color:#B82594 !important;
 		}
@@ -81,6 +63,7 @@
 
 	<script type="text/javascript" charset="utf-8">
 		function init() {
+			scheduler.config.xml_date="%Y-%m-%d %H:%i";
 			scheduler.config.time_step = 30;
 			scheduler.config.multi_day = true;
 			scheduler.locale.labels.section_subject = "Subject";
@@ -135,7 +118,7 @@
 				{ start_date: "2017-04-21 10:00", end_date: "2017-04-21 14:00", text:"Science lesson", subject: 'science' },
 				{ start_date: "2017-04-23 16:00", end_date: "2017-04-23 17:00", text:"English lesson", subject: 'english' },
 				{ start_date: "2017-04-22 09:00", end_date: "2017-04-22 17:00", text:"Usual event" }
-			]);
+			], "json");
 
 		}
 	</script>

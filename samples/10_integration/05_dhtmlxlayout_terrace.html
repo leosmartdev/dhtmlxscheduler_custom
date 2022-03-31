@@ -1,36 +1,39 @@
 <!doctype html>
-
 <head>
 	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
-	<title>Integration with dhtmlxLayout (dhx_terrace skin, Suite v5.1)</title>
-	<script src="../../codebase/dhtmlxscheduler.js?v=5.3.12" charset="utf-8"></script>
-	<link rel="stylesheet" href="../../codebase/dhtmlxscheduler_material.css?v=5.3.12" type="text/css" charset="utf-8">
-
-	<script src="//cdn.dhtmlx.com/edge/dhtmlx.js?v=5.3.12"></script>
-	<link rel="stylesheet" type="text/css" href="//cdn.dhtmlx.com/edge/dhtmlx.css?v=5.3.12">
-
-	<style>
-		html,
-		body {
-			margin: 0px;
-			padding: 0px;
-			height: 100%;
-		}
-	</style>
-
-	<script>
-		window.addEventListener('DOMContentLoaded', function (event) {
-
-			var dhxLayout = new dhtmlXLayoutObject(document.body, "2U");
-
-			scheduler.config.multi_day = true;
-			dhxLayout.cells("a").attachScheduler(new Date(2017, 5, 30), "week");
-			scheduler.load("../common/events.json");
-			dhtmlx.message({
-				text: "This example uses dhtmlxSuite v5.1",
-				expire: 1000 * 30
-			});
-		});
-	</script>
+	<title>Integration with dhtmlxLayout (dhx_terrace skin)</title>
 </head>
-<body></body>
+	<script src="../../codebase/dhtmlxscheduler.js" type="text/javascript" charset="utf-8"></script>
+	<link rel="stylesheet" href="../../codebase/dhtmlxscheduler.css" type="text/css" charset="utf-8">
+
+	<script src='../common/dhtmlxCommon/dhtmlxcommon.js'></script>
+	<script src='../common/dhtmlxCommon/dhtmlxcontainer.js'></script>
+	<script type="text/javascript" src="../common/dhtmlxLayout/dhtmlxlayout.js"></script>
+	
+	<link rel="stylesheet" type="text/css" href="../common/dhtmlxLayout/skins/dhtmlxlayout_dhx_terrace.css">
+
+<style type="text/css" >
+	html, body{
+		margin:0px;
+		padding:0px; height:100%;
+	}	
+</style>
+
+<script type="text/javascript" charset="utf-8">
+	function init() {
+
+		var dhxLayout = new dhtmlXLayoutObject(document.body, "2U");
+		
+		scheduler.config.multi_day = true;
+		scheduler.config.xml_date="%Y-%m-%d %H:%i";
+		dhxLayout.cells("a").attachScheduler(new Date(2017,05,30), "week");
+		scheduler.load("./data/events.xml")
+		
+
+		
+	}
+</script>
+
+<body onload="init();">
+
+</body>

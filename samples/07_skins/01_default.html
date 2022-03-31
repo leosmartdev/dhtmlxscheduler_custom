@@ -1,13 +1,13 @@
 <!doctype html>
 <head>
 	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
-	<title>Terrace skin</title>
+	<title>Default skin</title>
 
-	<script src="../../codebase/dhtmlxscheduler.js?v=5.3.12" type="text/javascript" charset="utf-8"></script>
-	<link rel="stylesheet" href="../../codebase/dhtmlxscheduler.css?v=5.3.12" type="text/css"  title="no title"
+	<script src="../../codebase/dhtmlxscheduler.js" type="text/javascript" charset="utf-8"></script>
+	<link rel="stylesheet" href="../../codebase/dhtmlxscheduler.css" type="text/css"  title="no title"
 	      charset="utf-8">
-	<script src="../../codebase/ext/dhtmlxscheduler_editors.js?v=5.3.12" type="text/javascript" charset="utf-8"></script>
-	<script src="../../codebase/ext/dhtmlxscheduler_minical.js?v=5.3.12" type="text/javascript" charset="utf-8"></script>
+	<script src="../../codebase/ext/dhtmlxscheduler_editors.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../../codebase/ext/dhtmlxscheduler_minical.js" type="text/javascript" charset="utf-8"></script>
 
 	<style type="text/css" >
 		html, body {
@@ -45,8 +45,9 @@
 
 			scheduler.config.full_day = true;
 
+			scheduler.config.xml_date = "%Y-%m-%d %H:%i";
 			scheduler.init('scheduler_here', new Date(2018, 7, 5), "week");
-			scheduler.load("../common/events.json", function() {
+			scheduler.load("./data/events.xml", function() {
 				scheduler.showLightbox(47);
 			});
 

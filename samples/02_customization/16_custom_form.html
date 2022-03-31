@@ -3,8 +3,8 @@
 	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
 	<title>Fully custom lightbox</title>
 
-	<script src="../../codebase/dhtmlxscheduler.js?v=5.3.12" type="text/javascript" charset="utf-8"></script>
-	<link rel="stylesheet" href="../../codebase/dhtmlxscheduler_material.css?v=5.3.12" type="text/css" charset="utf-8">
+	<script src="../../codebase/dhtmlxscheduler.js" type="text/javascript" charset="utf-8"></script>
+	<link rel="stylesheet" href="../../codebase/dhtmlxscheduler.css" type="text/css" charset="utf-8">
 
 
 	<style type="text/css" >
@@ -36,11 +36,12 @@
 	<script type="text/javascript" charset="utf-8">
 		function init() {
 
+			scheduler.config.xml_date = "%Y-%m-%d %H:%i";
 			scheduler.config.details_on_dblclick = true;
 			scheduler.config.details_on_create = true;
 
 			scheduler.init('scheduler_here', new Date(2018, 2, 1), "week");
-			scheduler.load("../common/events.json", function() {
+			scheduler.load("./data/events.xml", function() {
 				scheduler.showLightbox("1261150564");
 			});
 

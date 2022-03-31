@@ -3,11 +3,11 @@
 	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
 	<title>Mini calendar with the recurring events</title>
 
-	<link rel="stylesheet" href="../../codebase/dhtmlxscheduler_material.css?v=5.3.12" type="text/css"  title="no title"
+	<link rel="stylesheet" href="../../codebase/dhtmlxscheduler.css" type="text/css"  title="no title"
 	      charset="utf-8">
-	<script src="../../codebase/dhtmlxscheduler.js?v=5.3.12" type="text/javascript" charset="utf-8"></script>
-	<script src="../../codebase/ext/dhtmlxscheduler_recurring.js?v=5.3.12" type="text/javascript" charset="utf-8"></script>
-	<script src="../../codebase/ext/dhtmlxscheduler_minical.js?v=5.3.12" type="text/javascript" charset="utf-8"></script>
+	<script src="../../codebase/dhtmlxscheduler.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../../codebase/ext/dhtmlxscheduler_recurring.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../../codebase/ext/dhtmlxscheduler_minical.js" type="text/javascript" charset="utf-8"></script>
 
 
 	<style type="text/css" >
@@ -24,10 +24,10 @@
 		function init() {
 			scheduler.config.multi_day = true;
 			scheduler.config.event_duration = 35;
+			scheduler.config.xml_date = "%Y-%m-%d %H:%i";
 			scheduler.config.occurrence_timestamp_in_utc = true;
 			scheduler.config.include_end_by = true;
 			scheduler.config.repeat_precise = true;
-			scheduler.config.repeat_date = "%d-%m-%Y";
 
 			scheduler.attachEvent("onLightbox", function(){
 				var lightbox_form = scheduler.getLightbox(); // this will generate lightbox form
@@ -60,14 +60,14 @@
 			});
 
 			scheduler.config.lightbox.sections = [
-				{ name:"description", height:50, map_to:"text", type:"textarea" , focus:true },
+				{ name:"description", height:200, map_to:"text", type:"textarea" , focus:true },
 				{ name:"recurring", type:"recurring", map_to:"rec_type", button:"recurring" },
 				{ name:"time", height:72, type:"calendar_time", map_to:"auto" }
 			];
 
 			scheduler.init('scheduler_here', new Date(2018, 0, 10), "week");
 
-			scheduler.load("../common/events.json", function() {
+			scheduler.load("./data/events.xml", function() {
 				scheduler.showLightbox(2);
 			});
 

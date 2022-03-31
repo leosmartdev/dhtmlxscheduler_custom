@@ -3,10 +3,8 @@
 	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
 	<title>Setting/getting values of lightbox's controls</title>
 </head>
-	<script src="../../codebase/dhtmlxscheduler.js?v=5.3.12" type="text/javascript" charset="utf-8"></script>
-	<link rel="stylesheet" href="../../codebase/dhtmlxscheduler_material.css?v=5.3.12" type="text/css" charset="utf-8">
-	<link rel="stylesheet" href="../common/controls_styles.css?v=5.3.12">
-	
+	<script src="../../codebase/dhtmlxscheduler.js" type="text/javascript" charset="utf-8"></script>
+	<link rel="stylesheet" href="../../codebase/dhtmlxscheduler.css" type="text/css" charset="utf-8">
 	<style>
 		html, body{
 			margin:0px;
@@ -15,13 +13,14 @@
 			overflow:hidden;
 		}
 		.dhx_custom_btn_info{
-			background-image:url('https://cdn.dhtmlx.com/scheduler/edge/imgs/controls.gif');
+			background-image:url('../../codebase/imgs/controls.gif');
 			background-position: -2px 0px;
 			width:20px;
 		}
 	</style>
 <script type="text/javascript" charset="utf-8">
 	function init() {
+		scheduler.config.xml_date="%Y-%m-%d %H:%i";
 		scheduler.xy.margin_top = 40;
 		scheduler.config.details_on_create = true;
 		
@@ -32,7 +31,7 @@
 		});
 
 		scheduler.init('scheduler_here',new Date(2018,2,1),"week");
-		scheduler.load("../common/events.json", function(){
+		scheduler.load("./data/events.xml", function(){
 			scheduler.showLightbox("1261150564");
 		});
 		
@@ -40,7 +39,7 @@
 </script>
 
 <body onload="init();">
-	<div class="sch_control" style="z-index:100000; position: relative"/'>
+	<div style='height:25px; font-family:Tahoma; padding:5px 10px; position:relative; z-index:100000; background-color:white;'>
 		<input type="button" value="setValue" onclick="scheduler.formSection('description').setValue('abc')">
 		<input type="button" value="getValue" onclick="dhtmlx.alert(scheduler.formSection('description').getValue())">
 	</div>

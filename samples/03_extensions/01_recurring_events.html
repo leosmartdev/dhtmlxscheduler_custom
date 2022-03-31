@@ -3,9 +3,9 @@
 	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
 	<title>Recurring events</title>
 </head>
-	<script src="../../codebase/dhtmlxscheduler.js?v=5.3.12" type="text/javascript" charset="utf-8"></script>
-	<script src="../../codebase/ext/dhtmlxscheduler_recurring.js?v=5.3.12" type="text/javascript" charset="utf-8"></script>
-	<link rel="stylesheet" href="../../codebase/dhtmlxscheduler_material.css?v=5.3.12" type="text/css" charset="utf-8">
+	<script src="../../codebase/dhtmlxscheduler.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../../codebase/ext/dhtmlxscheduler_recurring.js" type="text/javascript" charset="utf-8"></script>
+	<link rel="stylesheet" href="../../codebase/dhtmlxscheduler.css" type="text/css" charset="utf-8">
 	
 <style type="text/css" >
 	html, body{
@@ -20,6 +20,7 @@
 <script type="text/javascript" charset="utf-8">
 	function init() {
 
+		scheduler.config.xml_date="%Y-%m-%d %H:%i";
 		scheduler.config.prevent_cache = true;
 
 		scheduler.config.details_on_create=true;
@@ -29,12 +30,11 @@
 		scheduler.config.repeat_precise = true;
 
 		scheduler.init('scheduler_here',new Date(2018,9,28),"month");
-		scheduler.load("/scheduler/backend/recurring_events");
+		scheduler.load("data/events_rec.php");
 	
 
-		var dp = new dataProcessor("/scheduler/backend/recurring_events");
+		var dp = new dataProcessor("data/events_rec.php");
 		dp.init(scheduler);
-		dp.setTransactionMode("REST", false);
 	}
 </script>
 

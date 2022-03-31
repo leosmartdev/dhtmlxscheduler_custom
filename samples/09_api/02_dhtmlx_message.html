@@ -3,10 +3,10 @@
 	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
 	<title>Creating message boxes</title>
 
-	<script src="../../codebase/dhtmlxscheduler.js?v=5.3.12" type="text/javascript" charset="utf-8"></script>
-	<link rel="stylesheet" href="../../codebase/dhtmlxscheduler_material.css?v=5.3.12" type="text/css" charset="utf-8">
-	<script src="../../codebase/ext/dhtmlxscheduler_key_nav.js?v=5.3.12" type="text/javascript" charset="utf-8"></script>
-	<script src="../../codebase/ext/dhtmlxscheduler_recurring.js?v=5.3.12" type="text/javascript" charset="utf-8"></script>
+	<script src="../../codebase/dhtmlxscheduler.js" type="text/javascript" charset="utf-8"></script>
+	<link rel="stylesheet" href="../../codebase/dhtmlxscheduler.css" type="text/css" charset="utf-8">
+	<script src="../../codebase/ext/dhtmlxscheduler_key_nav.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../../codebase/ext/dhtmlxscheduler_recurring.js" type="text/javascript" charset="utf-8"></script>
 
 
 	<style type="text/css" >
@@ -25,6 +25,7 @@
 
 	<script type="text/javascript" charset="utf-8">
 		function init() {
+			scheduler.config.xml_date = "%Y-%m-%d %H:%i";
 			scheduler.config.first_hour = 8;
 			scheduler.config.limit_time_select = true;
 			scheduler.config.occurrence_timestamp_in_utc = true;
@@ -87,9 +88,9 @@
 
 			scheduler.init('scheduler_here', new Date(2017, 6, 15), "week");
 			scheduler.parse([
-				{ id: 1, start_date: "2017-07-12 09:00", end_date: "2017-07-12 12:00", text:"1. Select this event and press Ctrl+X!" },
-				{ id: 2, start_date: "2017-07-14 10:00", end_date: "2017-07-14 16:00", text:"2. Hover over this event and press Ctrl+V" }
-			]);
+				{ start_date: "2017-07-12 09:00", end_date: "2017-07-12 12:00", text:"1. Select this event and press Ctrl+X!" },
+				{ start_date: "2017-07-14 10:00", end_date: "2017-07-14 16:00", text:"2. Hover over this event and press Ctrl+V" }
+			], "json");
 		}
 	</script>
 </head>

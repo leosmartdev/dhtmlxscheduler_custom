@@ -3,10 +3,10 @@
 	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
 	<title>Populating a select editor from the server</title>
 
-	<script src="../../codebase/dhtmlxscheduler.js?v=5.3.12" type="text/javascript" charset="utf-8"></script>
-	<link rel="stylesheet" href="../../codebase/dhtmlxscheduler_material.css?v=5.3.12" type="text/css" charset="utf-8">
+	<script src="../../codebase/dhtmlxscheduler.js" type="text/javascript" charset="utf-8"></script>
+	<link rel="stylesheet" href="../../codebase/dhtmlxscheduler.css" type="text/css" charset="utf-8">
 
-	<style>
+	<style type="text/css" >
 		html, body {
 			margin: 0px;
 			padding: 0px;
@@ -15,12 +15,13 @@
 		}
 	</style>
 
-	<script>
-		window.addEventListener("DOMContentLoaded", function(){
+	<script type="text/javascript" charset="utf-8">
+		function init() {
 			scheduler.config.multi_day = true;
 			scheduler.config.prevent_cache = true;
 
-			scheduler.init('scheduler_here', new Date(2018,2,18), "month");
+			scheduler.config.xml_date = "%Y-%m-%d %H:%i";
+			scheduler.init('scheduler_here', new Date(2018,0, 1), "month");
 
 			scheduler.locale.labels.section_type = "Type";
 			scheduler.config.lightbox.sections = [
@@ -29,13 +30,13 @@
 					options: scheduler.serverList("type")},
 				{name: "time", height: 72, type: "time", map_to: "auto"}
 			];
-			scheduler.load("/scheduler/backend/typed-events-types", function() {
+			scheduler.load("./data/types.php", function() {
 				scheduler.showLightbox(2);
 			});
-		});
+		}
 	</script>
 </head>
-<body>
+<body onload="init();">
 <div id="scheduler_here" class="dhx_cal_container" style='width:100%; height:100%;'>
 	<div class="dhx_cal_navline">
 		<div class="dhx_cal_prev_button">&nbsp;</div>

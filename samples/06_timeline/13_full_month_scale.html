@@ -3,10 +3,10 @@
 	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
 	<title>Change number of columns for full month</title>
 
-	<script src='../../codebase/dhtmlxscheduler.js?v=5.3.12' type="text/javascript" charset="utf-8"></script>
-	<script src='../../codebase/ext/dhtmlxscheduler_timeline.js?v=5.3.12' type="text/javascript" charset="utf-8"></script>
+	<script src='../../codebase/dhtmlxscheduler.js' type="text/javascript" charset="utf-8"></script>
+	<script src='../../codebase/ext/dhtmlxscheduler_timeline.js' type="text/javascript" charset="utf-8"></script>
 
-	<link rel='stylesheet' type='text/css' href='../../codebase/dhtmlxscheduler_material.css?v=5.3.12'>
+	<link rel='stylesheet' type='text/css' href='../../codebase/dhtmlxscheduler_flat.css'>
 
 	<style type="text/css" >
 		html, body{
@@ -16,8 +16,8 @@
 			overflow:hidden;
 		}
 
-		.dhx_scale_bar{
-			line-height: 23px;
+		.dhx_scheduler_timeline .dhx_scale_bar{
+			line-height: 20px;;
 		}
 	</style>
 
@@ -28,6 +28,7 @@
 			scheduler.locale.labels.section_custom="Section";
 			scheduler.config.details_on_create=true;
 			scheduler.config.details_on_dblclick=true;
+			scheduler.config.xml_date="%Y-%m-%d %H:%i";
 
 			//===============
 			//Configuration
@@ -105,7 +106,7 @@
 				{ start_date: "2017-06-17 00:00", end_date: "2017-06-18 00:00", text:"Task D-52688", section_id:4},
 				{ start_date: "2017-06-04 00:00", end_date: "2017-06-05 00:00", text:"Task D-46588", section_id:4},
 				{ start_date: "2017-06-29 00:00", end_date: "2017-06-30 00:00", text:"Task D-12458", section_id:4}
-			]);
+			],"json");
 		}
 	</script>
 </head>

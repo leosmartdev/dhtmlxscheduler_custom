@@ -1,4 +1,4 @@
-/*non-production styles*/
+﻿/*non-production styles*/
 .webixdoc_error{
 	color:red !important; font-weight:bold !important;
 }
@@ -103,7 +103,7 @@ body{
 	height:29px;
 	
 	border:1px solid #cccccc;
-	border-radius:2px;
+	border-radius:2px; border
 
 	overflow: hidden;
 }
@@ -168,6 +168,25 @@ body{
 .bottom_block p{
 	text-align: center;
 }
+.bottom_icon{
+	background:url("index/front2.png") no-repeat;
+	width:150px;
+	height:100px;
+	margin: 15px 25px;
+}
+#hints .bottom_icon{
+	background-position: 10px 0px;
+}
+#guides .bottom_icon{
+	background-position: -190px 0px;
+}
+#samples .bottom_icon{
+	background-position: -380px 0px;
+}
+#api .bottom_icon{
+	background-position: -575px 0px;
+}
+
 
 /*breadcrumb*/
 .webixdoc_breadcrumb { 
@@ -267,6 +286,16 @@ body{
 	background:none;
 }
 
+
+.webixdoc_nav ul li.webix_current{
+	background: url('common/list2.png') no-repeat 3px center;
+	background-color:#3ea9d9;
+	border-radius:2px;
+}
+
+.webixdoc_nav ul li.webix_current a{
+	color:#fff;
+}
 
 /*headers*/
 h1{
@@ -569,6 +598,22 @@ dt{
 }
 .webixdoc_todo p{
 	margin: -26px 0px 3px 100px;	
+}
+
+
+.webixdoc_note {
+	background-color: #F7F4E8;
+
+	background-image: url("common/note.gif");
+	background-repeat: no-repeat;
+	background-position: 7px center;
+
+	border: 1px solid #DFCA89;
+	padding-left: 60px;
+	margin-bottom:10px;
+}
+.webixdoc_note p {
+	margin:15px 0;
 }
 
 .webixdoc_snippet {

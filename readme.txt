@@ -1,51 +1,30 @@
-DHTMLX Scheduler
-============
+dhtmlxScheduler v.4.4.9 Professional
 
-Version 5.3.12, Professional Evaluation Edition
+This software is covered by DHTMLX Enterprise License. Usage without proper license is prohibited.
 
-License
-------------
+(c) Dinamenta, UAB.
 
-DHTMLX Evaluation License, check license.txt for more details
-
-
-How to start
-------------
-
-- check our how-to-start tutorials https://docs.dhtmlx.com/scheduler/howtostart_guides.html
-- explore code samples https://docs.dhtmlx.com/scheduler/samples/
-
-
-How to run samples
-------------
-
-All the samples except for a few that explicitly require a REST backend api can be opened as static files.
-
-Running the backend:
-
-- `npm install` or `yarn install`
-- `npm start` or `yarn start`
-- go to `http://localhost:9200`
-
-or
-
-- copy `codebase` and `samples` folders of the package to your Apache/nginx directory and open samples as static html pages. Demos that require RESTful backend will not work in that case.
-
-Package structure
-------------
-
-- ./codebase - css and javascript files of the library
-- ./samples - code samples
-- ./backend - a simple node backend to run samples
 
 Useful links
 -------------
 
-- Product information
-	https://dhtmlx.com/docs/products/dhtmlxScheduler/
-
 - Online  documentation
 	https://docs.dhtmlx.com/scheduler/
-
+- Downloadable documentation
+	CHM version
+		https://docs.dhtmlx.com/chm/scheduler.chm.zip
+	HTML version
+		https://dhtmlx.com/regular/dhtmlxScheduler_docs_html.zip
 - Support forum
-	https://forum.dhtmlx.com/c/scheduler-all/scheduler
+	https://forum.dhtmlx.com/viewforum.php?f=6
+- Skin builder
+	https://dhtmlx.com/docs/products/dhtmlxScheduler/skinBuilder/index.shtml
+
+
+Other editions
+--------------
+
+- MVC.Net edition
+	http://scheduler-net.com
+- Scheduler for mobile devices
+	https://dhtmlx.com/x/download/regular/dhtmlxScheduler_mobile.zip

@@ -3,8 +3,8 @@
 	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
 	<title>Linking select controls in the lightbox</title>
 </head>
-	<script src="../../codebase/dhtmlxscheduler.js?v=5.3.12" type="text/javascript" charset="utf-8"></script>
-	<link rel="stylesheet" href="../../codebase/dhtmlxscheduler_material.css?v=5.3.12" type="text/css" charset="utf-8">
+	<script src="../../codebase/dhtmlxscheduler.js" type="text/javascript" charset="utf-8"></script>
+	<link rel="stylesheet" href="../../codebase/dhtmlxscheduler.css" type="text/css" charset="utf-8">
 
 
 <style type="text/css" >
@@ -20,6 +20,7 @@
 	function init() {
 		scheduler.config.multi_day = true;
 		scheduler.config.mark_now = true;
+		scheduler.config.xml_date="%Y-%m-%d %H:%i";
 
 		scheduler.locale.labels.section_parent = "Parent section";
 		scheduler.locale.labels.section_child = "Child section";
@@ -79,7 +80,7 @@
 		scheduler.parse([
 			{ id: 1, start_date: "2017-03-27 09:00", end_date: "2017-03-27 12:00", text:"Task A-12458", parent_id: 'p3' },
 			{ id: 2, start_date: "2017-03-28 09:00", end_date: "2017-03-28 12:00", text:"Task C-788", parent_id: 'p1' }
-		]);
+		],"json");
 
 		scheduler.showLightbox(1);
 

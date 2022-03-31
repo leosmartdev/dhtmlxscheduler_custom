@@ -1,11 +1,12 @@
-<!DOCTYPE html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+		"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <head>
 	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
 	<title>Drag and Drop events between Schedulers</title>
 </head>
-<script src="../../codebase/dhtmlxscheduler.js?v=5.3.12" type="text/javascript" charset="utf-8"></script>
-<script src="../../codebase/ext/dhtmlxscheduler_drag_between.js?v=5.3.12" type="text/javascript" charset="utf-8"></script>
-<link rel="stylesheet" href="../../codebase/dhtmlxscheduler_material.css?v=5.3.12" type="text/css" media="screen" title="no title" charset="utf-8">
+<script src="../../codebase/dhtmlxscheduler.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../codebase/ext/dhtmlxscheduler_drag_between.js" type="text/javascript" charset="utf-8"></script>
+<link rel="stylesheet" href="../../codebase/dhtmlxscheduler.css" type="text/css" media="screen" title="no title" charset="utf-8">
 
 
 <style type="text/css" media="screen">
@@ -17,17 +18,21 @@
 
 <script type="text/javascript" charset="utf-8">
 	function init() {
+		scheduler.skin = 'flat';
 		scheduler.config.multi_day = true;
+		scheduler.config.xml_date="%Y-%m-%d %H:%i";
 		scheduler.config.first_hour = 10;
-		scheduler.init('scheduler_here',new Date(2017,5,30),"week");
-		scheduler.load("./data/units.json");
+		scheduler.init('scheduler_here',new Date(2014,05,30),"week");
+		scheduler.load("./data/units.xml");
 
 
 
 		scheduler2 = Scheduler.getSchedulerInstance();
+		scheduler2.skin = 'flat';
 		scheduler2.config.multi_day = false;
-		scheduler2.init('scheduler_here_too',new Date(2017,5,30),"month");
-		scheduler2.load("./data/units.json");
+		scheduler2.config.xml_date="%Y-%m-%d %H:%i";
+		scheduler2.init('scheduler_here_too',new Date(2014,05,30),"month");
+		scheduler2.load("./data/units.xml");
 
 	}
 </script>

@@ -14,8 +14,8 @@
 		"id": 5,
 		"start_date": "2017-07-18 00:00:00",
 		"end_date": "2017-07-27 00:00:00",
-		"text": "Indianapolis Tennis Championship",
-		"details": "Details for Indianapolis Tennis Championship"
+		"text": "Indianapolis Tennis Championships",
+		"details": "Details for Indianapolis Tennis Championships"
 	}, {
 		"id": 8,
 		"start_date": "2017-07-27 00:00:00",
@@ -470,7 +470,7 @@
 		"id": 1261150492,
 		"start_date": "2017-12-19 18:00:00",
 		"end_date": "2017-12-19 20:00:00",
-		"text": "Ladbrokes.com World Darts Championship (Evening session)",
+		"text": "Ladbrokes.com World Darts Championships (Evening session)",
 		"details": "Alexandra Palace"
 	}, {
 		"id": 1261150493,
@@ -494,7 +494,7 @@
 		"id": 1261150496,
 		"start_date": "2017-12-23 15:00:00",
 		"end_date": "2017-12-25 15:00:00",
-		"text": "Ladbrokes.com World Darts Championship (Afternoon session)",
+		"text": "Ladbrokes.com World Darts Championships (Afternoon session)",
 		"details": "Alexandra Palace"
 	}, {
 		"id": 1261150497,
@@ -572,7 +572,7 @@
 		"id": 1261150509,
 		"start_date": "2018-01-03 17:00:00",
 		"end_date": "2018-01-03 19:00:00",
-		"text": "Ladbrokes.com World Darts Championship",
+		"text": "Ladbrokes.com World Darts Championships",
 		"details": "Alexandra Palace"
 	}, {
 		"id": 1261150510,

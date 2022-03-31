@@ -2,17 +2,16 @@
 <head>
 	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
 	<title>Bootstrap layout</title>
-	<script src="../../codebase/dhtmlxscheduler.js?v=5.3.12" charset="utf-8"></script>
-	<script src="../../codebase/ext/dhtmlxscheduler_year_view.js?v=5.3.12" charset="utf-8"></script>
-	<link rel="stylesheet" href="../../codebase/dhtmlxscheduler_material.css?v=5.3.12" type="text/css" charset="utf-8">
+	<script src="../../codebase/dhtmlxscheduler.js" type="text/javascript" charset="utf-8"></script>
+	<link rel="stylesheet" href="../../codebase/dhtmlxscheduler_flat.css" type="text/css" charset="utf-8">
 
-	<script src="//code.jquery.com/jquery-1.11.1.min.js?v=5.3.12" charset="utf-8"></script>
+	<script src="//code.jquery.com/jquery-1.11.1.min.js" type="text/javascript" charset="utf-8"></script>
 
-	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css?v=5.3.12">
-	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css?v=5.3.12">
-	<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js?v=5.3.12"></script>
+	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+	<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 
-	<style>
+	<style type="text/css">
 		html, body{ height:100%; padding:0px; margin:0px; }
 		.well {
 			text-align: right;
@@ -59,7 +58,11 @@
 
 </div>
 
-<script>
+<script type="text/javascript">
+
+
+	scheduler.config.xml_date = "%Y-%m-%d %H:%i";
+
 
 	scheduler.config.first_hour = 8;
 	scheduler.config.limit_time_select = true;
@@ -83,7 +86,7 @@
 		{ start_date: "2017-06-30 09:20", end_date: "2017-06-30 12:20", text:"Task D-52688", section_id:4},
 		{ start_date: "2017-06-30 11:40", end_date: "2017-06-30 16:30", text:"Task D-46588", section_id:4},
 		{ start_date: "2017-06-30 12:00", end_date: "2017-06-30 18:00", text:"Task D-12458", section_id:4}
-	]);
+	],"json");
 
 </script>
 </body>

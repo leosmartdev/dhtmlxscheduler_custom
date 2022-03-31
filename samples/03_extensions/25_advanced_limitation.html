@@ -3,13 +3,13 @@
 	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
 	<title>Blocking dates</title>
 
-	<script src="../../codebase/dhtmlxscheduler.js?v=5.3.12" type="text/javascript" charset="utf-8"></script>
-	<script src="../../codebase/ext/dhtmlxscheduler_units.js?v=5.3.12" type="text/javascript" charset="utf-8"></script>
-	<link rel="stylesheet" href="../../codebase/dhtmlxscheduler_material.css?v=5.3.12" type="text/css" charset="utf-8">
-	<script src="../../codebase/ext/dhtmlxscheduler_limit.js?v=5.3.12" type="text/javascript" charset="utf-8"></script>
-	<script src="../../codebase/ext/dhtmlxscheduler_serialize.js?v=5.3.12" type="text/javascript" charset="utf-8"></script>
+	<script src="../../codebase/dhtmlxscheduler.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../../codebase/ext/dhtmlxscheduler_units.js" type="text/javascript" charset="utf-8"></script>
+	<link rel="stylesheet" href="../../codebase/dhtmlxscheduler.css" type="text/css" charset="utf-8">
+	<script src="../../codebase/ext/dhtmlxscheduler_limit.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../../codebase/ext/dhtmlxscheduler_serialize.js" type="text/javascript" charset="utf-8"></script>
 
-	<script src='../../codebase/ext/dhtmlxscheduler_timeline.js?v=5.3.12' type="text/javascript" charset="utf-8"></script>
+	<script src='../../codebase/ext/dhtmlxscheduler_timeline.js' type="text/javascript" charset="utf-8"></script>
 	<style type="text/css" >
 		html, body{
 			margin:0px;
@@ -21,6 +21,7 @@
 
 	<script type="text/javascript" charset="utf-8">
 		function init() {
+			scheduler.config.xml_date="%Y-%m-%d %H:%i";
 			scheduler.config.first_hour = 2;
 			scheduler.config.last_hour = 20;
 			scheduler.config.limit_time_select = true;
@@ -86,7 +87,7 @@
 
 			scheduler.parse([
 				{ start_date:"2017-6-28 4:00", end_date:"2017-6-28 6:00", text:"You can't create events on blocked times"}
-			]);
+			],"json")
 		}
 	</script>
 </head>

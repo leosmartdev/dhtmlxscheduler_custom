@@ -3,10 +3,10 @@
    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
    <title>Mini calendar in the scheduler header</title>
 </head>
-   <script src="../../codebase/dhtmlxscheduler.js?v=5.3.12" type="text/javascript" charset="utf-8"></script>
-   <link rel="stylesheet" href="../../codebase/dhtmlxscheduler_material.css?v=5.3.12" type="text/css" charset="utf-8">
+   <script src="../../codebase/dhtmlxscheduler.js" type="text/javascript" charset="utf-8"></script>
+   <link rel="stylesheet" href="../../codebase/dhtmlxscheduler.css" type="text/css" charset="utf-8">
 
-	<script src="../../codebase/ext/dhtmlxscheduler_minical.js?v=5.3.12" type="text/javascript" charset="utf-8"></script>
+	<script src="../../codebase/ext/dhtmlxscheduler_minical.js" type="text/javascript" charset="utf-8"></script>
    
 <style type="text/css" >
    html, body{
@@ -21,9 +21,9 @@
 	function init() {
 		scheduler.config.multi_day = true;
 		
+		scheduler.config.xml_date="%Y-%m-%d %H:%i";
 		scheduler.init('scheduler_here',new Date(2018,0,10),"week");
-		scheduler.load("../common/events.json");
-
+		scheduler.load("./data/events.xml");
 	}
 	
 	function show_minical(){
@@ -32,7 +32,7 @@
 		else
 			scheduler.renderCalendar({
 				position:"dhx_minical_icon",
-				date:scheduler.getState().date,
+				date:scheduler._date,
 				navigation:true,
 				handler:function(date,calendar){
 					scheduler.setCurrentView(date);
@@ -40,9 +40,6 @@
 				}
 			});
 	}
-
-
-    
 </script>
 
 <body onload="init();">

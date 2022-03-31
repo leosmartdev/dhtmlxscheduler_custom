@@ -3,9 +3,9 @@
 	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
 	<title>Agenda view</title>
 
-	<script src="../../codebase/dhtmlxscheduler.js?v=5.3.12" type="text/javascript" charset="utf-8"></script>
-	<script src="../../codebase/ext/dhtmlxscheduler_agenda_view.js?v=5.3.12" type="text/javascript" charset="utf-8"></script>
-	<link rel="stylesheet" href="../../codebase/dhtmlxscheduler_material.css?v=5.3.12" type="text/css" charset="utf-8">
+	<script src="../../codebase/dhtmlxscheduler.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../../codebase/ext/dhtmlxscheduler_agenda_view.js" type="text/javascript" charset="utf-8"></script>
+	<link rel="stylesheet" href="../../codebase/dhtmlxscheduler_glossy.css" type="text/css" charset="utf-8">
 
 	<style type="text/css" >
 		html, body {
@@ -18,6 +18,8 @@
 
 	<script type="text/javascript" charset="utf-8">
 		function init() {
+			scheduler.config.xml_date = "%Y-%m-%d %H:%i";
+
 			// Following config options are optional
 			// If you remove them current date will be used as start period
 			// and current date + 1 year as the end
@@ -25,7 +27,7 @@
 			scheduler.config.agenda_end = new Date(2019, 7, 1);
 
 			scheduler.init('scheduler_here', new Date(2018, 0, 10), "agenda");
-			scheduler.load("../common/events.json");
+			scheduler.load("./data/events.xml");
 		}
 	</script>
 </head>

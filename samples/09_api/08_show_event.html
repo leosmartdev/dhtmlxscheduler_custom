@@ -3,9 +3,9 @@
 	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
 	<title>Making an event currently displayable</title>
 
-	<script src="../../codebase/dhtmlxscheduler.js?v=5.3.12" type="text/javascript" charset="utf-8"></script>
-	<link rel="stylesheet" href="../../codebase/dhtmlxscheduler_material.css?v=5.3.12" type="text/css"  title="no title" charset="utf-8">
-	<link rel="stylesheet" href="../common/controls_styles.css?v=5.3.12">
+	<script src="../../codebase/dhtmlxscheduler.js" type="text/javascript" charset="utf-8"></script>
+	<link rel="stylesheet" href="../../codebase/dhtmlxscheduler.css" type="text/css"  title="no title"
+	      charset="utf-8">
 
 	<style type="text/css" >
 		html, body {
@@ -21,13 +21,14 @@
 			scheduler.config.multi_day = true;
 			scheduler.xy.margin_top = 80;
 
+			scheduler.config.xml_date = "%Y-%m-%d %H:%i";
 			scheduler.init('scheduler_here', new Date(2018, 0, 10), "week");
-			scheduler.load("../common/events.json")
+			scheduler.load("../01_initialization_loading/data/events.xml");
 		}
 	</script>
 </head>
 <body onload="init();">
-<div class="sch_control" style="font: 500 14px Roboto;">
+<div style="height: 80px; width: 350px">
 	<p><a href="#" onclick="scheduler.showEvent(1261150518, 'week')">Show event with id 1261150518 in Week view</a></p>
 	<p><a href="#" onclick="scheduler.showEvent(1261150524)">Show event with id 1261150524 in current view</a></p>
 </div>

@@ -3,10 +3,10 @@
 	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
 	<title>Filtering events</title>
 
-	<script src="../../codebase/dhtmlxscheduler.js?v=5.3.12" type="text/javascript" charset="utf-8"></script>
-	<link rel="stylesheet" href="../../codebase/dhtmlxscheduler_material.css?v=5.3.12" type="text/css"  title="no title" charset="utf-8">
-	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-	<link rel="stylesheet" href="../common/controls_styles.css?v=5.3.12">
+	<script src="../../codebase/dhtmlxscheduler.js" type="text/javascript" charset="utf-8"></script>
+	<link rel="stylesheet" href="../../codebase/dhtmlxscheduler.css" type="text/css"  title="no title"
+	      charset="utf-8">
+
 
 	<style type="text/css" >
 		html, body {
@@ -15,13 +15,14 @@
 			height: 100%;
 			overflow: hidden;
 		}
+
 		.filters_wrapper {
-			font: 500 14px Roboto;
+			line-height: 12px;
+			font-size: 12px;
 		}
 		.filters_wrapper span {
 			font-weight: bold;
 			padding-right: 5px;
-			color: rgba(0,0,0,0.7);
 		}
 		.filters_wrapper label {
 			padding-right: 3px;
@@ -32,6 +33,7 @@
 		function init() {
 			scheduler.config.multi_day = true;
 			scheduler.config.details_on_create = true;
+			scheduler.config.xml_date = "%Y-%m-%d %H:%i";
 			scheduler.config.first_hour = 10;
 			scheduler.config.limit_time_select = true;
 
@@ -56,7 +58,6 @@
 				filter_input.onchange = function() {
 					filters[this.name] = !!this.checked;
 					scheduler.updateView();
-					updIcon(this);
 				}
 			}
 
@@ -88,40 +89,25 @@
 				{ start_date: "2017-07-01 14:00", end_date: "2017-07-01 16:00", text:"Task T-44864", type: "task" },
 				{ start_date: "2017-07-02 16:30", end_date: "2017-07-02 18:00", text:"Training T-46558", type: "training" },
 				{ start_date: "2017-07-03 18:30", end_date: "2017-07-03 20:00", text:"Appointment A-45564", type: "appointment" }
-			]);
-		}
-
-		function updIcon(el){
-			el.parentElement.classList.toggle("checked_label");
-
-			var iconEl = el.parentElement.querySelector("i"),
-				checked = "check_box",
-				unchecked = "check_box_outline_blank",
-				className = "icon_color";
-
-			iconEl.textContent = iconEl.textContent==checked?unchecked:checked;
-			iconEl.classList.toggle(className);
+			],"json");
 		}
 	</script>
 </head>
 <body onload="init();">
-<div class="sch_control">
+<div style='height:20px; padding:5px;'>
 	<div class="filters_wrapper" id="filters_wrapper">
 		<span>Display:</span>
-
-		<label class="checked_label" id="scale1">
-			<input type="checkbox" class="sch_radio" name="appointment" value="1" checked/>
-			<i class="material-icons icon_color">check_box</i>Appointments
+		<label>
+			<input type="checkbox" name="appointment" />
+			Appointments
 		</label>
-
-		<label class="checked_label" id="scale1">
-			<input type="checkbox" class="sch_radio" name="task" value="1" checked/>
-			<i class="material-icons icon_color">check_box</i>Tasks
+		<label>
+			<input type="checkbox" name="task" />
+			Tasks
 		</label>
-
-		<label class="checked_label" id="scale1">
-			<input type="checkbox" class="sch_radio" name="training" value="1" checked/>
-			<i class="material-icons icon_color">check_box</i>Trainings
+		<label>
+			<input type="checkbox" name="training" />
+			Trainings
 		</label>
 	</div>
 </div>

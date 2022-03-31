@@ -3,8 +3,8 @@
 	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
 	<title>Dynamic changing of lightbox configurations  </title>
 
-	<script src="../../codebase/dhtmlxscheduler.js?v=5.3.12" type="text/javascript" charset="utf-8"></script>
-	<link rel="stylesheet" href="../../codebase/dhtmlxscheduler_material.css?v=5.3.12" type="text/css" charset="utf-8">
+	<script src="../../codebase/dhtmlxscheduler.js" type="text/javascript" charset="utf-8"></script>
+	<link rel="stylesheet" href="../../codebase/dhtmlxscheduler.css" type="text/css" charset="utf-8">
 
 	<style type="text/css" >
 		html, body {
@@ -19,6 +19,7 @@
 		function init() {
 			scheduler.config.multi_day = true;
 			scheduler.config.details_on_dblclick = true;
+			scheduler.config.xml_date = "%Y-%m-%d %H:%i";
 			scheduler.locale.labels.section_hidden = "Hidden section";
 
 			var full_lightbox = [
@@ -44,7 +45,7 @@
 			scheduler.parse([
 				{ start_date: "2017-06-27 04:00", end_date: "2017-06-27 7:00", text: "Restricted event", hidden: "You won't see me", restricted: true },
 				{ start_date: "2017-06-29 05:00", end_date: "2017-06-29 11:00", text: "Full access", hidden: "Hidden text" }
-			]);
+			], "json");
 
 		}
 	</script>

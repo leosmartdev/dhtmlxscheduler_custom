@@ -2,10 +2,10 @@
 <head>
 	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
 	<title>jQuery integration</title>
-	<script src="//code.jquery.com/jquery-1.7.1.min.js?v=5.3.12" type="text/javascript" charset="utf-8"></script>
+	<script src="http://code.jquery.com/jquery-1.7.1.min.js" type="text/javascript" charset="utf-8"></script>
 
-	<script src="../../codebase/dhtmlxscheduler.js?v=5.3.12" type="text/javascript" charset="utf-8"></script>
-	<link rel="stylesheet" href="../../codebase/dhtmlxscheduler_material.css?v=5.3.12" type="text/css" media="screen" title="no title"
+	<script src="../../codebase/dhtmlxscheduler.js" type="text/javascript" charset="utf-8"></script>
+	<link rel="stylesheet" href="../../codebase/dhtmlxscheduler.css" type="text/css" media="screen" title="no title"
 	      charset="utf-8">
 	
 	<style type="text/css" media="screen">
@@ -20,14 +20,15 @@
 	<script type="text/javascript" charset="utf-8">
 		$(function(){
 			$(".myscheduler").dhx_scheduler({
-				date:new Date(2017,11,18),
-				mode:"month"
+				date:new Date(2014,7,4),
+				mode:"month",
+				xml_date:"%Y-%m-%d %H:%i"
 			});
 			
-			$("#sch1").dhx_scheduler().load("../common/events.json");
+			$("#sch1").dhx_scheduler().load("data/events.xml");
 
 			$("#sch2").dhx_scheduler().setCurrentView(null, "week");
-			$("#sch2").dhx_scheduler().load("../common/events.json");
+			$("#sch2").dhx_scheduler().load("data/events.xml");
 		});
 	</script>
 </head>

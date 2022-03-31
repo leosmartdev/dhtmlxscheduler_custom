@@ -3,11 +3,11 @@
 	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
 	<title>Touch-oriented scheduler</title>
 
-	<script src="../../codebase/dhtmlxscheduler.js?v=5.3.12" type="text/javascript" charset="utf-8"></script>
-	<link rel="stylesheet" href="../../codebase/dhtmlxscheduler_material.css?v=5.3.12" type="text/css"  title="no title"
+	<script src="../../codebase/dhtmlxscheduler.js" type="text/javascript" charset="utf-8"></script>
+	<link rel="stylesheet" href="../../codebase/dhtmlxscheduler.css" type="text/css"  title="no title"
 	      charset="utf-8">
-	<script src='../../codebase/ext/dhtmlxscheduler_timeline.js?v=5.3.12' type="text/javascript" charset="utf-8"></script>
-	<script src="../../codebase/ext/dhtmlxscheduler_quick_info.js?v=5.3.12" type="text/javascript" charset="utf-8"></script>
+	<script src='../../codebase/ext/dhtmlxscheduler_timeline.js' type="text/javascript" charset="utf-8"></script>
+	<script src="../../codebase/ext/dhtmlxscheduler_quick_info.js" type="text/javascript" charset="utf-8"></script>
 
 	<style type="text/css" >
 		html, body {
@@ -24,6 +24,7 @@
 		scheduler.config.details_on_create=true;
 		scheduler.config.details_on_dblclick=true;
 		scheduler.config.quick_info_detached = false;
+		scheduler.config.xml_date="%Y-%m-%d %H:%i";
 
 		//===============
 		//Configuration
@@ -58,25 +59,25 @@
 			{name:"time", height:72, type:"time", map_to:"auto"}
 		];
 
-		scheduler.init('scheduler_here',new Date(2017,1,18),"day");
+		scheduler.init('scheduler_here',new Date(2017,01,18),"day");
 		scheduler.parse([
-			{ id: 1, start_date: "2017-02-18 09:00", end_date: "2017-02-18 12:00", text:"Task A-12458", section_id:1},
-			{ id: 2, start_date: "2017-02-18 10:00", end_date: "2017-02-18 16:00", text:"Task A-89411", section_id:1},
-			{ id: 3, start_date: "2017-02-18 10:00", end_date: "2017-02-18 14:00", text:"Task A-64168", section_id:1},
-			{ id: 4, start_date: "2017-02-18 16:00", end_date: "2017-02-18 17:00", text:"Task A-46598", section_id:1},
+			{ start_date: "2017-02-18 09:00", end_date: "2017-02-18 12:00", text:"Task A-12458", section_id:1},
+			{ start_date: "2017-02-18 10:00", end_date: "2017-02-18 16:00", text:"Task A-89411", section_id:1},
+			{ start_date: "2017-02-18 10:00", end_date: "2017-02-18 14:00", text:"Task A-64168", section_id:1},
+			{ start_date: "2017-02-18 16:00", end_date: "2017-02-18 17:00", text:"Task A-46598", section_id:1},
 
-			{ id: 5, start_date: "2017-02-18 12:00", end_date: "2017-02-18 20:00", text:"Task B-48865", section_id:2},
-			{ id: 6, start_date: "2017-02-18 14:00", end_date: "2017-02-18 16:00", text:"Task B-44864", section_id:2},
-			{ id: 7, start_date: "2017-02-18 16:30", end_date: "2017-02-18 18:00", text:"Task B-46558", section_id:2},
-			{ id: 8, start_date: "2017-02-18 18:30", end_date: "2017-02-18 20:00", text:"Task B-45564", section_id:2},
+			{ start_date: "2017-02-18 12:00", end_date: "2017-02-18 20:00", text:"Task B-48865", section_id:2},
+			{ start_date: "2017-02-18 14:00", end_date: "2017-02-18 16:00", text:"Task B-44864", section_id:2},
+			{ start_date: "2017-02-18 16:30", end_date: "2017-02-18 18:00", text:"Task B-46558", section_id:2},
+			{ start_date: "2017-02-18 18:30", end_date: "2017-02-18 20:00", text:"Task B-45564", section_id:2},
 
-			{ id: 9, start_date: "2017-02-18 08:00", end_date: "2017-02-18 12:00", text:"Task C-32421", section_id:3},
-			{ id: 10, start_date: "2017-02-18 14:30", end_date: "2017-02-18 16:45", text:"Task C-14244", section_id:3},
+			{ start_date: "2017-02-18 08:00", end_date: "2017-02-18 12:00", text:"Task C-32421", section_id:3},
+			{ start_date: "2017-02-18 14:30", end_date: "2017-02-18 16:45", text:"Task C-14244", section_id:3},
 
-			{ id: 11, start_date: "2017-02-18 09:20", end_date: "2017-02-18 12:20", text:"Task D-52688", section_id:4},
-			{ id: 12, start_date: "2017-02-18 11:40", end_date: "2017-02-18 16:30", text:"Task D-46588", section_id:4},
-			{ id: 13, start_date: "2017-02-18 12:00", end_date: "2017-02-18 18:00", text:"Task D-12458", section_id:4}
-		]);
+			{ start_date: "2017-02-18 09:20", end_date: "2017-02-18 12:20", text:"Task D-52688", section_id:4},
+			{ start_date: "2017-02-18 11:40", end_date: "2017-02-18 16:30", text:"Task D-46588", section_id:4},
+			{ start_date: "2017-02-18 12:00", end_date: "2017-02-18 18:00", text:"Task D-12458", section_id:4}
+		],"json");
 	}
 </script>
 

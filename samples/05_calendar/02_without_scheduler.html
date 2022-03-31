@@ -3,10 +3,10 @@
    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
    <title>Mini calendar without the scheduler</title>
 </head>
-   <script src="../../codebase/dhtmlxscheduler.js?v=5.3.12" type="text/javascript" charset="utf-8"></script>
-   <link rel="stylesheet" href="../../codebase/dhtmlxscheduler_material.css?v=5.3.12" type="text/css" charset="utf-8">
+   <script src="../../codebase/dhtmlxscheduler.js" type="text/javascript" charset="utf-8"></script>
+   <link rel="stylesheet" href="../../codebase/dhtmlxscheduler.css" type="text/css" charset="utf-8">
 
-	<script src="../../codebase/ext/dhtmlxscheduler_minical.js?v=5.3.12" type="text/javascript" charset="utf-8"></script>
+	<script src="../../codebase/ext/dhtmlxscheduler_minical.js" type="text/javascript" charset="utf-8"></script>
 
 <style type="text/css" >
    html, body{
@@ -19,11 +19,12 @@
 
 <script type="text/javascript" charset="utf-8">
 	function init() {
+		scheduler.config.xml_date="%Y-%m-%d %H:%i";
 		scheduler.init('scheduler_here',new Date(2017,2,1),"day");
-		scheduler.load("../common/events.json", function(){
+		scheduler.load("./data/events.xml",function(){
 			scheduler.renderCalendar({
 				container:"mini_here",
-				date:scheduler.getState().date,
+				date:scheduler._date,
 				navigation:true,
 				handler:function(date,calendar){
 					dhtmlx.alert(String(date));
@@ -36,7 +37,7 @@
 </script>
 
 <body onload="init();">
-	<div id="mini_here" style="width:250px"></div>
+	<div id="mini_here" style="width:200px"></div>
 	<div id="scheduler_here" class="dhx_cal_container" style='width:300px; height:300px; display:none;'>
       <div class="dhx_cal_navline">
          <div class="dhx_cal_date"></div>

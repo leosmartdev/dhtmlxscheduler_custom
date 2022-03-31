@@ -1,16 +1,16 @@
 <!doctype html>
 <head>
 	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
-	<title>Export to PDF [Legacy]</title>
+	<title>Export to PDF [Standalone]</title>
 </head>
-	<script src="../../codebase/dhtmlxscheduler.js?v=5.3.12" type="text/javascript" charset="utf-8"></script>
-	<link rel="stylesheet" href="../../codebase/dhtmlxscheduler_material.css?v=5.3.12" type="text/css" charset="utf-8">
+	<script src="../../codebase/dhtmlxscheduler.js" type="text/javascript" charset="utf-8"></script>
+	<link rel="stylesheet" href="../../codebase/dhtmlxscheduler.css" type="text/css" charset="utf-8">
 	
-	<script src="../../codebase/ext/dhtmlxscheduler_year_view.js?v=5.3.12" type="text/javascript" charset="utf-8"></script>
-	<script src="../../codebase/ext/dhtmlxscheduler_agenda_view.js?v=5.3.12" type="text/javascript" charset="utf-8"></script>
+	<script src="../../codebase/ext/dhtmlxscheduler_year_view.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../../codebase/ext/dhtmlxscheduler_agenda_view.js" type="text/javascript" charset="utf-8"></script>
 	
 	
-	<script src="../../codebase/ext/dhtmlxscheduler_pdf.js?v=5.3.12" type="text/javascript" charset="utf-8"></script>
+	<script src="../../codebase/ext/dhtmlxscheduler_pdf.js" type="text/javascript" charset="utf-8"></script>
 		
 
 	
@@ -25,12 +25,9 @@
 
 <script type="text/javascript" charset="utf-8">
 	function init() {
-		dhtmlx.message({
-			text: "This export module is deprecated and no longer supported. Please use <a href='06_online_export.html' alt='online export demo'>the new export</a> instead",
-			expire: -1
-		});
+		scheduler.config.xml_date="%Y-%m-%d %H:%i";
 		scheduler.init('scheduler_here',new Date(2017,5,30),"month");
-		scheduler.load("../common/events.json")
+		scheduler.load("./data/events.xml");
 	}
 </script>
 

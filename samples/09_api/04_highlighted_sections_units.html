@@ -3,12 +3,12 @@
 	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
 	<title>Highlighting sections in Timeline and Units views</title>
 
-	<script src="../../codebase/dhtmlxscheduler.js?v=5.3.12" type="text/javascript" charset="utf-8"></script>
-	<link rel="stylesheet" href="../../codebase/dhtmlxscheduler_material.css?v=5.3.12" type="text/css"  title="no title"
+	<script src="../../codebase/dhtmlxscheduler.js" type="text/javascript" charset="utf-8"></script>
+	<link rel="stylesheet" href="../../codebase/dhtmlxscheduler.css" type="text/css"  title="no title"
 	      charset="utf-8">
-	<script src="../../codebase/ext/dhtmlxscheduler_limit.js?v=5.3.12" type="text/javascript" charset="utf-8"></script>
-	<script src='../../codebase/ext/dhtmlxscheduler_timeline.js?v=5.3.12' type="text/javascript" charset="utf-8"></script>
-	<script src="../../codebase/ext/dhtmlxscheduler_units.js?v=5.3.12" type="text/javascript" charset="utf-8"></script>
+	<script src="../../codebase/ext/dhtmlxscheduler_limit.js" type="text/javascript" charset="utf-8"></script>
+	<script src='../../codebase/ext/dhtmlxscheduler_timeline.js' type="text/javascript" charset="utf-8"></script>
+	<script src="../../codebase/ext/dhtmlxscheduler_units.js" type="text/javascript" charset="utf-8"></script>
 
 	<style >
 		html, body {
@@ -74,6 +74,7 @@
 	<script charset="utf-8">
 		function init() {
 			scheduler.config.multi_day = true;
+			scheduler.config.xml_date = "%Y-%m-%d %H:%i";
 
 			scheduler.locale.labels.timeline_tab = "Timeline";
 			scheduler.locale.labels.unit_tab = "Unit";

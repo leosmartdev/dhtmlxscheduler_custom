@@ -3,9 +3,9 @@
 	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
 	<title>Keyboard navigation in the scheduler</title>
 </head>
-	<script src="../../codebase/dhtmlxscheduler.js?v=5.3.12" type="text/javascript" charset="utf-8"></script>
-	<link rel="stylesheet" href="../../codebase/dhtmlxscheduler_material.css?v=5.3.12" type="text/css" charset="utf-8">
-	<script src="../../codebase/ext/dhtmlxscheduler_key_nav.js?v=5.3.12" type="text/javascript" charset="utf-8"></script>
+	<script src="../../codebase/dhtmlxscheduler.js" type="text/javascript" charset="utf-8"></script>
+	<link rel="stylesheet" href="../../codebase/dhtmlxscheduler.css" type="text/css" charset="utf-8">
+	<script src="../../codebase/ext/dhtmlxscheduler_key_nav.js" type="text/javascript" charset="utf-8"></script>
 	
 	
 <style type="text/css" >
@@ -19,12 +19,13 @@
 
 <script type="text/javascript" charset="utf-8">
 	function init() {
+		scheduler.config.xml_date="%Y-%m-%d %H:%i";
 		scheduler.init('scheduler_here',new Date(2017,6,15),"week");
 		scheduler.parse([
 			{ start_date: "2017-07-12 09:00", end_date: "2017-07-12 12:00", text:"Copy operation: Select this event and press Ctrl+C then move your cursor anywhere and press Ctrl+V" },
 			{ start_date: "2017-07-13 10:00", end_date: "2017-07-13 16:00", text:"Cut operation: Select event and press Ctrl+X then move your cursor and press Ctrl+V" },
 			{ start_date: "2017-07-14 10:00", end_date: "2017-07-14 14:00", text:"Try navigating periods by pressing Left and Right arrow keys" }
-		]);
+		],"json");
 	}
 </script>
 

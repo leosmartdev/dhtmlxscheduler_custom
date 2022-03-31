@@ -1,23 +1,22 @@
 <!doctype html>
-
 <head>
 	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
 	<title>Integration with dhtmlxTree</title>
 
-	<script src='../../codebase/dhtmlxscheduler.js?v=5.3.12' charset="utf-8"></script>
-	<script src='../../codebase/ext/dhtmlxscheduler_timeline.js?v=5.3.12' charset="utf-8"></script>
-	<script src='../../codebase/ext/dhtmlxscheduler_outerdrag.js?v=5.3.12' charset="utf-8"></script>
+	<script src='../../codebase/dhtmlxscheduler.js' type="text/javascript" charset="utf-8"></script>
+	<script src='../../codebase/ext/dhtmlxscheduler_timeline.js' type="text/javascript" charset="utf-8"></script>
+	<script src='../../codebase/ext/dhtmlxscheduler_outerdrag.js' type="text/javascript" charset="utf-8"></script>
 
 
-	<link rel='stylesheet' type='text/css' href='../../codebase/dhtmlxscheduler_material.css?v=5.3.12'>
+	<link rel='stylesheet' type='text/css' href='../../codebase/dhtmlxscheduler.css'>
 
-	<script src="//cdn.dhtmlx.com/edge/dhtmlx.js?v=5.3.12"></script>
-	<link rel="stylesheet" type="text/css" href="//cdn.dhtmlx.com/edge/dhtmlx.css?v=5.3.12">
+	<script src='../common/dhtmlxCommon/dhtmlxcommon.js'></script>
+	<script src='../common/dhtmlxTree/dhtmlxtree.js' type="text/javascript" charset="utf-8"></script>
+	<link rel='stylesheet' type='text/css' href='../common/dhtmlxTree/skins/dhtmlxtree_dhx_terrace.css'>
 
 
-	<style>
-		html,
-		body {
+	<style type="text/css" >
+		html, body {
 			margin: 0px;
 			padding: 0px;
 			height: 100%;
@@ -29,10 +28,11 @@
 			border-left: 1px solid #EBE9E9;
 			border-right: 1px solid #EBE9E9;
 		}
+
 	</style>
 
-	<script>
-		window.addEventListener('DOMContentLoaded', function (event) {
+	<script type="text/javascript" charset="utf-8">
+		function init() {
 			if (!window.dhtmlXTreeObject) {
 				alert("Sample requires dhtmlxTree");
 				return;
@@ -41,16 +41,14 @@
 			var tree = new dhtmlXTreeObject("treebox", "100%", "100%", 0);
 			tree.enableDragAndDrop(true);
 			tree.setSkin("dhx_terrace");
-			tree.attachEvent("onDrag", function () {
-				return false;
-			});
-			tree.setImagePath("//cdn.dhtmlx.com/edge/imgs/dhxtree_material/");
+			tree.attachEvent("onDrag", function() { return false; });
+			tree.setImagePath("../common/dhtmlxTree/imgs/dhxtree_terrace/");
 			tree.loadXML("./data/tree.xml");
-
+			
 			//key point!
 			//convert data from tree in property of event
 			//similar approach can be used for any other dhtmlx component
-			scheduler.attachEvent("onExternalDragIn", function (id, source, e) {
+			scheduler.attachEvent("onExternalDragIn", function(id, source, e) {
 				var label = tree.getItemText(tree._dragged[0].id);
 				scheduler.getEvent(id).text = label;
 				return true;
@@ -61,26 +59,16 @@
 
 			scheduler.config.details_on_create = true;
 			scheduler.config.details_on_dblclick = true;
+			scheduler.config.xml_date = "%Y-%m-%d %H:%i";
 
 			//===============
 			//Configuration
 			//===============
-			var sections = [{
-					key: 1,
-					label: "James Smith"
-				},
-				{
-					key: 2,
-					label: "John Williams"
-				},
-				{
-					key: 3,
-					label: "David Miller"
-				},
-				{
-					key: 4,
-					label: "Linda Brown"
-				}
+			var sections = [
+				{key: 1, label: "James Smith"},
+				{key: 2, label: "John Williams"},
+				{key: 3, label: "David Miller"},
+				{key: 4, label: "Linda Brown"}
 			];
 
 			scheduler.createTimelineView({
@@ -99,145 +87,55 @@
 			//===============
 			//Data loading
 			//===============
-			scheduler.config.lightbox.sections = [{
-					name: "description",
-					height: 130,
-					map_to: "text",
-					type: "textarea",
-					focus: true
-				},
-				{
-					name: "custom",
-					height: 23,
-					type: "select",
-					options: sections,
-					map_to: "section_id"
-				},
-				{
-					name: "time",
-					height: 72,
-					type: "time",
-					map_to: "auto"
-				}
+			scheduler.config.lightbox.sections = [
+				{name: "description", height: 130, map_to: "text", type: "textarea", focus: true},
+				{name: "custom", height: 23, type: "select", options: sections, map_to: "section_id" },
+				{name: "time", height: 72, type: "time", map_to: "auto"}
 			]
 
 			scheduler.init('scheduler_here', new Date(2017, 5, 30), "timeline");
-			scheduler.parse([{
-					start_date: "2017-06-30 09:00",
-					end_date: "2017-06-30 12:00",
-					text: "Task A-12458",
-					section_id: 1
-				},
-				{
-					start_date: "2017-06-30 10:00",
-					end_date: "2017-06-30 16:00",
-					text: "Task A-89411",
-					section_id: 1
-				},
-				{
-					start_date: "2017-06-30 10:00",
-					end_date: "2017-06-30 14:00",
-					text: "Task A-64168",
-					section_id: 1
-				},
-				{
-					start_date: "2017-06-30 16:00",
-					end_date: "2017-06-30 17:00",
-					text: "Task A-46598",
-					section_id: 1
-				},
+			scheduler.parse([
+				{ start_date: "2017-06-30 09:00", end_date: "2017-06-30 12:00", text: "Task A-12458", section_id: 1},
+				{ start_date: "2017-06-30 10:00", end_date: "2017-06-30 16:00", text: "Task A-89411", section_id: 1},
+				{ start_date: "2017-06-30 10:00", end_date: "2017-06-30 14:00", text: "Task A-64168", section_id: 1},
+				{ start_date: "2017-06-30 16:00", end_date: "2017-06-30 17:00", text: "Task A-46598", section_id: 1},
 
-				{
-					start_date: "2017-06-30 12:00",
-					end_date: "2017-06-30 20:00",
-					text: "Task B-48865",
-					section_id: 2
-				},
-				{
-					start_date: "2017-06-30 14:00",
-					end_date: "2017-06-30 16:00",
-					text: "Task B-44864",
-					section_id: 2
-				},
-				{
-					start_date: "2017-06-30 16:30",
-					end_date: "2017-06-30 18:00",
-					text: "Task B-46558",
-					section_id: 2
-				},
-				{
-					start_date: "2017-06-30 18:30",
-					end_date: "2017-06-30 20:00",
-					text: "Task B-45564",
-					section_id: 2
-				},
+				{ start_date: "2017-06-30 12:00", end_date: "2017-06-30 20:00", text: "Task B-48865", section_id: 2},
+				{ start_date: "2017-06-30 14:00", end_date: "2017-06-30 16:00", text: "Task B-44864", section_id: 2},
+				{ start_date: "2017-06-30 16:30", end_date: "2017-06-30 18:00", text: "Task B-46558", section_id: 2},
+				{ start_date: "2017-06-30 18:30", end_date: "2017-06-30 20:00", text: "Task B-45564", section_id: 2},
 
-				{
-					start_date: "2017-06-30 08:00",
-					end_date: "2017-06-30 12:00",
-					text: "Task C-32421",
-					section_id: 3
-				},
-				{
-					start_date: "2017-06-30 14:30",
-					end_date: "2017-06-30 16:45",
-					text: "Task C-14244",
-					section_id: 3
-				},
+				{ start_date: "2017-06-30 08:00", end_date: "2017-06-30 12:00", text: "Task C-32421", section_id: 3},
+				{ start_date: "2017-06-30 14:30", end_date: "2017-06-30 16:45", text: "Task C-14244", section_id: 3},
 
-				{
-					start_date: "2017-06-30 09:20",
-					end_date: "2017-06-30 12:20",
-					text: "Task D-52688",
-					section_id: 4
-				},
-				{
-					start_date: "2017-06-30 11:40",
-					end_date: "2017-06-30 16:30",
-					text: "Task D-46588",
-					section_id: 4
-				},
-				{
-					start_date: "2017-06-30 12:00",
-					end_date: "2017-06-30 18:00",
-					text: "Task D-12458",
-					section_id: 4
-				}
-			]);
+				{ start_date: "2017-06-30 09:20", end_date: "2017-06-30 12:20", text: "Task D-52688", section_id: 4},
+				{ start_date: "2017-06-30 11:40", end_date: "2017-06-30 16:30", text: "Task D-46588", section_id: 4},
+				{ start_date: "2017-06-30 12:00", end_date: "2017-06-30 18:00", text: "Task D-12458", section_id: 4}
+			], "json");
 
-			dhtmlx.message({
-				text: "Drag-and-drop an item from the tree to the scheduler to create an event",
-				expire: -1
-			});
-			dhtmlx.message({
-				text: "This example uses dhtmlxSuite v5.1",
-				expire: 1000 * 30
-			});
-			dhtmlx.message({
-				text: "This example uses dhtmlxTree which can be used under GPLv2 license or has to be obtained separately. <br><br> You can do this or use a third-party tree widget instead.",
-				expire: 1000 * 30
-			});
-		});
+			dhtmlx.message({text:"Drag-and-drop an item from the tree to the scheduler to create an event", expire:-1});
+		}
+
 	</script>
 </head>
 
-<body>
-	<div id="treebox" style="position:absolute; top:0px; left:0px; width:250px; height:100%;"></div>
-	<div id="scheduler_here" class="dhx_cal_container"
-		style='width:1000px; height:100%; position:absolute; top:0px; left:250px'>
-		<div class="dhx_cal_navline">
-			<div class="dhx_cal_prev_button">&nbsp;</div>
-			<div class="dhx_cal_next_button">&nbsp;</div>
-			<div class="dhx_cal_today_button"></div>
-			<div class="dhx_cal_date"></div>
-			<div class="dhx_cal_tab" name="day_tab" style="right:204px;"></div>
-			<div class="dhx_cal_tab" name="week_tab" style="right:140px;"></div>
-			<div class="dhx_cal_tab" name="timeline_tab" style="right:280px;"></div>
-			<div class="dhx_cal_tab" name="month_tab" style="right:76px;"></div>
-		</div>
-		<div class="dhx_cal_header">
-		</div>
-		<div class="dhx_cal_data">
-		</div>
+<body onload="init();">
+<div id="treebox" style="position:absolute; top:0px; left:0px; width:250px; height:100%;"></div>
+<div id="scheduler_here" class="dhx_cal_container"
+     style='width:1000px; height:100%; position:absolute; top:0px; left:250px'>
+	<div class="dhx_cal_navline">
+		<div class="dhx_cal_prev_button">&nbsp;</div>
+		<div class="dhx_cal_next_button">&nbsp;</div>
+		<div class="dhx_cal_today_button"></div>
+		<div class="dhx_cal_date"></div>
+		<div class="dhx_cal_tab" name="day_tab" style="right:204px;"></div>
+		<div class="dhx_cal_tab" name="week_tab" style="right:140px;"></div>
+		<div class="dhx_cal_tab" name="timeline_tab" style="right:280px;"></div>
+		<div class="dhx_cal_tab" name="month_tab" style="right:76px;"></div>
 	</div>
+	<div class="dhx_cal_header">
+	</div>
+	<div class="dhx_cal_data">
+	</div>
+</div>
 </body>
