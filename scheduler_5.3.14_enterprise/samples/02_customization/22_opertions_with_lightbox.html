@@ -1,0 +1,63 @@
+<!doctype html>
+<head>
+	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+	<title>Setting/getting values of lightbox's controls</title>
+</head>
+	<script src="../../codebase/dhtmlxscheduler.js?v=5.3.14" type="text/javascript" charset="utf-8"></script>
+	<link rel="stylesheet" href="../../codebase/dhtmlxscheduler_material.css?v=5.3.14" type="text/css" charset="utf-8">
+	<link rel="stylesheet" href="../common/controls_styles.css?v=5.3.14">
+	
+	<style>
+		html, body{
+			margin:0px;
+			padding:0px;
+			height:100%;
+			overflow:hidden;
+		}
+		.dhx_custom_btn_info{
+			background-image:url('https://cdn.dhtmlx.com/scheduler/edge/imgs/controls.gif');
+			background-position: -2px 0px;
+			width:20px;
+		}
+	</style>
+<script type="text/javascript" charset="utf-8">
+	function init() {
+		scheduler.xy.margin_top = 40;
+		scheduler.config.details_on_create = true;
+		
+		scheduler.config.buttons_right = ["dhx_custom_btn_info"];
+		scheduler.locale.labels["dhx_custom_btn_info"] = "Info";
+		scheduler.attachEvent("onLightboxButton", function(button_id, node, e){
+			dhtmlx.alert(button_id);
+		});
+
+		scheduler.init('scheduler_here',new Date(2018,2,1),"week");
+		scheduler.load("../common/events.json", function(){
+			scheduler.showLightbox("1261150564");
+		});
+		
+	}
+</script>
+
+<body onload="init();">
+	<div class="sch_control" style="z-index:100000; position: relative"/'>
+		<input type="button" value="setValue" onclick="scheduler.formSection('description').setValue('abc')">
+		<input type="button" value="getValue" onclick="dhtmlx.alert(scheduler.formSection('description').getValue())">
+	</div>
+
+	<div id="scheduler_here" class="dhx_cal_container" style='width:100%; height:100%;'>
+		<div class="dhx_cal_navline">
+			<div class="dhx_cal_prev_button">&nbsp;</div>
+			<div class="dhx_cal_next_button">&nbsp;</div>
+			<div class="dhx_cal_today_button"></div>
+			<div class="dhx_cal_date"></div>
+			<div class="dhx_cal_tab" name="day_tab" style="right:204px;"></div>
+			<div class="dhx_cal_tab" name="week_tab" style="right:140px;"></div>
+			<div class="dhx_cal_tab" name="month_tab" style="right:76px;"></div>
+		</div>
+		<div class="dhx_cal_header">
+		</div>
+		<div class="dhx_cal_data">
+		</div>
+	</div>
+</body>

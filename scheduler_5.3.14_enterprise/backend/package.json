@@ -1,0 +1,17 @@
+{
+  "name": "scheduler-samples-backend",
+  "version": "1.0.0",
+  "main": "server.js",
+  "license": "MIT",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "date-format-lite": "^17.7.0",
+    "express": "^4.17.0",
+    "helmet": "^3.18.0",
+    "morgan": "^1.9.1",
+    "xss-filters": "^1.2.7"
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "data": [
+	  {
+		"id": "1",
+		"type": "1",
+		"text": "dblclick me!",
+		"start_date": "2018-3-2",
+		"end_date": "2018-3-4"
+	  },
+	  {
+		"id": "2",
+		"type": "2",
+		"text": "and me!",
+		"start_date": "2018-3-9",
+		"end_date": "2018-3-11"
+	  },
+	  {
+		"id": "3",
+		"type": "3",
+		"text": "and me too!",
+		"start_date": "2018-3-16",
+		"end_date": "2018-3-18"
+	  }
+	]
+}

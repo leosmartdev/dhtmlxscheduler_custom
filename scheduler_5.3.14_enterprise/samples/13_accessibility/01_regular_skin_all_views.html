@@ -1,0 +1,166 @@
+<!doctype html>
+	
+<head>
+	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+	<title>Keyboard Navigation and WAI-ARIA - Flat Skin </title>
+	<script src='../../codebase/dhtmlxscheduler.js?v=5.3.14' type="text/javascript" charset="utf-8"></script>
+	<link rel='STYLESHEET' type='text/css' href='../../codebase/dhtmlxscheduler_flat.css?v=5.3.14'>
+
+	<script src="../../codebase/ext/dhtmlxscheduler_recurring.js?v=5.3.14" type="text/javascript" charset="utf-8"></script>
+	<script src="../../codebase/ext/dhtmlxscheduler_units.js?v=5.3.14" type="text/javascript" charset="utf-8"></script>
+	<script src="../../codebase/ext/dhtmlxscheduler_year_view.js?v=5.3.14" type="text/javascript" charset="utf-8"></script>
+	<script src='../../codebase/ext/dhtmlxscheduler_timeline.js?v=5.3.14' type="text/javascript" charset="utf-8"></script>
+	<script src='../../codebase/ext/dhtmlxscheduler_tooltip.js?v=5.3.14' type="text/javascript" charset="utf-8"></script>
+
+	<script src="../../codebase/ext/dhtmlxscheduler_minical.js?v=5.3.14" type="text/javascript" charset="utf-8"></script>
+
+	<script src="../../codebase/ext/dhtmlxscheduler_key_nav.js?v=5.3.14" type="text/javascript" charset="utf-8"></script>
+
+		
+<style type="text/css" >
+	html, body{
+		margin:0px;
+		padding:0px;
+		height:100%;
+		overflow: hidden;
+	}
+	
+	.dhx_calendar_click {
+		/* background-color: #C2D5FC !important; */
+	}
+</style>
+
+<script type="text/javascript" charset="utf-8">
+
+
+
+	function doOnLoad() {
+		dhtmlx.message({
+			text: "<p>Keyboard shortcuts:</p>" +
+			"<b>Global</b>" +
+			"<ul>" +
+			"<li><b>Tab</b> - put focus on scheduler</li>" +
+			"<li><b>Alt + 1,2,3 ...</b> - switch between views</li>" +
+			"<li><b>Ctrl + Right/Left</b> - move to next/previous date</li>" +
+			"<li><b>Ctrl + Up/Down</b> - scroll data area</li>" +
+			"<li><b>e, shift + e</b> - select next/previous event</li>" +
+			"<li><b>Home</b> - show today</li>" +
+			"<li><b>Ctrl + Enter</b> - create new event</li>" +
+			"<li><b>Ctrl + C, Ctrl + X, Ctrl + V </b> - copy/cut/paste event</li>" +
+			"</ul>" +
+			"<b>Time Slot</b>" +
+			"<ul>" +
+			"<li><b>Up/Down/Right/Left</b> - navigate over slots</li>" +
+			"<li><b>Shift + Up/Down/Right/Left</b> - extend time slot</li>" +
+			"<li><b>Enter</b> - add new event at selected time</li>" +
+			"</ul>" +
+			"<b>Events</b>" +
+			"<ul>" +
+			"<li><b>Up/Down/Right/Left</b> - go to timeslot</li>" +
+			"<li><b>Space</b> - click</li>"+
+			"<li><b>Enter</b> - open lightbox</li>"+
+			"</ul>" +
+			"<b>Minicalendar</b>" +
+			"<ul>" +
+			"<li><b>Tab</b> - put focus on minicalendar</li>" +
+			"<li><b>Up/Down/Right/Left</b> - navigate between buttons/cells</li>" +
+			"<li><b>Enter</b> - click button/cell</li>"+
+			"</ul>",
+			expire: -1
+		});
+
+
+		scheduler.config.first_hour = 6;
+		scheduler.config.multi_day = true;
+
+		scheduler.config.lightbox.sections = [
+			{ name:"description", height:200, map_to:"text", type:"textarea" , focus:true },
+			{name:"recurring", type:"recurring", map_to:"rec_type", button:"recurring"},
+			{ name:"time", height:72, type:"time", map_to:"auto" }
+		];
+
+		var sections=[
+			{key:1, label:"Section A"},
+			{key:2, label:"Section B"},
+			{key:3, label:"Section C"},
+			{key:4, label:"Section D"}
+		];
+		scheduler.locale.labels.unit_tab = "Unit";
+		scheduler.createUnitsView({
+			name:"unit",
+			property:"section_id",
+			list:sections
+		});
+		scheduler.locale.labels.timeline_tab = "Timeline";
+		scheduler.createTimelineView({
+			name:	"timeline",
+			x_unit:	"minute",
+			x_date:	"%H:%i",
+			x_step:	30,
+			x_size: 24,
+			x_start: 16,
+			x_length:	48,
+			y_unit:	sections,
+			y_property:	"section_id",
+			render:"bar"
+		});
+
+		scheduler.init('scheduler_here',new Date(2017,5,30),"week");
+		scheduler.parse([
+			{ start_date: "2017-06-27 09:00", end_date: "2017-06-27 12:00", text:"Task A-12458", section_id:1},
+			{ start_date: "2017-06-29 10:00", end_date: "2017-06-29 16:00", text:"Task A-89411", section_id:1},
+			{ start_date: "2017-06-28 10:00", end_date: "2017-06-28 14:00", text:"Task A-64168", section_id:1},
+			{ start_date: "2017-06-26 16:00", end_date: "2017-06-26 17:00", text:"Task A-46598", section_id:1},
+
+			{ start_date: "2017-06-27 12:00", end_date: "2017-06-27 20:00", text:"Task B-48865", section_id:2},
+			{ start_date: "2017-06-28 14:00", end_date: "2017-06-28 16:00", text:"Task B-44864", section_id:2},
+			{ start_date: "2017-06-29 16:30", end_date: "2017-06-29 18:00", text:"Task B-46558", section_id:2},
+			{ start_date: "2017-06-26 18:30", end_date: "2017-06-26 20:00", text:"Task B-45564", section_id:2},
+
+			{ start_date: "2017-07-01 08:00", end_date: "2017-07-01 12:00", text:"Task C-32421", section_id:3},
+			{ start_date: "2017-06-26 14:30", end_date: "2017-06-26 16:45", text:"Task C-14244", section_id:3},
+
+			{ start_date: "2017-06-27 09:20", end_date: "2017-06-27 12:20", text:"Task D-52688", section_id:4},
+			{ start_date: "2017-06-28 11:40", end_date: "2017-06-28 16:30", text:"Task D-46588", section_id:4},
+			{ start_date: "2017-06-26 12:00", end_date: "2017-06-26 18:00", text:"Task D-12458", section_id:4}
+		]);
+		
+		var calendar = scheduler.renderCalendar({
+			container:"cal_here", 
+			navigation:true,
+			handler:function(date){
+				scheduler.setCurrentView(date, scheduler._mode);
+			}
+		});
+
+
+		scheduler.linkCalendar(calendar);
+		scheduler.setCurrentView(scheduler._date, scheduler._mode);
+	}
+</script>
+</head>
+
+
+<body onload="doOnLoad();">
+	<div style='float: left; padding:10px;'>
+		<div id="cal_here" style='width:250px;'></div>
+	</div>
+	<div id="scheduler_here" class="dhx_cal_container" style='width:auto; height:100%;'>
+		<div class="dhx_cal_navline">
+			<div class="dhx_cal_prev_button">&nbsp;</div>
+			<div class="dhx_cal_next_button">&nbsp;</div>
+			<div class="dhx_cal_today_button"></div>
+			<div class="dhx_cal_date"></div>
+			<div class="dhx_cal_tab" name="day_tab" style="right:204px;"></div>
+			<div class="dhx_cal_tab" name="week_tab" style="right:140px;"></div>
+			<div class="dhx_cal_tab" name="month_tab" style="right:76px;"></div>
+			<div class="dhx_cal_tab" name="unit_tab" style="right:76px;"></div>
+			<div class="dhx_cal_tab" name="timeline_tab" style="right:76px;"></div>
+			<div class="dhx_cal_tab" name="year_tab" style="right:76px;"></div>
+		</div>
+		<div class="dhx_cal_header">
+		</div>
+		<div class="dhx_cal_data">
+		</div>
+	</div>
+</body>

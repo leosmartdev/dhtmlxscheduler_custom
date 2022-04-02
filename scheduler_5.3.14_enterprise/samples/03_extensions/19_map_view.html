@@ -1,0 +1,72 @@
+<!doctype html>
+<head>
+	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+	<title>Map view</title>
+	<script src="//maps.google.com/maps/api/js?key=AIzaSyAmBpYILZc2Ktp2Qw8rRBX_ur7_qOGiJEk" type="text/javascript"></script>
+	
+ 	<script src="../../codebase/dhtmlxscheduler.js?v=5.3.14" type="text/javascript" charset="utf-8"></script>
+	<script src="../../codebase/ext/dhtmlxscheduler_map_view.js?v=5.3.14" type="text/javascript" charset="utf-8"></script>
+	
+	<link rel="stylesheet" href="../../codebase/dhtmlxscheduler_material.css?v=5.3.14" type="text/css" charset="utf-8">
+	
+	<style type="text/css" >
+		html, body{
+			margin:0px;
+			padding:0px;
+			height:100%;
+			overflow:hidden;
+		}	
+	</style>
+
+	<script type="text/javascript" charset="utf-8">
+		function init() {
+		
+			scheduler.config.prevent_cache = true;
+			
+			scheduler.locale.labels.map_tab = "Map";
+			scheduler.locale.labels.section_location = "Location";
+			
+			scheduler.xy.map_date_width = 180; // date column width
+			scheduler.xy.map_description_width = 400; // description column width
+
+			scheduler.config.map_start = new Date(2019, 3, 1);
+			scheduler.config.map_end = new Date(2020, 9, 1);
+
+
+			scheduler.config.lightbox.sections=[	
+				{ name:"description", height:50, map_to:"text", type:"textarea", focus:true },
+				{ name:"location", height:43, map_to:"event_location", type:"textarea"  },
+				{ name:"time", height:72, type:"time", map_to:"auto"}	
+			]
+			
+			scheduler.config.map_inital_zoom = 8;
+			
+			scheduler.init('scheduler_here', new Date(2019,5,1), "map");
+			scheduler.load("/scheduler/backend/map-events");
+
+			dp = new dataProcessor("/scheduler/backend/map-events");
+			dp.init(scheduler);
+			dp.setTransactionMode("REST", false);
+		}	
+	</script>
+	
+</head>
+
+<body onload="init();" >
+	<div id="scheduler_here" class="dhx_cal_container" style='width:100%; height:100%;'>
+		<div class="dhx_cal_navline">
+			<div class="dhx_cal_prev_button">&nbsp;</div>
+			<div class="dhx_cal_next_button">&nbsp;</div>
+			<div class="dhx_cal_today_button"></div>
+			<div class="dhx_cal_date"></div>
+			<div class="dhx_cal_tab" name="day_tab" style="right:204px;"></div>
+			<div class="dhx_cal_tab" name="week_tab" style="right:140px;"></div>
+			<div class="dhx_cal_tab" name="map_tab" style="right:280px;"></div>
+			<div class="dhx_cal_tab" name="month_tab" style="right:76px;"></div>
+		</div>
+		<div class="dhx_cal_header">
+		</div>
+		<div class="dhx_cal_data">
+		</div>		
+	</div>
+</body>

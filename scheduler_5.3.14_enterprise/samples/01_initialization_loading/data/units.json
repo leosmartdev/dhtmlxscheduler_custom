@@ -1,0 +1,53 @@
+{
+  "data": [
+	  {
+		"id": "1u2",
+		"start_date": "2017-06-30 12:00:00",
+		"end_date": "2017-06-30 14:00:00",
+		"text": "Section A test",
+		"section_id": "1"
+	  },
+	  {
+		"id": "1u3",
+		"start_date": "2017-06-30 10:00:00",
+		"end_date": "2017-06-30 11:00:00",
+		"text": "Section B test",
+		"section_id": "2"
+	  },
+	  {
+		"id": "1u3",
+		"start_date": "2017-06-1 10:00:00",
+		"end_date": "2017-07-30 11:00:00",
+		"text": "Section B test",
+		"section_id": "2"
+	  },
+	  {
+		"id": "1u4",
+		"start_date": "2017-06-30 16:00:00",
+		"end_date": "2017-06-30 18:00:00",
+		"text": "Section C test",
+		"section_id": "3"
+	  },
+	  {
+		"id": "1u5",
+		"start_date": "2017-06-30 10:00:00",
+		"end_date": "2017-06-30 15:00:00",
+		"text": "Section D test",
+		"section_id": "4"
+	  },
+	  {
+		"id": "1u6",
+		"start_date": "2017-06-29 12:00:00",
+		"end_date": "2017-06-29 14:00:00",
+		"text": "day before test",
+		"section_id": "1"
+	  },
+	  {
+		"id": "1u7",
+		"start_date": "2017-07-1 12:00:00",
+		"end_date": "2017-07-1 14:00:00",
+		"text": "day after test",
+		"section_id": "1"
+	  }
+	]
+}
