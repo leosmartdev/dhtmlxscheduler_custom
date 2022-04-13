@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Resource calendars</title>
+	<script src="../../codebase/dhtmlxgantt.js?v=7.1.10"></script>
+	<link rel="stylesheet" href="../../codebase/skins/dhtmlxgantt_meadow.css?v=7.1.10">
+
+	<script src="../common/resource_project_single_resource.js?v=7.1.10"></script>
+	<style>
+		html, body {
+			height: 100%;
+			padding: 0px;
+			margin: 0px;
+			overflow: hidden;
+		}
+
+		.summary-bar{
+			font-weight: bold;
+		}
+
+		.gantt_task_cell.week_end {
+			background-color: rgba(232, 232, 232, 0.6);
+		}
+
+		.gantt_task_row.gantt_selected .gantt_task_cell.week_end {
+			background-color: rgba(232, 232, 232, 0.6) !important;
+		}
+	</style>
+</head>
+<body>
+<div id="gantt_here" style='width:100%; height:100%;'></div>
+<script>
+	gantt.plugins({
+		auto_scheduling: true
+	});
+	gantt.message({
+		text:[
+			"Assign resources to the tasks.",
+			"Each resource can have its own working time calendar.",
+			"Double click any task (showed green) in order to open the lightbox and assign a resource."
+		].join("<br><br>"),
+		expire: -1
+	});
+
+	gantt.serverList("staff", [
+		{key: 1, label: "John"},
+		{key: 2, label: "Mike"},
+		{key: 3, label: "Anna"},
+		{key: 4, label: "Bill"},
+		{key: 7, label: "Floe"}
+	]);
+
+	gantt.serverList("priority", [
+		{key: 1, label: "High"},
+		{key: 2, label: "Normal"},
+		{key: 3, label: "Low"}
+	]);
+
+	// end test data
+	gantt.config.auto_scheduling = true;
+	gantt.config.auto_scheduling_strict = true;
+	gantt.config.grid_width = 420;
+	gantt.config.grid_resize = true;
+	gantt.config.open_tree_initially = true;
+	gantt.config.work_time = true;
+
+	var labels = gantt.locale.labels;
+	labels.column_priority = labels.section_priority = "Priority";
+	labels.column_owner = labels.section_owner = "Owner";
+
+	function byId(list, id) {
+		for (var i = 0; i < list.length; i++) {
+			if (list[i].key == id)
+				return list[i].label || "";
+		}
+		return "";
+	}
+
+	gantt.config.columns = [
+		{name: "text", label: "Task name", tree: true, width: '*'},
+		{name: "owner", width: 80, align: "center", template: function (item) {
+				return byId(gantt.serverList('staff'), item.owner_id)
+			}},
+		{name: "priority", width: 80, align: "center", template: function (item) {
+				return byId(gantt.serverList('priority'), item.priority)}},
+		{name: "add", width: 40}
+	];
+
+	gantt.config.lightbox.sections = [
+		{name: "description", height: 38, map_to: "text", type: "textarea", focus: true},
+		{name: "priority", height: 22, map_to: "priority", type: "select", options: gantt.serverList("priority")},
+		{name: "owner", height: 22, map_to: "owner_id", type: "select", options: gantt.serverList("staff")},
+		{name: "time", type: "duration", map_to: "auto"}
+	];
+
+	gantt.templates.rightside_text = function(start, end, task){
+		return byId(gantt.serverList('staff'), task.owner_id);
+	};
+
+	var regular = gantt.addCalendar({
+			worktime: {
+				days: [0, 1, 1, 1, 1, 1, 0]
+			}
+		}),
+		twoByTwo = gantt.addCalendar({
+			worktime: {
+				days: [1, 1, 0, 0, 1, 1, 0]
+			}
+		}),
+		weekendWorker = gantt.addCalendar({
+			worktime: {
+				days: [1, 0, 0, 0, 0, 0, 1]
+			}
+		});
+
+	gantt.config.resource_property = "owner_id";
+	gantt.config.resource_calendars = {
+		1: regular,
+		2: twoByTwo,
+		3: weekendWorker,
+		4: twoByTwo,
+		5: regular,
+		6: regular,
+		7: weekendWorker
+	};
+
+	gantt.templates.timeline_cell_class = function (task, date) {
+		if (!gantt.isWorkTime({date: date, task: task}))
+			return "week_end";
+		return "";
+	};
+
+	gantt.templates.grid_row_class =
+		gantt.templates.task_row_class =
+			gantt.templates.task_class = function (start, end, task) {
+				var css = [];
+				if (task.$virtual || task.type == gantt.config.types.project)
+					css.push("summary-bar");
+
+				return css.join(" ");
+			};
+
+	gantt.init("gantt_here");
+	gantt.parse(taskData);
+</script>

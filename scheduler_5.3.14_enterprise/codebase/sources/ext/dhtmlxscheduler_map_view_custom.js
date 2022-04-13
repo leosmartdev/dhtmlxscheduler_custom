@@ -332,10 +332,22 @@ scheduler.attachEvent("onSchedulerReady", function() {
 			if (scheduler.map._markers[event.id])
 				scheduler.map._markers[event.id].setMap(null);
 
-			scheduler.map._markers[event.id] = new google.maps.Marker({
+			console.log("create google marker");
+
+			var markerConfig = {
 				position: point,
 				map: scheduler.map._obj
-			});
+			};
+
+			if (scheduler.config.map_marker_color) {
+				var map_color = scheduler.config.map_marker_color;
+				// blue, green, yellow, pink, purple, red ...
+				markerConfig.icon = {
+					url: "http://maps.google.com/mapfiles/ms/icons/" + map_color + "-dot.png"
+				};
+			}
+
+			scheduler.map._markers[event.id] = new google.maps.Marker(markerConfig);
 
 			google.maps.event.addListener(scheduler.map._markers[event.id], 'click', function() {
 				scheduler.map._infowindow.setContent(scheduler.map._infowindows_content[event.id]);

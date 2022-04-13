@@ -1,0 +1,62 @@
+<!doctype html>
+<head>
+	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+	<title>jQuery initialization</title>
+	<script src="https://code.jquery.com/jquery-1.7.1.min.js?v=7.1.10"></script>
+
+	<script src="../../codebase/dhtmlxgantt.js?v=7.1.10"></script>
+	<link rel="stylesheet" href="../../codebase/dhtmlxgantt.css?v=7.1.10">
+
+	<style>
+		html, body {
+			margin: 0px;
+			padding: 0px;
+			height: 100%;
+			overflow: hidden;
+		}
+	</style>
+
+	<script>
+		$(function () {
+			$(".mygantt").dhx_gantt();
+
+			$("#gantt1").dhx_gantt().parse({
+				data: [
+					{ id: 1, text: "Project #1", start_date: "01-04-2018", duration: 18,
+						progress: 0.4, open: true
+					},
+					{ id: 2, text: "Task #1", start_date: "02-04-2018", duration: 8,
+						progress: 0.6, parent: 1
+					},
+					{ id: 3, text: "Task #2", start_date: "11-04-2018", duration: 8,
+						progress: 0.6, parent: 1
+					}
+				],
+				links: [
+					{id: 1, source: 1, target: 2, type: "1"}
+				]
+			});
+
+			$("#gantt2").dhx_gantt().parse({
+				data: [
+					{ id: 1, text: "Project #2", start_date: "01-04-2018", duration: 18,
+						progress: 0.4, open: true
+					},
+					{ id: 3, text: "Task #3", start_date: "02-04-2018", duration: 1,
+						progress: 0.6, parent: 1
+					},
+					{ id: 4, text: "Task #4", start_date: "03-04-2018", duration: 1,
+						progress: 0.6, parent: 1
+					}
+				],
+				links: [
+					{id: 3, source: 3, target: 4, type: "0"}
+				]
+			});
+		});
+	</script>
+</head>
+<body>
+<div class="mygantt" id='gantt1' style='width:100%; height:50vh;'></div>
+<div class="mygantt" id='gantt2' style='width:100%; height:50vh'></div>
+</body>

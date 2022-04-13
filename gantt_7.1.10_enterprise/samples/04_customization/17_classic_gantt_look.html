@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+	<title>Classic Look</title>
+	<script src="../../codebase/dhtmlxgantt.js?v=7.1.10"></script>
+	<link rel="stylesheet" href="../../codebase/dhtmlxgantt.css?v=7.1.10">
+
+	<script src="../common/testdata.js?v=7.1.10"></script>
+	<style>
+		html, body {
+			height: 100%;
+			padding: 0px;
+			margin: 0px;
+			overflow: hidden;
+		}
+
+		.custom-project {
+			position: absolute;
+			height: 6px;
+			color: #ffffff;
+			background-color: #444444;
+		}
+
+		.custom-project div {
+			position: absolute;
+		}
+
+		.project-left, .project-right {
+			top: 6px;
+			background-color: transparent;
+			border-style: solid;
+			width: 0px;
+			height: 0px;
+		}
+
+		.project-left {
+			left: 0px;
+			border-width: 0px 0px 8px 7px;
+			border-top-color: transparent;
+			border-right-color: transparent !important;
+			border-bottom-color: transparent !important;
+			border-left-color: #444444 !important;
+		}
+
+		.project-right {
+			right: 0px;
+			border-width: 0px 7px 8px 0px;
+			border-top-color: transparent;
+			border-right-color: #444444;
+			border-bottom-color: transparent !important;
+			border-left-color: transparent;
+		}
+
+		.project-line {
+			font-weight: bold;
+		}
+
+		.gantt_task_line, .gantt_line_wrapper div {
+			background-color: blue;
+			border-color: blue;
+			border-radius: 0;
+		}
+
+		.gantt_link_arrow {
+			border-color: blue;
+		}
+
+		.gantt_task_link:hover .gantt_line_wrapper div {
+			box-shadow: 0 0 5px 0px #9fa6ff;
+		}
+
+		.gantt_task_line .gantt_task_progress {
+			opacity: 0.3;
+			background-color: #444444;
+		}
+
+		.gantt_grid_data .gantt_cell {
+			border-right: 1px solid #ECECEC;
+		}
+
+		.gantt_grid_data .gantt_cell.gantt_last_cell {
+			border-right: none;
+		}
+
+		.gantt_tree_icon.gantt_folder_open,
+		.gantt_tree_icon.gantt_file,
+		.gantt_tree_icon.gantt_folder_closed {
+			display: none;
+		}
+
+		.gantt_task .gantt_task_scale .gantt_scale_cell, .gantt_grid_scale .gantt_grid_head_cell {
+			color: #5C5C5C;
+		}
+
+		.gantt_row, .gantt_cell {
+			border-color: #cecece;
+		}
+
+		.gantt_grid_scale .gantt_grid_head_cell {
+			border-right: 1px solid #cecece !important;
+		}
+
+		.gantt_grid_scale .gantt_grid_head_cell.gantt_last_cell {
+			border-right: none !important;
+		}
+
+		.gantt_task_row, .gantt_task_cell {
+			border: none;
+		}
+
+		.weekend {
+			background: #f4f7f4 !important;
+		}
+
+		.gantt_selected .weekend {
+			background: #FFF3A1 !important;
+		}
+
+
+	</style>
+</head>
+
+<body>
+<div id="gantt_here" style='width:100%; height:100%;'></div>
+
+
+<script>
+	gantt.config.scale_height = 50;
+	gantt.config.link_line_width = 1;
+	gantt.config.row_height = 22;
+	gantt.config.bar_height = 12;
+	gantt.config.grid_resize = true;
+	gantt.config.drag_links = false;
+	gantt.config.drag_progress = false;
+
+	gantt.config.scales = [
+		{unit: "month", step: 1, format: "%F, %Y"},
+		{unit: "day", step: 1, format: "%j, %D"}
+	];
+
+	gantt.config.columns = [
+		{name: "text", tree: true, width: '*', resize: true},
+		{name: "start_date", align: "left"},
+		{name: "duration", align: "left", width: 50}
+	];
+
+	gantt.config.type_renderers[gantt.config.types.project] = function (task) {
+		var main_el = document.createElement("div");
+		main_el.setAttribute(gantt.config.task_attribute, task.id);
+		var size = gantt.getTaskPosition(task);
+		main_el.innerHTML = [
+			"<div class='project-left'></div>",
+			"<div class='project-right'></div>"
+		].join('');
+		main_el.className = "custom-project";
+
+		main_el.style.left = size.left + "px";
+		main_el.style.top = size.top + 7 + "px";
+		main_el.style.width = size.width + "px";
+
+		return main_el;
+	};
+
+	gantt.templates.grid_row_class = function (start, end, task) {
+		if (task.type == gantt.config.types.project) {
+			return "project-line";
+		}
+	};
+	gantt.templates.timeline_cell_class = function (item, date) {
+		if (date.getDay() == 0 || date.getDay() == 6) {
+			return "weekend";
+		}
+	};
+	gantt.templates.task_text = function () {
+		return "";
+	};
+
+	gantt.init("gantt_here");
+
+
+	gantt.parse(projects_with_milestones);
+
+</script>
+</body>

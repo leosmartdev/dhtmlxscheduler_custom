@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+	<title>Export data from Gantt</title>
+	<script src="../../codebase/dhtmlxgantt.js?v=7.1.10"></script>
+	<script src="https://export.dhtmlx.com/gantt/api.js?v=7.1.10"></script>
+	<link rel="stylesheet" href="../../codebase/dhtmlxgantt.css?v=7.1.10">
+	<link rel="stylesheet" href="../common/controls_styles.css?v=7.1.10">
+
+	<script src="../common/testdata.js?v=7.1.10"></script>
+	<style>
+		html, body {
+			height: 100%;
+			padding: 0px;
+			margin: 0px;
+			overflow: hidden;
+		}
+	</style>
+	<script>
+		window.addEventListener("DOMContentLoaded", function(){
+			gantt.init("gantt_here");
+			gantt.parse({
+				data: [
+					{ id: 1, text: "Project #1", start_date: "01-04-2018", duration: 18,
+						progress: 0.4, open: true
+					},
+					{ id: 2, text: "Task #1", start_date: "02-04-2018", duration: 8,
+						progress: 0.6, parent: 1
+					},
+					{ id: 3, text: "Task #2", start_date: "11-04-2018", duration: 8,
+						progress: 0.6, parent: 1
+					}
+				],
+				links: [
+					{id: 1, source: 1, target: 2, type: "1"}
+				]
+			});
+
+			var gantt2 = Gantt.getGanttInstance();
+			gantt2.init("gantt_here_too");
+			gantt2.parse({
+				data: [
+					{ id: 1, text: "Project #2", start_date: "01-04-2018", duration: 18,
+						progress: 0.4, open: true
+					},
+					{ id: 3, text: "Task #3", start_date: "02-04-2018", duration: 1,
+						progress: 0.6, parent: 1
+					},
+					{ id: 4, text: "Task #4", start_date: "03-04-2018", duration: 1,
+						progress: 0.6, parent: 1
+					}
+				],
+				links: [
+					{id: 3, source: 3, target: 4, type: "0"}
+				]
+			});
+		})
+	</script>
+</head>
+
+<body>
+<div class="gantt_control">
+	<input value="Export to PDF : Gantt 1" type="button" onclick='gantt.exportToPDF()' style='margin:0 20px;'>
+	<input value="Export to PNG : Gantt 1" type="button" onclick='gantt.exportToPNG()'>
+
+	<input value="Export to PDF : Gantt 2" type="button" onclick='gantt2.exportToPDF()' style='margin:0 20px;'>
+	<input value="Export to PNG : Gantt 2" type="button" onclick='gantt2.exportToPNG()'>
+</div>
+
+<div id="gantt_here" class="dhx_cal_container" style='height:calc((100vh - 52px)/2);'>
+</div>
+<div id="gantt_here_too" class="dhx_cal_container" style='height:calc((100vh - 52px)/2);'>
+</div>
+</body>

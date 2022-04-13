@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+	<title>Break down by resources</title>
+	<script src="../../codebase/dhtmlxgantt.js?v=7.1.10"></script>
+	<link rel="stylesheet" href="../../codebase/dhtmlxgantt.css?v=7.1.10">
+	<link rel="stylesheet" href="../common/controls_styles.css?v=7.1.10">
+
+	<script src="../common/resource_project_single_resource.js?v=7.1.10"></script>
+	<style>
+		html, body {
+			height: 100%;
+			padding: 0px;
+			margin: 0px;
+			overflow: hidden;
+		}
+
+		#gantt_here {
+			width:100%;
+			height: 800px;
+			height:calc(100vh - 52px);
+		}
+
+		.group-bar,
+		.group-bar.odd{
+			background-color: rgba(232, 232, 232, 0.6);
+		}
+
+		.summary-bar,
+		.summary-bar.odd {
+
+			font-weight: bold;
+		}
+
+		.gantt_grid div,
+		.gantt_data_area div {
+			font-size: 12px;
+		}
+
+		.summary-bar {
+			font-weight:bold;
+		}
+
+		.gantt_task_row.group-bar{
+			background-color: rgba(232, 232, 232, 0.6);
+		}
+		.gantt_task_line.group-bar{
+			opacity: 0.6;
+		}
+
+		.gantt_task_cell.week_end {
+			background-color: rgba(232, 232, 232, 0.6);
+		}
+
+		.gantt_task_row.gantt_selected .gantt_task_cell.week_end {
+			background-color: rgba(232, 232, 232, 0.6) !important;
+		}
+
+		.gantt_side_content.gantt_link_crossing{
+			vertical-align: bottom;
+			line-height: 25px;
+		}
+	</style>
+</head>
+
+<body>
+<div class="gantt_control" >
+	<input type='button' id='default' onclick="toggleGroups(this)" value="Show Resource view">
+</div>
+
+<div id="gantt_here"></div>
+<script>
+	gantt.plugins({
+		grouping: true,
+		auto_scheduling: true
+	});
+	gantt.message({
+		text:[
+			"Break the project down by assigned resources.",
+			"Click \"SHOW RESOURCE VIEW\" to group by the assigned resource.",
+			"Drag and drop rows in the lefthand grid in order to move tasks between the resources."
+		].join("<br><br>"),
+		expire: -1
+	});
+
+	gantt.serverList("departments", [
+		{key: 1, label: "QA"},
+		{key: 2, label: "Development"},
+		{key: 3, label: "Sales"},
+		{key: 4, label: "Other"}
+	]);
+
+	gantt.serverList("staff", [
+		{key: 0, label: "Unassigned", department:4},
+		{key: 1, label: "John", department:1},
+		{key: 2, label: "Mike", department:2},
+		{key: 3, label: "Anna", department:2},
+		{key: 4, label: "Bill", department:3},
+		{key: 7, label: "Floe", department:3}
+	]);
+
+	// end test data
+
+	gantt.config.auto_scheduling = true;
+	gantt.config.auto_scheduling_strict = true;
+	gantt.config.grid_width = 500;
+	gantt.config.row_height = 24;
+	gantt.config.grid_resize = true;
+	gantt.config.open_tree_initially = true;
+	gantt.config.work_time = true;
+	gantt.config.order_branch = true;
+
+	gantt.locale.labels.section_owner = "Owner";
+
+	function byId(list, id) {
+		for (var i = 0; i < list.length; i++) {
+			if (list[i].key == id)
+				return list[i].label || "";
+		}
+		return "";
+	}
+
+	gantt.config.columns = [
+		{name: "text", label: "Name", tree: true, width: '*'},
+		{name: "owner", width: 80, label: "Owner", align: "center", template: function (item) {
+				if(item.type == gantt.config.types.project){
+					return "";
+				}
+
+				return byId(gantt.serverList('staff'), item.owner_id)
+			}},
+		{name: "start_date", width: 70,label: "Start", align: "center"},
+		{name: "end_date", width: 70,label: "End", align: "center", template:function(task){return gantt.templates.date_grid(task.end_date)}},
+		{name: "duration", width: 50, label: "Duration", align: "center", template: function(task){
+			var res = 0;
+			if(task.type != gantt.config.types.project){
+				res = +task.duration;
+			}else{
+				res = gantt.getSubtaskDuration(task.id);
+			}
+			return res + "d"
+		}},
+		{name: "add", width: 40}
+	];
+
+	gantt.config.lightbox.sections = [
+		{name: "description", height: 38, map_to: "text", type: "textarea", focus: true},
+		{name: "owner", height: 22, map_to: "owner_id", type: "select", options: gantt.serverList("staff")},
+		{name: "time", type: "duration", map_to: "auto"}
+	];
+
+	gantt.templates.rightside_text = function(start, end, task){
+		return byId(gantt.serverList('staff'), task.owner_id);
+	};
+
+	var regular = gantt.addCalendar({
+			worktime: {
+				days: [0, 1, 1, 1, 1, 1, 0]
+			}
+		}),
+		twoByTwo = gantt.addCalendar({
+			worktime: {
+				days: [1, 1, 0, 0, 1, 1, 0]
+			}
+		}),
+		weekendWorker = gantt.addCalendar({
+			worktime: {
+				days: [1, 0, 0, 0, 0, 0, 1]
+			}
+		});
+
+	gantt.config.resource_property = "owner_id";
+	gantt.config.resource_calendars = {
+		1: regular,
+		2: twoByTwo,
+		3: weekendWorker,
+		4: twoByTwo,
+		5: regular,
+		6: regular,
+		7: weekendWorker
+	};
+
+	gantt.templates.timeline_cell_class = function (task, date) {
+		if (!gantt.isWorkTime({date: date, task: task}))
+			return "week_end";
+		return "";
+	};
+
+
+	gantt.templates.grid_row_class =
+		gantt.templates.task_row_class =
+			gantt.templates.task_class = function (start, end, task) {
+				var css = [];
+				if (task.type == gantt.config.types.project)
+					css.push("summary-bar");
+
+				if (task.$virtual)
+					css.push("group-bar");
+
+				return css.join(" ");
+			};
+
+	gantt.init("gantt_here");
+	gantt.parse(taskData);
+
+	function combineLists(people, departments){
+		var result = [];
+		departments.forEach(function(d){
+			var clone = gantt.copy(d);
+			clone.key = "department_" + d.key;
+			result.push(clone);
+		});
+
+		people.forEach(function(p){
+			var clone = gantt.copy(p);
+			clone.owner_id = "department_" + p.department;
+			result.push(clone);
+		});
+		return result;
+	}
+
+	function toggleGroups(input) {
+		gantt.$groupMode = !gantt.$groupMode;
+		if (gantt.$groupMode) {
+			input.value = "Show Gantt view";
+			var people = gantt.serverList("staff"),
+				departmnents = gantt.serverList("departments");
+
+			gantt.groupBy({
+				groups: combineLists(people, departmnents),
+				relation_property: "owner_id",
+				group_id: "key",
+				group_text: "label"
+			});
+		} else {
+			input.value = "Show Resource view";
+			gantt.groupBy(false);
+		}
+	}
+
+
+</script>
+</body>

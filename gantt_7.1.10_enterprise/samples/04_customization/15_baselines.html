@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+	<title>Display project baseline</title>
+
+	<script src="../../codebase/dhtmlxgantt.js?v=7.1.10"></script>
+	<link rel="stylesheet" href="../../codebase/dhtmlxgantt.css?v=7.1.10">
+	<script src="../common/data_baselines.js?v=7.1.10"></script>
+	<style>
+		html, body {
+			height: 100%;
+			padding: 0;
+			margin: 0;
+			overflow: hidden;
+		}
+
+		.baseline {
+			position: absolute;
+			border-radius: 2px;
+			opacity: 0.6;
+			margin-top: -7px;
+			height: 12px;
+			background: #ffd180;
+			border: 1px solid rgb(255, 153, 0);
+		}
+
+		/* move task lines upper */
+		.gantt_task_line, .gantt_line_wrapper {
+			margin-top: -9px;
+		}
+
+		.gantt_side_content {
+			margin-bottom: 7px;
+		}
+
+		.gantt_task_link .gantt_link_arrow {
+			margin-top: -12px
+		}
+
+		.gantt_side_content.gantt_right {
+			bottom: 0;
+		}
+
+
+	</style>
+</head>
+<body>
+<div id="gantt_here" style='width:100%; height:100%;'></div>
+<script>
+	gantt.config.date_format = "%Y-%m-%d %H:%i:%s";
+	gantt.config.bar_height = 16;
+	gantt.config.row_height = 40;
+	gantt.locale.labels.baseline_enable_button = 'Set';
+	gantt.locale.labels.baseline_disable_button = 'Remove';
+
+	gantt.config.lightbox.sections = [
+		{name: "description", height: 70, map_to: "text", type: "textarea", focus: true},
+		{name: "time", map_to: "auto", type: "duration"},
+		{
+			name: "baseline",
+			map_to: {start_date: "planned_start", end_date: "planned_end"},
+			button: true,
+			type: "duration_optional"
+		}
+	];
+	gantt.locale.labels.section_baseline = "Planned";
+
+
+	// adding baseline display
+	gantt.addTaskLayer({
+		renderer: {
+			render: function draw_planned(task) {
+				if (task.planned_start && task.planned_end) {
+					var sizes = gantt.getTaskPosition(task, task.planned_start, task.planned_end);
+					var el = document.createElement('div');
+					el.className = 'baseline';
+					el.style.left = sizes.left + 'px';
+					el.style.width = sizes.width + 'px';
+					el.style.top = sizes.top + gantt.config.bar_height + 13 + 'px';
+					return el;
+				}
+				return false;
+			},
+			// define getRectangle in order to hook layer with the smart rendering
+			getRectangle: function(task, view){
+				if (task.planned_start && task.planned_end) {
+					return gantt.getTaskPosition(task, task.planned_start, task.planned_end);
+				}
+				return null;
+			}
+		}
+	});
+
+	gantt.templates.task_class = function (start, end, task) {
+		if (task.planned_end) {
+			var classes = ['has-baseline'];
+			if (end.getTime() > task.planned_end.getTime()) {
+				classes.push('overdue');
+			}
+			return classes.join(' ');
+		}
+	};
+
+	gantt.templates.rightside_text = function (start, end, task) {
+		if (task.planned_end) {
+			if (end.getTime() > task.planned_end.getTime()) {
+				var overdue = Math.ceil(Math.abs((end.getTime() - task.planned_end.getTime()) / (24 * 60 * 60 * 1000)));
+				var text = "<b>Overdue: " + overdue + " days</b>";
+				return text;
+			}
+		}
+	};
+
+
+	gantt.attachEvent("onTaskLoading", function (task) {
+		task.planned_start = gantt.date.parseDate(task.planned_start, "xml_date");
+		task.planned_end = gantt.date.parseDate(task.planned_end, "xml_date");
+		return true;
+	});
+
+	gantt.init("gantt_here");
+	gantt.parse(taskData);
+
+</script>
+</body>

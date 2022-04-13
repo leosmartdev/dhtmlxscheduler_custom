@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+	<title>Resizable columns in grid</title>
+	<script src="../../codebase/dhtmlxgantt.js?v=7.1.10"></script>
+	<link rel="stylesheet" href="../../codebase/dhtmlxgantt.css?v=7.1.10">
+
+	<script src="../common/testdata.js?v=7.1.10"></script>
+	<style>
+		html, body {
+			height: 100%;
+			padding: 0px;
+			margin: 0px;
+			overflow: hidden;
+		}
+	</style>
+</head>
+
+<body>
+<div id="gantt_here" style='width:100%; height:100%;'></div>
+<script>
+
+	gantt.config.columns = [
+		{name: "text", tree: true, width: "*", min_width: 120, resize: true},
+		{name: "start_date", align: "center", resize: true},
+		{name: "duration", align: "center", width: 70, resize: true},
+		{name: "add", width: 44}
+	];
+
+	// keeps or not the width of the grid area when column is resized
+	gantt.config.keep_grid_width = false;
+	gantt.config.grid_resize = true;
+
+	// return false to discard the resize
+	gantt.attachEvent("onColumnResizeStart", function (index, column) {
+		gantt.message("Start resizing <b>" + gantt.locale.labels["column_" + column.name] + "</b>");
+		return true;
+	});
+
+	var message = null;
+	gantt.attachEvent("onColumnResize", function (index, column, new_width) {
+		if (!message) {
+			message = gantt.message({
+				expire: -1,
+				text: "<b>" + gantt.locale.labels["column_" + column.name] + "</b> is now <b id='width_placeholder'></b><b>px</b> width"
+			});
+		}
+		document.getElementById("width_placeholder").innerText = new_width
+	});
+
+	// return false to discard the resize
+	gantt.attachEvent("onColumnResizeEnd", function (index, column, new_width) {
+		gantt.message.hide(message);
+		message = null;
+		gantt.message("Column <b>" + gantt.locale.labels["column_" + column.name] + "</b> is now " + new_width + "px width");
+		return true;
+	});
+
+	// GRID resize events
+
+	// return false to discard the resize
+	gantt.attachEvent("onGridResizeStart", function (old_width) {
+		gantt.message("Start grid resizing");
+		return true;
+	});
+
+	gantt.attachEvent("onGridResize", function (old_width, new_width) {
+		if (!message) {
+			message = gantt.message({
+				expire: -1,
+				text: "Grid is now <b id='width_placeholder'></b><b>px</b> width"
+			});
+		}
+		document.getElementById("width_placeholder").innerText = new_width;
+	});
+
+	// return false to discard the resize
+	gantt.attachEvent("onGridResizeEnd", function (old_width, new_width) {
+		gantt.message.hide(message);
+		message = null;
+		gantt.message("Grid is now <b>" + new_width + "</b>px width");
+		return true;
+	});
+
+	gantt.init("gantt_here");
+
+	gantt.parse({
+		data: [
+			{ id: 1, text: "Project #2", start_date: "01-04-2018", duration: 18, progress: 0.4, open: true },
+			{ id: 2, text: "Task #1", start_date: "02-04-2018", duration: 8, progress: 0.6, parent: 1 },
+			{ id: 3, text: "Task #2", start_date: "11-04-2018", duration: 8, progress: 0.6, parent: 1 }
+		],
+		links: [
+			{id: 1, source: 1, target: 2, type: "1"},
+			{id: 2, source: 2, target: 3, type: "0"}
+		]
+	});
+
+</script>
+</body>

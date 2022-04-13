@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+
+<head>
+	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+	<title>Schedule From Project End</title>
+	<script src="../../codebase/dhtmlxgantt.js?v=7.1.10"></script>
+	<link rel="stylesheet" href="../../codebase/dhtmlxgantt.css?v=7.1.10">
+	<style>
+		html,
+		body {
+			height: 100%;
+			padding: 0px;
+			margin: 0px;
+			overflow: hidden;
+		}
+
+		.weekend {
+			background: #f4f7f4 !important;
+		}
+
+		[data-column-name='constraint_type'] .gantt_tree_content {
+			padding: 1px;
+			line-height: 17px;
+			white-space: normal;
+			text-align: right;
+			box-sizing: border-box;
+		}
+
+		.gantt_grid_editor_placeholder[data-column-name='constraint_type'] select {
+			line-height: 20px;
+			white-space: normal;
+		}
+
+		.constraint-marker {
+			position: absolute;
+
+			-moz-box-sizing: border-box;
+			box-sizing: border-box;
+
+			width: 56px;
+			height: 56px;
+			margin-top: -11px;
+
+			opacity: 0.4;
+			z-index: 1;
+			background: url("../common/constraint-arrow.svg") center no-repeat;
+			background-size: cover;
+		}
+
+		.constraint-marker.earliest-start {
+			margin-left: -53px;
+		}
+
+		.constraint-marker.latest-end {
+			margin-left: -3px;
+			transform: rotate(180deg);
+		}
+
+		.gantt_link_control {
+			z-index: 1;
+		}
+	</style>
+</head>
+
+<body>
+	<div id="gantt_here" style='width:100%; height:100%;'></div>
+	<script>
+		gantt.plugins({
+			auto_scheduling: true,
+			marker: true
+		});
+
+		gantt.templates.scale_cell_class = function (date) {
+			if (!gantt.isWorkTime(date)) {
+				return "weekend";
+			}
+		};
+		gantt.templates.timeline_cell_class = function (item, date) {
+			if (!gantt.isWorkTime(date)) {
+				return "weekend";
+			}
+		};
+
+		gantt.config.work_time = true;
+
+		gantt.config.auto_scheduling = true;
+		gantt.config.auto_scheduling_strict = true;
+
+
+		gantt.config.schedule_from_end = true;
+		gantt.config.project_end = new Date(2019, 4, 1);
+		gantt.addMarker({
+			start_date: gantt.config.project_end,
+			text: "project end"
+		});
+
+		gantt.config.date_format = "%d-%m-%Y";
+
+		gantt.config.fit_tasks = true;
+
+		var textEditor = { type: "text", map_to: "text" };
+		var dateEditor = { type: "date", map_to: "start_date", min: new Date(2019, 0, 1), max: new Date(2020, 0, 1) };
+		var durationEditor = { type: "number", map_to: "duration", min: 0, max: 100 };
+		var constraintTypeEditor = {
+			type: "select", map_to: "constraint_type", options: [
+				{ key: "asap", label: gantt.locale.labels.asap },
+				{ key: "alap", label: gantt.locale.labels.alap },
+				{ key: "snet", label: gantt.locale.labels.snet },
+				{ key: "snlt", label: gantt.locale.labels.snlt },
+				{ key: "fnet", label: gantt.locale.labels.fnet },
+				{ key: "fnlt", label: gantt.locale.labels.fnlt },
+				{ key: "mso", label: gantt.locale.labels.mso },
+				{ key: "mfo", label: gantt.locale.labels.mfo }
+			]
+		};
+		var constraintDateEditor = { type: "date", map_to: "constraint_date", min: new Date(2019, 0, 1), max: new Date(2020, 0, 1) };
+
+		gantt.config.columns = [
+			{ name: "text", tree: true, width: '*', resize: true, width: 150, editor: textEditor },
+			{ name: "start_date", align: "center", resize: true, width: 150, editor: dateEditor },
+			{ name: "duration", align: "center", width: 80, resize: true, editor: durationEditor },
+			{
+				name: "constraint_type", align: "center", width: 100, template: function (task) {
+					return gantt.locale.labels[gantt.getConstraintType(task)];
+				}, resize: true, editor: constraintTypeEditor
+			},
+			{
+				name: "constraint_date", align: "center", width: 120, template: function (task) {
+					var constraintTypes = gantt.config.constraint_types;
+
+					if (task.constraint_date && task.constraint_type != constraintTypes.ASAP && task.constraint_type != constraintTypes.ALAP) {
+						return gantt.templates.task_date(task.constraint_date);
+					}
+					return "";
+				}, resize: true, editor: constraintDateEditor
+			},
+			{ name: "add", width: 44 }
+		];
+
+		function renderDiv(task, date, className) {
+			var el = document.createElement('div');
+			el.className = className;
+			var sizes = gantt.getTaskPosition(task, date);
+			el.style.left = sizes.left + 'px';
+			el.style.top = sizes.top + 'px';
+			return el;
+		}
+
+		gantt.addTaskLayer(function draw_deadline(task) {
+			var constraintType = gantt.getConstraintType(task);
+			var types = gantt.config.constraint_types;
+			if (constraintType != types.ASAP && constraintType != types.ALAP && task.constraint_date) {
+				var dates = gantt.getConstraintLimitations(task);
+
+				var els = document.createElement("div");
+
+				if (dates.earliestStart) {
+					els.appendChild(renderDiv(task, dates.earliestStart, 'constraint-marker earliest-start'));
+				}
+
+				if (dates.latestEnd) {
+					els.appendChild(renderDiv(task, dates.latestEnd, 'constraint-marker latest-end'));
+				}
+
+				els.title = gantt.locale.labels[constraintType] + " " + gantt.templates.task_date(task.constraint_date);
+
+				if (els.children.length)
+					return els;
+			}
+			return false;
+		});
+
+		gantt.config.lightbox.sections = [
+			{ name: "description", height: 38, map_to: "text", type: "textarea", focus: true },
+			{ name: "constraint", type: "constraint" },
+			{ name: "time", type: "duration", map_to: "auto" }
+		];
+
+		gantt.attachEvent("onAfterTaskAutoSchedule", function (task, new_date, link, predecessor) {
+			var reason = "";
+			if (predecessor) {
+				reason = predecessor.text;
+			} else {
+				var constraint = gantt.getConstraintType(task);
+				reason = gantt.locale.labels[constraint];
+			}
+			var predecessor = predecessor ? predecessor : { text: task.constraint_type };
+			console.log("<b>" + task.text + "</b> has been rescheduled to " + gantt.templates.task_date(new_date) + " due to <b>" + reason + "</b> constraint");
+		});
+
+		gantt.message({ text: "Project is scheduled as late as possible from the project end date", expire: -1 });
+
+		gantt.init("gantt_here");
+		gantt.parse({
+			data: [
+				{ id: 11, text: "Project #1", type: gantt.config.types.project, progress: 0.6, open: true },
+				{ id: 12, text: "Task #1", start_date: "02-04-2018", duration: "5", parent: "11", progress: 1, open: true },
+				{ id: 13, text: "Task #2", start_date: "03-04-2018", type: gantt.config.types.project, parent: "11", progress: 0.5, open: true },
+				{ id: 14, text: "Task #3", start_date: "02-04-2018", duration: "6", parent: "11", progress: 0.8, open: true },
+				{ id: 15, text: "Task #4", type: gantt.config.types.project, parent: "11", progress: 0.2, open: true },
+				{ id: 16, text: "Final milestone", start_date: "15-04-2018", type: gantt.config.types.milestone, parent: "11", progress: 0, open: true },
+				{ id: 17, text: "Task #2.1", start_date: "03-04-2018", duration: "2", parent: "13", progress: 1, open: true },
+				{ id: 18, text: "Task #2.2", start_date: "06-04-2018", duration: "3", parent: "13", progress: 0.8, open: true },
+				{ id: 19, text: "Task #2.3", start_date: "10-04-2018", duration: "4", parent: "13", progress: 0.2, open: true },
+				{ id: 20, text: "Task #2.4", start_date: "10-04-2018", duration: "4", parent: "13", progress: 0, open: true },
+				{ id: 21, text: "Task #4.1", start_date: "02-04-2018", duration: "4", parent: "15", progress: 0.5, open: true },
+				{ id: 22, text: "Task #4.2", start_date: "02-04-2018", duration: "4", parent: "15", progress: 0.1, open: true },
+				{ id: 23, text: "Mediate milestone", start_date: "14-04-2018", type: gantt.config.types.milestone, parent: "15", progress: 0, open: true }
+			],
+			links: [
+				{ id: "14", source: "23", target: "16", type: "0" },
+				{ id: "16", source: "17", target: "18", type: "0" },
+				{ id: "17", source: "18", target: "19", type: "0" },
+				{ id: "18", source: "19", target: "20", type: "0" },
+				{ id: "21", source: "15", target: "23", type: "0" }
+			]
+		});
+		gantt.showTask(19)
+	</script>
+</body>

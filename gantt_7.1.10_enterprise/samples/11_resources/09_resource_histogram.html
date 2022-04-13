@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+		<title>Resource histogram</title>
+		<script src="../../codebase/dhtmlxgantt.js?v=7.1.10"></script>
+		<script src="./common/resource_filter.js?v=7.1.10"></script>
+		<link rel="stylesheet" href="../../codebase/dhtmlxgantt.css?v=7.1.10">
+		<link rel="stylesheet" href="../common/controls_styles.css?v=7.1.10">
+
+		<script src="../common/resource_project_assignments.js?v=7.1.10"></script>
+		<style>
+			html, body {
+				padding: 0px;
+				margin: 0px;
+				height: 100%;
+			}
+
+			#gantt_here {
+				width:100%;
+				height: 800px;
+				height:calc(100vh - 52px);
+			}
+
+			.gantt_grid_scale .gantt_grid_head_cell,
+			.gantt_task .gantt_task_scale .gantt_scale_cell {
+				font-weight: bold;
+				font-size: 14px;
+				color: rgba(0, 0, 0, 0.7);
+			}
+
+			.folder_row {
+				font-weight: bold;
+			}
+
+			.highlighted_resource,
+			.highlighted_resource.odd {
+				background-color: rgba(255, 251, 224, 0.6);
+			}
+
+			.gantt_task_cell.week_end {
+				background-color: #e8e8e87d;
+			}
+
+			.gantt_task_row.gantt_selected .gantt_task_cell.week_end {
+				background-color: #e8e8e87d !important;
+			}
+
+
+			.group_row,
+			.group_row.odd,
+			.gantt_task_row.group_row {
+				background-color: rgba(232, 232, 232, 0.6);
+			}
+
+			.owner-label {
+				width: 20px;
+				height: 20px;
+				line-height: 20px;
+				font-size: 12px;
+				display: inline-block;
+				border: 1px solid #cccccc;
+				border-radius: 25px;
+				background: #e6e6e6;
+				color: #6f6f6f;
+				margin: 0 3px;
+				font-weight: bold;
+			}
+
+
+			.resource-select-panel .gantt_layout_content {
+				line-height: 35px;
+				text-align: right;
+				padding-right: 15px;
+				overflow: hidden !important;
+			}
+			.resource-select {
+				padding: 3px;
+				margin-left: 13px;
+			}
+
+			.column_overload .gantt_histogram_fill {
+				background-color:#ffa9a9;
+			}
+
+		</style>
+
+	</head>
+	<body>
+	<div class="gantt_control" >
+		<input type='button' id='default' onclick="toggleGroups(this)" value="Show Resource view">
+	</div>
+
+	<div id="gantt_here"></div>
+	<script>
+		gantt.plugins({
+			grouping: true,
+			auto_scheduling: true
+		});
+
+		var UNASSIGNED_ID = 5;
+		var WORK_DAY = 8;
+		function shouldHighlightTask(task) {
+			var store = gantt.$resourcesStore;
+			var taskResource = task[gantt.config.resource_property],
+				selectedResource = store.getSelectedId();
+			if (taskResource == selectedResource || store.isChildOf(taskResource, selectedResource)) {
+				return true;
+			}
+		}
+
+		gantt.templates.grid_row_class = function(start, end, task) {
+			var css = [];
+			if (gantt.hasChild(task.id)) {
+				css.push("folder_row");
+			}
+
+			if (task.$virtual) {
+				css.push("group_row")
+			}
+
+			if (shouldHighlightTask(task)) {
+				css.push("highlighted_resource");
+			}
+
+			return css.join(" ");
+		};
+
+		gantt.templates.task_row_class = function(start, end, task) {
+			if (shouldHighlightTask(task)) {
+				return "highlighted_resource";
+			}
+			return "";
+		};
+
+		gantt.templates.timeline_cell_class = function(task, date) {
+			if (!gantt.isWorkTime({date: date, task: task}))
+				return "week_end";
+			return "";
+		};
+
+		function getAllocatedValue(tasks, resource) {
+			var result = 0;
+			tasks.forEach(function(item) {
+				var assignments = gantt.getResourceAssignments(resource.id, item.id);
+				assignments.forEach(function(assignment){
+					result += Number(assignment.value);
+				});
+			});
+			return result;
+		}
+		var cap = {};
+
+		function getCapacity(date, resource) {
+			/* it is sample function your could to define your own function for get Capability of resources in day */
+			if (gantt.$resourcesStore.hasChild(resource.id)) {
+				return -1;
+			}
+
+			var val = date.valueOf();
+			if (!cap[val + resource.id]) {
+				cap[val + resource.id] = [0, 1, 2, 3][Math.floor(Math.random() * 100) % 4];
+			}
+			return cap[val + resource.id] * WORK_DAY;
+		}
+
+		gantt.templates.histogram_cell_class = function(start_date, end_date, resource, tasks) {
+			if (getAllocatedValue(tasks, resource) > getCapacity(start_date, resource)) {
+				return "column_overload"
+			}
+		};
+
+		gantt.templates.histogram_cell_label = function(start_date, end_date, resource, tasks) {
+			if (tasks.length && !gantt.$resourcesStore.hasChild(resource.id)) {
+				return getAllocatedValue(tasks, resource) + "/" + getCapacity(start_date, resource);
+			} else {
+				if (!gantt.$resourcesStore.hasChild(resource.id)) {
+					return '&ndash;';
+				}
+				return '';
+			}
+		};
+		gantt.templates.histogram_cell_allocated = function(start_date, end_date, resource, tasks) {
+			return getAllocatedValue(tasks, resource);
+		};
+
+		gantt.templates.histogram_cell_capacity = function(start_date, end_date, resource, tasks) {
+			if (!gantt.isWorkTime(start_date)) {
+				return 0;
+			}
+			return getCapacity(start_date, resource);
+		};
+
+		function shouldHighlightResource(resource) {
+			var selectedTaskId = gantt.getState().selected_task;
+			if (gantt.isTaskExists(selectedTaskId)) {
+				var selectedTask = gantt.getTask(selectedTaskId),
+					selectedResource = selectedTask[gantt.config.resource_property];
+
+				if (resource.id == selectedResource) {
+					return true;
+				} else if (gantt.$resourcesStore.isChildOf(selectedResource, resource.id)) {
+					return true;
+				}
+			}
+			return false;
+		}
+
+		var resourceTemplates = {
+			grid_row_class: function(start, end, resource) {
+				var css = [];
+				if (gantt.$resourcesStore.hasChild(resource.id)) {
+					css.push("folder_row");
+					css.push("group_row");
+				}
+				if (shouldHighlightResource(resource)) {
+					css.push("highlighted_resource");
+				}
+				return css.join(" ");
+			},
+			task_row_class: function(start, end, resource) {
+				var css = [];
+				if (shouldHighlightResource(resource)) {
+					css.push("highlighted_resource");
+				}
+				if (gantt.$resourcesStore.hasChild(resource.id)) {
+					css.push("group_row");
+				}
+
+				return css.join(" ");
+			}
+		};
+
+		gantt.locale.labels.section_owner = "Owner";
+		gantt.config.lightbox.sections = [
+			{ name: "description", height: 38, map_to: "text", type: "textarea", focus: true },
+			{ name: "owner", type: "resources", map_to: "owner", options: gantt.serverList("people"), default_value:WORK_DAY, unassigned_value: UNASSIGNED_ID},
+			{ name: "time", type: "duration", map_to: "auto" }
+		];
+		gantt.config.resource_render_empty_cells = true;
+
+		function getResourceAssignments(resourceId) {
+			var assignments;
+			var store = gantt.getDatastore(gantt.config.resource_store);
+			if (store.hasChild(resourceId)) {
+				assignments = [];
+				store.getChildren(resourceId).forEach(function(childId){
+					assignments = assignments.concat(gantt.getResourceAssignments(childId));
+				});
+			} else {
+				assignments = gantt.getResourceAssignments(resourceId);
+			}
+			return assignments;
+		}
+
+		var resourceConfig = {
+			scale_height: 30,
+			row_height: 45,
+			scales: [
+				{unit: "day", step: 1, date: "%d %M"}
+			],
+			columns: [
+				{
+					name: "name", label: "Name", tree:true, width:200, template: function(resource) {
+						return resource.text;
+					}, resize: true
+				},
+				{
+					name: "progress", label: "Complete", align:"center", template: function(resource) {
+						var store = gantt.getDatastore(gantt.config.resource_store);
+						var totalToDo = 0,
+							totalDone = 0;
+
+						var assignments = getResourceAssignments(resource.id);
+
+						assignments.forEach(function(assignment){
+							var task = gantt.getTask(assignment.task_id);
+							totalToDo += task.duration;
+							totalDone += task.duration * (task.progress || 0);
+						});
+
+						var completion = 0;
+						if (totalToDo) {
+							completion = (totalDone / totalToDo) * 100;
+						}
+
+						return Math.floor(completion) + "%";
+					}, resize: true
+				},
+				{
+					name: "workload", label: "Workload", align:"center", template: function(resource) {
+
+						var totalDuration = 0;
+
+						var assignments = getResourceAssignments(resource.id);
+						assignments.forEach(function(assignment){
+							var task = gantt.getTask(assignment.task_id);
+							totalDuration += Number(assignment.value) * task.duration;
+						});
+
+						return (totalDuration || 0) + "h";
+
+					}, resize: true
+				},
+
+				{
+					name: "capacity", label: "Capacity", align:"center", template: function(resource) {
+						var store = gantt.getDatastore(gantt.config.resource_store);
+						var n = store.hasChild(resource.id) ? store.getChildren(resource.id).length : 1
+
+						var state = gantt.getState();
+
+						return gantt.calculateDuration(state.min_date, state.max_date) * n * WORK_DAY + "h";
+					}
+				}
+
+			]
+		};
+
+		gantt.config.scales = [
+			{unit: "month", step: 1, format: "%F, %Y"},
+			{unit: "day", step: 1, format: "%d %M"}
+		];
+
+		gantt.config.auto_scheduling = true;
+		gantt.config.auto_scheduling_strict = true;
+		gantt.config.work_time = true;
+		gantt.config.columns = [
+			{name: "text", tree: true, width: 200, resize: true},
+			{name: "start_date", align: "center", width: 80, resize: true},
+			{name: "owner", align: "center", width: 80, label: "Owner", template: function(task) {
+				if (task.type == gantt.config.types.project) {
+					return "";
+				}
+
+				var store = gantt.getDatastore("resource");
+				var assignments = task[gantt.config.resource_property];
+
+				if (!assignments || !assignments.length) {
+					return "Unassigned";
+				}
+
+				if(assignments.length == 1){
+					return store.getItem(assignments[0].resource_id).text;
+				}
+
+				var result = "";
+				assignments.forEach(function(assignment) {
+					var owner = store.getItem(assignment.resource_id);
+					if (!owner)
+						return;
+					result += "<div class='owner-label' title='" + owner.text + "'>" + owner.text.substr(0, 1) + "</div>";
+
+				});
+
+				return result;
+			}, resize: true},
+			{name: "duration", width: 60, align: "center", resize: true},
+			{name: "add", width: 44}
+		];
+
+		gantt.config.resource_store = "resource";
+		gantt.config.resource_property = "owner";
+		gantt.config.order_branch = true;
+		gantt.config.open_tree_initially = true;
+		gantt.config.scale_height = 50;
+		gantt.config.layout = {
+			css: "gantt_container",
+			rows: [
+				{
+					gravity: 2,
+					cols: [
+						{view: "grid", group:"grids", scrollY: "scrollVer"},
+						{resizer: true, width: 1},
+						{view: "timeline", scrollX: "scrollHor", scrollY: "scrollVer"},
+						{view: "scrollbar", id: "scrollVer", group:"vertical"}
+					]
+				},
+				{ resizer: true, width: 1, next: "resources"},
+				{
+					height: 35,
+					cols: [
+						{ html: "<label>Resource<select class='resource-select'></select>", css :"resource-select-panel", group: "grids"},
+						{ resizer: true, width: 1},
+						{ html: ""}
+					]
+				},
+
+				{
+					gravity:1,
+					id: "resources",
+					config: resourceConfig,
+					templates: resourceTemplates,
+					cols: [
+						{ view: "resourceGrid", group:"grids", scrollY: "resourceVScroll" },
+						{ resizer: true, width: 1 },
+						{ view: "resourceHistogram", capacity:24, scrollX: "scrollHor", scrollY: "resourceVScroll" },
+						{ view: "scrollbar", id: "resourceVScroll", group: "vertical" }
+					]
+				},
+				{ view: "scrollbar", id: "scrollHor" }
+			]
+		};
+
+		gantt.$resourcesStore = gantt.createDatastore({
+			name: gantt.config.resource_store,
+			type: "treeDatastore",
+			initItem: function(item) {
+				item.parent = item.parent || gantt.config.root_id;
+				item[gantt.config.resource_property] = item.parent;
+				item.open = true;
+				return item;
+			}
+		});
+
+		gantt.$resourcesStore.attachEvent("onAfterSelect", function(id) {
+			gantt.refreshData();
+		});
+
+		gantt.init("gantt_here");
+
+		gantt.attachEvent("onTaskLoading", function(task) {
+			var ownerValue = task[gantt.config.resource_property];
+
+			if(!task.$virtual && (!ownerValue || !Array.isArray(ownerValue) || !ownerValue.length)) {
+				task[gantt.config.resource_property] = [{resource_id: 5, value:0}];//'Unassigned' group
+			}
+			return true;
+		});
+
+		function toggleGroups(input) {
+			gantt.$groupMode = !gantt.$groupMode;
+			if (gantt.$groupMode) {
+				input.value = "show gantt view";
+
+				var groups = gantt.$resourcesStore.getItems().map(function(item) {
+					var group = gantt.copy(item);
+					group.group_id = group.id;
+					group.id = gantt.uid();
+					return group;
+				});
+
+				gantt.groupBy({
+					groups: groups,
+					relation_property: gantt.config.resource_property,
+					group_id: "group_id",
+					group_text: "text",
+					delimiter: ", ",
+					default_group_label: "Not Assigned"
+				});
+			} else {
+				input.value = "show resource view";
+				gantt.groupBy(false);
+			}
+		}
+
+		gantt.$resourcesStore.attachEvent("onParse", function() {
+			var people = [];
+
+			gantt.$resourcesStore.eachItem(function(res) {
+				if (!gantt.$resourcesStore.hasChild(res.id)) {
+					var copy = gantt.copy(res);
+					copy.key = res.id;
+					copy.label = res.text;
+					copy.unit = "hours";
+					people.push(copy);
+				}
+			});
+			gantt.updateCollection("people", people);
+		});
+
+		gantt.$resourcesStore.parse([
+			{ id: 1, text: "QA", parent: null },
+			{ id: 2, text: "Development", parent: null },
+			{ id: 3, text: "Sales", parent: null },
+			{ id: 4, text: "Other", parent: null },
+			{ id: 5, text: "Unassigned", parent: 4, default: true },
+			{ id: 6, text: "John", parent: 1 },
+			{ id: 7, text: "Mike", parent: 2 },
+			{ id: 8, text: "Anna", parent: 2 },
+			{ id: 9, text: "Bill", parent: 3 },
+			{ id: 10, text: "Floe", parent: 3 }
+		]);
+
+		gantt.parse(taskData);
+	</script>
+	</body>
+</html>

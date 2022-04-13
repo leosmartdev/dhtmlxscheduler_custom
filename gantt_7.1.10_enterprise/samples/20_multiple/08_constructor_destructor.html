@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+	<title>Using gantt constructor and destructor</title>
+	<script src="../../codebase/dhtmlxgantt.js?v=7.1.10"></script>
+	<link rel="stylesheet" href="../../codebase/dhtmlxgantt.css?v=7.1.10">
+	<link rel="stylesheet" href="../common/controls_styles.css?v=7.1.10">
+	<style>
+		html, body {
+			margin: 0px;
+			padding: 0px;
+		}
+	</style>
+
+	<script>
+
+		window.addEventListener("DOMContentLoaded", function(){
+			var ganttInstance;
+			document.querySelector("#toggle-gantt").addEventListener("click", function(){
+				if(ganttInstance) {
+					ganttInstance.destructor();
+					ganttInstance = null;
+
+					this.value = "Create gantt";
+				}else{
+					ganttInstance = Gantt.getGanttInstance({
+						container: "gantt_here",
+						data: {
+							tasks: [
+								{ id: 1, text: "Project #1", start_date: "01-04-2018", duration: 18,
+									progress: 0.4, open: true
+								},
+								{ id: 2, text: "Task #1", start_date: "02-04-2018", duration: 8,
+									progress: 0.6, parent: 1
+								},
+								{ id: 3, text: "Task #2", start_date: "11-04-2018", duration: 8,
+									progress: 0.6, parent: 1
+								}
+							],
+							links: [
+								{id: 1, source: 1, target: 2, type: "1"}
+							]
+						}
+					});
+
+					this.value = "Destroy gantt";
+				}
+			})
+			
+		})
+	</script>
+</head>
+
+
+<body>
+	<div class="gantt_control">
+		<input value="Create gantt" type="button" id="toggle-gantt">
+	</div>
+	<div id="gantt_here" style='width:100%; height: calc(100vh - 52px);'></div>
+</body>

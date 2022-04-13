@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+	<title>Performance tweaks</title>
+	<script src="../../codebase/dhtmlxgantt.js?v=7.1.10"></script>
+	<link rel="stylesheet" href="../../codebase/dhtmlxgantt.css?v=7.1.10">
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+	<link rel="stylesheet" href="../common/controls_styles.css?v=7.1.10">
+	<script src="../common/testdata.js?v=7.1.10"></script>
+	<style>
+		html, body {
+			height: 100%;
+			padding: 0px;
+			margin: 0px;
+			overflow: hidden;
+		}
+
+		.controls {
+			font-family: "Arial";
+			width:870px;
+			margin: 0 auto;
+		}
+
+		.controls td {
+			text-align: right;
+			line-height: 20px;
+			color: #535353;
+			font-size: 14px;
+		}
+
+		.controls th {
+			font-size: 14px;
+		}
+
+		.controls input {
+			max-width: 60px;
+			padding: 2px 7px;
+			text-align: right;
+			border: 1px solid #d6d6d6;
+		}
+
+		.controls table {
+			border-collapse: collapse;
+		}
+
+		.controls td, .controls th {
+			border: 1px solid #d6d6d6;
+			padding: 0 10px;
+		}
+
+		.dhtmlx-intro div {
+			background-color: #FEFFEA;
+			border: 1px solid #A2A0A0;
+		}
+
+		.gantt_control button{
+			margin: 0 5px!important;
+			padding: 3px 10px!important;
+		}
+
+		.gantt_task_cell.week_end {
+			background-color: #EFF5FD;
+		}
+
+		.gantt_task_row.gantt_selected .gantt_task_cell.week_end {
+			background-color: #F8EC9C;
+		}
+
+		.resource_marker{
+			text-align: center;
+		}
+		.resource_marker div{
+			color: black;
+			background: none;
+		}
+
+		.resource_marker.resource_cell div{
+			font-weight: bold;
+			background-color: #d6d6d6;
+		}
+
+		.resource_marker.workday_ok div {
+		}
+
+
+		.resource_marker.workday_over div{
+			color: red;
+		}
+
+
+		.owner-label{
+			width: 20px;
+			height: 20px;
+			line-height: 20px;
+			font-size: 12px;
+			display: inline-block;
+			border: 1px solid #cccccc;
+			border-radius: 25px;
+			background: #e6e6e6;
+			color: #6f6f6f;
+			margin: 0 3px;
+			font-weight: bold;
+		}
+	</style>
+</head>
+<body>
+
+<div class="gantt_control" style="padding-top: 0">
+	<div class="controls" id="controls_wrapper">
+	<table>
+		<tr>
+			<th>Background Mode</th>
+			<th>Features</th>
+			<th>Task element</th>
+			<th>Scales</th>
+			<th>Data</th>
+		</tr>
+		<tr>
+			<td><label>Default <input type="radio" id="default" name="mode"><i class="material-icons">radio_button_unchecked</i></label></td>
+			<td><label>Work Time<input type="checkbox" id="work_time"><i class="material-icons ">check_box_outline_blank</i></label></td>
+			<td><label class="checked_label">Show progress <input type="checkbox" id="progress" checked><i class="material-icons icon_color">check_box</i></label></td>
+			<td><label style="color: rgba(0,0,0,0.38)">Year scale <input type="checkbox" id="year" checked disabled="disabled"><i class="material-icons md-inactive icon_color">check_box</i></label></td>
+			<td><label>Tasks <input id="tasks" value="100"></label></td>
+		</tr>
+		<tr>
+			<td><label>Simplified <input type="radio" id="no_cells" name="mode"><i class="material-icons">radio_button_unchecked</i></label></td>
+			<td><label>Auto scheduling<input type="checkbox" id="auto_scheduling"><i class="material-icons">check_box_outline_blank</i></label></td>
+			<td><label class="checked_label">Allow resize <input type="checkbox" id="resize" checked><i class="material-icons icon_color">check_box</i></label></td>
+			<td><label class="checked_label">Month scale <input type="checkbox" id="month" checked><i class="material-icons icon_color">check_box</i></label></td>
+			<td>
+				<label>Range <input id="from" value="2018">&ndash;<input id="to" value="2019"></label>
+			</td>
+		</tr>
+		<tr>
+			<td><label class="checked_label">Dynamic image <input type="radio" id="canvas" name="mode" checked><i class="material-icons icon_color">radio_button_checked</i></label></td>
+			<td><label>Build links<input type="checkbox" id="build_links"><i class="material-icons">check_box_outline_blank</i></label></td>
+			<td><label class="checked_label">Show links <input type="checkbox" id="links" checked><i class="material-icons icon_color">check_box</i></label></td>
+			<td><label>Week scale <input type="checkbox" id="week"><i class="material-icons">check_box_outline_blank</i></label></td>
+			<td><label title="Works when 'Resources' checkbox is activated">Resources<input id="max_resources" value="10" type="number" min="1"></label></td>
+		</tr>
+		<tr>
+			<td><label class="checked_label">Smart rendering <input type="checkbox" id="smart_render" name="mode" checked><i class="material-icons icon_color">check_box</i></label></td>
+			<td><label>Resources<input type="checkbox" id="resources"><i class="material-icons">check_box_outline_blank</i></label></td>
+			<td></td>
+			<td><label class="checked_label">Day scale <input type="checkbox" id="day" checked><i class="material-icons icon_color">check_box</i></label></td>
+			<td><label title="Works when 'Resources' checkbox is activated">Res. per task (max)<input id="max_assignments" value="3" type="number" min="0"></label></td>
+		</tr>
+		<tr>
+			<td colspan="5" style="text-align: center;">
+				<button id="refresh" onclick="toggleChange()">Refresh</button>
+			</td>
+		</tr>
+	</table>
+</div>
+<div id="gantt_here" style='width:100%; height:calc(100vh - 171px);'></div>
+<script>
+	var text = ["Gantt chart with the data generated for client-side performance testing.",
+		"Change settings and <b>press 'Refresh'</b> to see how it works on different configurations and amounts of data.",
+		"See browser console for test logs."];
+	for (var i = 0; i < text.length; i++) {
+		gantt.message({
+			text: text[i],
+			expire: 30 * 1000,
+			type: "intro"
+		});
+	}
+
+	function byId(id) {
+		return document.getElementById(id);
+	}
+
+	function getState(){
+		return {
+			progress: byId("progress").checked,
+			resize: byId("resize").checked,
+			links: byId("links").checked,
+			smart_render: byId("smart_render").checked,
+			work_time: byId("work_time").checked,
+			auto_scheduling: byId("auto_scheduling").checked,
+			canvas: byId("canvas").checked,
+			no_cells: byId("no_cells").checked,
+
+			build_links: byId("build_links").checked,
+			resources: byId("resources").checked,
+
+			week: byId("week").checked,
+			day: byId("day").checked,
+			month: byId("month").checked,
+
+			from: byId("from").value,
+			to: byId("to").value,
+			tasks: byId("tasks").value,
+			max_resources: byId("max_resources").value,
+			max_assignments: byId("max_assignments").value
+		};
+	}
+
+	var currentState = getState();
+
+	function applySettings(state){
+		gantt.config.static_background = state.canvas;
+		gantt.config.show_task_cells = !state.no_cells;
+
+
+		gantt.config.show_progress = state.progress;
+		gantt.config.drag_resize = state.resize;
+		gantt.config.show_links = state.links;
+		gantt.config.smart_rendering = state.smart_render;
+
+
+		gantt.config.work_time = state.work_time;
+		gantt.config.auto_scheduling = state.auto_scheduling;
+		var buildLinks = state.build_links;
+		var useResources = state.resources;
+
+		gantt.config.scales = [
+			{ unit: "year", step: 1, format: "%Y"}
+		];
+
+		if (state.week) {
+			var dateToStr = gantt.date.date_to_str("%d %M");
+			gantt.config.scales.push({unit: "week", step: 1, format: function (date) {
+				var endDate = gantt.date.add(gantt.date.add(date, 1, "week"), -1, "day");
+				return dateToStr(date) + " - " + dateToStr(endDate);
+			}});
+		}
+		if (state.day) {
+			gantt.config.scales.push({unit: "day", step: 1, format: "%d %M"});
+		}
+		if (state.month) {
+			gantt.config.scales.push({unit: "month", step: 1, format: "%F, %Y"});
+		}
+
+		gantt.config.scale_height = 22 * gantt.config.scales.length;
+
+		if (state.canvas) {
+			gantt.config.static_background = true;
+		} else if (state.no_cells) {
+			gantt.config.show_task_cells = false;
+		}
+
+		applyResources(state);
+	}
+
+
+	function featureState(state) {
+		return (state ? "Display" : "Hide");
+	}
+
+	function printStat(time) {
+		var mode = "";
+		var report = [];
+
+		if (gantt.config.static_background) {
+			mode = "Canvas background rendering";
+		} else if (!gantt.config.show_task_cells) {
+			mode = "Simplified background rendering";
+		} else {
+			mode = "Default rendering";
+		}
+		report.push("Rendered in <b>" + (time) + "</b> seconds");
+		report.push(mode);
+		report.push(featureState(gantt.config.show_progress) + " progress");
+		report.push(featureState(gantt.config.drag_resize) + " drag handles");
+		report.push(featureState(gantt.config.show_links) + " link handles");
+
+		report.push("Work time:" + String(gantt.config.work_time));
+		report.push("Auto Scheduling:" + String(gantt.config.auto_scheduling));
+
+		var scales = [];
+		for (var i = 0; i < gantt.config.scales.length; i++) {
+			scales.push(gantt.config.scales[i].unit);
+		}
+
+		var resourceCount = 0;
+		if(gantt.getDatastore(gantt.config.resource_store)){
+			gantt.getDatastore(gantt.config.resource_store).eachItem(function(item){
+				if(item.$role !== "task"){// assigned tasks are loaded into resource store, do not count them here
+					resourceCount++;
+				}
+			});
+		}
+
+		report.push("Scales : <b>" + scales.join(", ") + "</b> ");
+		var scale = gantt.getScale();
+		report.push(gantt.getTaskCount() + " tasks, " +
+			gantt.getLinkCount() + " links, " +
+			resourceCount + " resources, " +
+			(scale.count) + " columns in a time scale");
+
+		gantt.message({text: report.join("<br>"), expire: 10000});
+		console.log("================");
+		console.log(report.join("\n"));
+	}
+
+
+	function settingsChanged(oldState, newState){
+		for(var i in oldState){
+			if(newState[i] !== oldState[i]){
+				return true;
+			}
+		}
+		return false;
+	}
+
+	function initNeeded(oldState, newState){
+		return oldState.resources !== newState.resources;
+	}
+	function toggleChange(){
+		var oldState = currentState;
+		var newState = getState();
+		if(!settingsChanged(oldState, newState)){
+			noteTime(gantt.render);
+		}else{
+			var reinitialize = initNeeded(oldState, newState);
+			currentState = newState;
+			noteTime(function(){
+				gantt.clearAll();
+				applySettings(currentState);
+				if(reinitialize){
+					gantt.init("gantt_here");
+				}else{
+					gantt.render();
+				}
+				resetData(currentState);
+			});
+		}
+	}
+
+
+
+	function noteTime(method) {
+		gantt.message("Rendering...");
+		var start = Date.now();
+
+		method.call(gantt);
+		var end = Date.now();
+		printStat((end - start) / 1000);
+		var selectedId = gantt.getSelectedId();
+		if (selectedId)
+			gantt.showTask(selectedId);
+	}
+
+	function applyResources(state){
+		if(state.resources){
+			if(!gantt.getDatastore(gantt.config.resource_store)){
+				gantt.createDatastore({
+					name: gantt.config.resource_store,
+					type: "treeDatastore",
+					fetchTasks: true,
+					initItem: function (item) {
+						item.parent = item.parent || gantt.config.root_id;
+						item[gantt.config.resource_property] = item.parent;
+						item.open = true;
+						return item;
+					}
+				});
+			
+				gantt.config.layout = {
+					css: "gantt_container",
+					rows: [
+						{
+							cols: [
+								{view: "grid", group:"grids", scrollY: "scrollVer"},
+								{resizer: true, width: 1},
+								{view: "timeline", scrollX: "scrollHor", scrollY: "scrollVer"},
+								{view: "scrollbar", id: "scrollVer", group:"vertical"}
+							],
+							gravity:2
+						},
+						{resizer: true, width: 1},
+						{
+							config: {
+								columns: [
+									{
+										name: "name", label: "Name", tree:true, template: function (resource) {
+											return resource.text;
+										}
+									},
+									{
+										name: "workload", label: "Workload", template: function (resource) {
+											var totalDuration = 0;
+											if (resource.$role === "task"){
+												gantt.getResourceAssignments(resource.$resource_id, resource.$task_id).forEach(function(a){
+													totalDuration += a.value * a.duration;
+												});
+											}else{
+												getResourceAssignments(resource.id).forEach(function (assignment) {
+													totalDuration += Number(assignment.value) * assignment.duration;
+												});
+											}
+											return (totalDuration || 0) + "h";
+										}
+									}
+								]
+							},
+							cols: [
+								{view: "resourceGrid", group:"grids", width: 435, scrollY: "resourceVScroll" },
+								{resizer: true, width: 1},
+								{view: "resourceTimeline", scrollX: "scrollHor", scrollY: "resourceVScroll"},
+								{view: "scrollbar", id: "resourceVScroll", group:"vertical"}
+							],
+							gravity:1
+						},
+						{view: "scrollbar", id: "scrollHor"}
+					]
+				};
+				gantt.config.resource_render_empty_cells = true;
+				gantt.config.columns = [
+					{name: "text", tree: true, width: 200, resize: true},
+					{name: "start_date", align: "center", width: 80, resize: true},
+					{name: "owner", align: "center", width: 75, label: "Owner", template: function (task) {
+						if (task.type == gantt.config.types.project) {
+							return "";
+						}
+
+						var store = gantt.getDatastore("resource");
+						var assignments = gantt.getTaskAssignments(task.id);
+
+						var uniqueResources = {};
+						var resourceCount = 0;
+						assignments.forEach(function(a){
+							if(!uniqueResources[a.resource_id]){
+								uniqueResources[a.resource_id] = a.resource_id;
+								resourceCount++;
+							}
+						});
+
+						if(!resourceCount){
+							return "Unassigned";
+						}else if(resourceCount === 1){
+							return store.getItem(assignments[0].resource_id).text;
+						}else{
+							var result = "";
+							for(var i in uniqueResources){
+								var owner = store.getItem(uniqueResources[i]);
+								if (!owner)
+									continue;
+								result += "<div class='owner-label' title='" + owner.text + "'>" + owner.text.substr(0, 1) + "</div>";
+							}
+							return result;
+						}
+					
+						return result;
+						}, resize: true
+					},
+					{name: "duration", width: 60, align: "center"},
+					{name: "add", width: 44}
+				];
+
+				function getResourceAssignments(resourceId) {
+					var assignments;
+					var store = gantt.getDatastore(gantt.config.resource_store);
+					var resource = store.getItem(resourceId);
+
+					if(resource.$role === "task"){
+						assignments = gantt.getResourceAssignments(resource.$resource_id, resource.$task_id);
+					}else{
+						assignments = gantt.getResourceAssignments(resourceId);
+						if(store.eachItem){
+							store.eachItem(function(childResource){
+								if(childResource.$role !== "task"){
+									assignments = assignments.concat(gantt.getResourceAssignments(childResource.id));
+								}
+							}, resourceId);
+						}
+					}
+					return assignments;
+				}
+
+				gantt.templates.resource_cell_class = function(start_date, end_date, resource, tasks, assignments){
+					var css = [];
+					css.push("resource_marker");
+
+					if(resource.$role === "task"){
+						css.push("task_cell");
+					}else{
+						css.push("resource_cell");
+					}
+
+					var sum = assignments.reduce(function(total, assignment){ 
+						return total + Number(assignment.value);
+					}, 0);
+
+					if (sum <= 8) {
+						css.push("workday_ok");
+					} else {
+						css.push("workday_over");
+					}
+					return css.join(" ");
+				};
+
+				gantt.templates.resource_cell_value = function(start_date, end_date, resource, tasks, assignments){
+
+					if(resource.$role === "task"){
+						if(start_date < resource.end_date && end_date > resource.start_date){
+							for(var i = 0; i < assignments.length; i++){
+								var a = assignments[i];
+									return "<div data-assignment-cell data-assignment-id='"+a.id+"'"+
+									" data-row-id='"+resource.id+"'"+
+									" data-task='"+resource.$task_id+"'"+
+									" data-start-date='"+gantt.templates.format_date(start_date)+"'"+
+									" data-end-date='"+gantt.templates.format_date(end_date)+"'>" + a.value + "</div>"
+							}
+							return "<div data-assignment-cell data-empty "+ 
+									" data-row-id='"+resource.id+"'"+
+									" data-resource-id='"+resource.$resource_id+"'"+
+									" data-task='"+resource.$task_id+"'"+
+									" data-start-date='"+gantt.templates.format_date(start_date)+"'"+
+									"'  data-end-date='"+gantt.templates.format_date(end_date)+"'>-</div>";
+						}
+
+					}else{
+						var sum = assignments.reduce(function(total, assignment){ 
+							return total + Number(assignment.value);
+						}, 0);
+
+						if(sum % 1){
+							sum = Math.round(sum * 10)/10;
+						}
+
+						if(sum){
+							return "<div>" + sum + "</div>";
+						}
+						return "";
+					}
+
+				};
+			}
+		}else{
+			gantt.config.layout = {
+				css: "gantt_container",
+				rows: [
+					{
+						cols: [
+							{view: "grid", scrollX: "scrollHor", scrollY: "scrollVer"},
+							{resizer: true, width: 1},
+							{view: "timeline", scrollX: "scrollHor", scrollY: "scrollVer"},
+							{view: "scrollbar", id: "scrollVer"}
+						]
+					},
+					{view: "scrollbar", id: "scrollHor", height: 20}
+				]
+			};
+			gantt.config.columns = [
+				{name: "text", tree: true, width: "*", resize: true},
+				{name: "start_date", align: "center", resize: true},
+				{name: "duration", align: "center"},
+				{name: "add", width: 44}
+			];
+
+			if(gantt.getDatastore(gantt.config.resource_store)){
+				gantt.getDatastore(gantt.config.resource_store).destructor();
+			}
+		}
+	}
+
+	function resetData(state) {
+		var count = state.tasks,
+			from = state.from,
+			to = state.to;
+
+		var buildLinks = state.build_links;
+		var buildResources = state.resources;
+
+		var start = Date.now();
+		gantt.message("Generating random data");
+		var data = generateData(count, from, to, buildLinks, buildResources, state.max_resources, state.max_assignments);
+		gantt.clearAll();
+		if(buildResources){
+			gantt.getDatastore(gantt.config.resource_store).clearAll();
+			gantt.getDatastore(gantt.config.resource_store).parse(data.resources);
+		}
+		gantt.parse(data);
+		var end = Date.now();
+		gantt.message("Generated and parsed <b>" + gantt.getTaskByTime().length + "</b> tasks and "+gantt.getLinkCount()+" links in <b>" + (end - start) / 1000 + "</b> seconds");
+	}
+
+	function randomDate(start, end) {
+		return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
+	}
+
+	function getDateRange(from, to) {
+		from = parseInt(from, 10) || 2018;
+		to = parseInt(to, 10) || (from + 1);
+
+		if (to < from) {
+			to = from + 1;
+		}
+
+		return {
+			start_date: new Date(from, 0, 1),
+			end_date: new Date(to, 0, 0)
+		};
+	}
+
+	function generateData(count, from, to, buildLinks, buildResources, resourcesCount, maxAssignmentsPerTask) {
+		var tasks = {
+			data: [],
+			links: []
+		};
+		var range = getDateRange(from, to);
+
+
+		count = parseInt(count, 10) || 100;
+		var resources = null;
+		if(buildResources){
+			tasks.resources = generateResources(resourcesCount || Math.floor(count / 10));
+		}
+
+		var date = new Date(range.start_date.getFullYear(), 5, 1);
+		var project_id = 1;
+		tasks.data.push({
+			id: project_id,
+			text: "Project1",
+			type: gantt.config.types.project,
+			open: true
+		});
+
+		for (var i = 1; i < count; i++) {
+			date = gantt.date.add(date, 1, "day");
+			var task = {
+				id: i + 1,
+				start_date: date,
+				text: "Task " + (i + 1),
+				duration: 8,
+				parent: project_id
+			};
+
+			if (gantt.date.add(date, 8, "day").valueOf() > range.end_date.valueOf()) {
+				date = new Date(range.start_date);
+				project_id = i + 1;
+				delete task.parent;
+				task.open = true;
+			}else if(buildLinks && tasks.data[i - 1] && tasks.data[i-1].parent === project_id){
+				tasks.links.push({
+					id: i,
+					source: i,
+					target: i+1,
+					type: gantt.config.links.finish_to_start
+				});
+			}
+
+			if(buildResources && task.parent){
+				var resourcesInTask = getRandomIntInclusive(0,maxAssignmentsPerTask);
+				task[gantt.config.resource_property] = [];
+				for(var r = 0; r < resourcesInTask; r++){
+					var res = getRandomResource(tasks.resources);
+					if(res){
+						task[gantt.config.resource_property].push({
+							resource_id: res.id,
+							value: getRandomIntInclusive(1, 8)
+						});
+					}
+				}
+			}
+
+			tasks.data.push(task);
+
+		}
+		return tasks;
+	}
+
+	function getRandomInt(min, max) {
+		min = Math.ceil(min);
+		max = Math.floor(max);
+		return Math.floor(Math.random() * (max - min) + min); //The maximum is exclusive and the minimum is inclusive
+	}
+	function getRandomIntInclusive(min, max) {
+		min = Math.ceil(min);
+		max = Math.floor(max);
+		return Math.floor(Math.random() * (max - min + 1) + min); //The maximum is inclusive and the minimum is inclusive
+	}
+	function getRandomElement(array){
+		return array[getRandomInt(0, array.length)];
+	}
+	function getRandomResource(resources){
+		var maxTries = 100;
+		var currentTries = 0;
+		var randomRes = getRandomElement(resources);
+		while(!randomRes.parent && currentTries < maxTries){// select resource which is not a category
+			randomRes = getRandomElement(resources);
+			currentTries ++;
+		}
+		return randomRes;
+	}
+	function generateResources(count){
+		var categories = Math.max(Math.floor(count / 10), 1);
+		var items = count;
+		var result = [];
+
+		
+		for(var i = 0; i < categories; i++){
+			var currentCategory = "department:" + i;
+			var itemsInCategory = Math.floor(items / (categories - i));
+			items = items - itemsInCategory;
+			result.push({id: currentCategory, text: "Department " + (i + 1)});
+			for(var j = 0; j < itemsInCategory; j++){
+				result.push({id: currentCategory + ";item:" + j, text: "Dep:" + (i + 1) + ";Item:" + (j +1), parent: currentCategory});
+			}
+		}
+
+		return result;
+
+	}
+
+	gantt.plugins({
+		auto_scheduling: true
+	});
+	gantt.config.work_time = false;
+	gantt.config.auto_scheduling = false;
+
+	gantt.templates.timeline_cell_class = function (task, date) {
+		if (!gantt.isWorkTime(date))
+			return "week_end";
+		return "";
+	};
+
+	gantt.config.min_column_width = 50;
+
+	applySettings(currentState);
+
+	gantt.init("gantt_here");
+	resetData(currentState);
+
+	var control_inputs = document.getElementById("controls_wrapper").getElementsByTagName("input");
+	for (var i = 0; i < control_inputs.length; i++) {
+		var control_input = control_inputs[i];
+		if (control_input.type == "checkbox")
+			control_input.onchange = function() {
+				updCheckboxLabel(this);
+			}
+
+		if (control_input.type == "radio")
+			control_input.onclick = function() {
+				updRadio(this);
+			}
+	}
+
+	function updCheckboxLabel(el){
+		el.parentElement.classList.toggle("checked_label");
+
+		var iconEl = el.parentElement.querySelector("i"),
+			checked = "check_box",
+			unchecked = "check_box_outline_blank",
+			className = "icon_color";
+
+		iconEl.textContent = iconEl.textContent==checked?unchecked:checked;
+		iconEl.classList.toggle(className);
+	}
+
+	function updRadio(el){
+		var els = document.querySelectorAll("input[type=radio]"),
+			checked = "radio_button_checked",
+			unchecked = "radio_button_unchecked";
+
+		for (var i = 0; i < els.length; i++) {
+			var parentEl = els[i].parentElement;
+
+			parentEl.querySelector("i").textContent = els[i]==el?checked:unchecked;
+
+			if(els[i]==el) {
+				parentEl.classList.add("checked_label");
+				parentEl.querySelector("i").classList.add("icon_color");
+			} else {
+				parentEl.classList.remove("checked_label")
+				parentEl.querySelector("i").classList.remove("icon_color");
+			}
+		}
+	}
+
+</script>
+</body>
