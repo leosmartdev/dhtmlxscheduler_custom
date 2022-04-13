@@ -6675,7 +6675,7 @@ scheduler.render_event_bar = function (ev) {
 		"left:" + x + "px",
 		"width:" + (x2 - x - 3 - (timed ? 1 : 0)) + "px",
 		"font-size: 11px",
-		"height: 12px",
+		"height: 14px",
 		"line-height: 12px",
 		"border: 1px solid transparent",
 		color,
@@ -8797,7 +8797,7 @@ scheduler._skin_xy = {
 	lightbox_additional_height: [90,50],
 	nav_height: [59,22],
 	// bar_height: [24,20]
-	bar_height: [14, 12]
+	bar_height: [16, 14]
 };
 
 // material skin uses a different box sizing model than other skins, and also requires some post-processing.
