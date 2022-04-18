@@ -45,6 +45,14 @@
 			scheduler.config.map_inital_zoom = 8;
 			
 			scheduler.init('scheduler_here', new Date(2019,5,1), "map");
+
+			// add data
+			scheduler.parse([
+				{ start_date: "2017-06-30 09:00", end_date: "2019-06-30 12:00", text:"Task A-12458", section_id:20, location: "A", lat: 45, lng: 46, marker_color: "blue"},
+				{ start_date: "2017-06-30 10:00", end_date: "2019-06-30 16:00", text:"Task A-89411", section_id:20, location: "B", lat: 45.23, lng: 46.78, marker_color: "green"},
+				{ start_date: "2017-06-30 10:00", end_date: "2019-06-30 14:00", text:"Task A-64168", section_id:20, location: "C", lat: 45.56, lng: 45.45, marker_color: "pink"}
+			]);
+
 			scheduler.load("/scheduler/backend/map-events");
 
 			dp = new dataProcessor("/scheduler/backend/map-events");

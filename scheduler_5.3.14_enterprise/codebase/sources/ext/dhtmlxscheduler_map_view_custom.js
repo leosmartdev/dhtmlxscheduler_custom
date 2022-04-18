@@ -332,19 +332,37 @@ scheduler.attachEvent("onSchedulerReady", function() {
 			if (scheduler.map._markers[event.id])
 				scheduler.map._markers[event.id].setMap(null);
 
-			console.log("create google marker");
-
 			var markerConfig = {
 				position: point,
 				map: scheduler.map._obj
 			};
 
-			if (scheduler.config.map_marker_color) {
-				var map_color = scheduler.config.map_marker_color;
-				// blue, green, yellow, pink, purple, red ...
-				markerConfig.icon = {
-					url: "http://maps.google.com/mapfiles/ms/icons/" + map_color + "-dot.png"
-				};
+			if (scheduler.config.map_marker_color || event.marker_color) {
+				var map_color = event.marker_color || scheduler.config.map_marker_color;
+				// // blue, green, yellow, pink, purple, red ...
+				// markerConfig.icon = {
+				// 	url: "http://maps.google.com/mapfiles/ms/icons/" + map_color + "-dot.png"
+				// };
+				var pinColor = map_color;
+	    		var pinLabel = "A";
+
+			    // Pick your pin (hole or no hole)
+			    var pinSVGHole = "M12,11.5A2.5,2.5 0 0,1 9.5,9A2.5,2.5 0 0,1 12,6.5A2.5,2.5 0 0,1 14.5,9A2.5,2.5 0 0,1 12,11.5M12,2A7,7 0 0,0 5,9C5,14.25 12,22 12,22C12,22 19,14.25 19,9A7,7 0 0,0 12,2Z";
+			    var labelOriginHole = new google.maps.Point(12,15);
+			    var pinSVGFilled = "M365.518,38.887C325.987,6.311,274.04-6.639,223.011,3.239C154.147,16.615,100.152,72.273,88.718,141.735c-6.784,41.003,0.725,81.216,21.696,116.267l8.704,14.528c27.861,46.443,56.64,94.485,79.701,143.893l38.848,83.221c3.499,7.509,11.029,12.309,19.328,12.309s15.829-4.8,19.328-12.309l34.965-74.923c23.317-49.984,52.096-98.688,79.957-145.792l12.971-22.016c15.339-26.091,23.445-55.936,23.445-86.293C427.662,119.484,405.006,71.463,365.518,38.887z M256.995,234.62c-35.285,0-64-28.715-64-64s28.715-64,64-64s64,28.715,64,64S292.28,234.62,256.995,234.62z";
+			    var labelOriginFilled =  new google.maps.Point(12,9);
+
+			    var markerImage = {  // https://developers.google.com/maps/documentation/javascript/reference/marker#MarkerLabel
+			        path: pinSVGFilled,
+			        anchor: new google.maps.Point(12,17),
+			        fillOpacity: 1,
+			        fillColor: pinColor,
+			        strokeWeight: 2,
+			        strokeColor: "white",
+			        scale: 0.08,
+			        labelOrigin: labelOriginFilled
+			    };
+				markerConfig.icon = markerImage;
 			}
 
 			scheduler.map._markers[event.id] = new google.maps.Marker(markerConfig);
