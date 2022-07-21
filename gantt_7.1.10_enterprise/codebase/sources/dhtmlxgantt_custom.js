@@ -7221,6 +7221,31 @@ module.exports = function () {
             project: "project",
             milestone: "milestone"
         },
+        colors: {
+          Default: "#1796b0",
+          Maroon: "#800000",
+          Brown: "#9a6324",
+          Olive: "#808000",
+          Teal: "#469990",
+          Navy: "#000075",
+          Black: "#000000",
+          Red: "#26194b",
+          Orange: "#f58231",
+          Yello: "#ffe119",
+          Lime: "#bfef45",
+          Green: "#3cb44b",
+          Cyan: "#42d4f4",
+          Blue: "#4363d8",
+          Purple: "#911e4b",
+          Magenta: "#f032e6",
+          Gray: "#a9a9a9",
+          Pink: "#fabed4",
+          Apricot: "#ffd8b1",
+          Beige: "#fffac8",
+          Mint: "#aaffc3",
+          Lavender: "#dcbeff",
+          White: "#ffffff",
+        },
         auto_types: false,
         duration_unit: "day",
         work_time: false,
@@ -7311,16 +7336,19 @@ module.exports = function () {
         lightbox: {
             sections: [
                 { name: "description", height: 70, map_to: "text", type: "textarea", focus: true },
+                { name: "color", type: "color", map_to: "color" },
                 { name: "time", type: "duration", map_to: "auto" }
             ],
             project_sections: [
                 { name: "description", height: 70, map_to: "text", type: "textarea", focus: true },
                 { name: "type", type: "typeselect", map_to: "type" },
+                // { name: "color", type: "color", map_to: "color" },
                 { name: "time", type: "duration", readonly: true, map_to: "auto" }
             ],
             milestone_sections: [
                 { name: "description", height: 70, map_to: "text", type: "textarea", focus: true },
                 { name: "type", type: "typeselect", map_to: "type" },
+                { name: "color", type: "color", map_to: "color" },
                 { name: "time", type: "duration", single_date: true, map_to: "auto" }
             ]
         },
@@ -23592,6 +23620,8 @@ BaseControl.prototype.get_value = dummy; // arguments node, ev, sns(config)
 
 BaseControl.prototype.focus = dummy; // arguments: node
 
+BaseControl.prototype.init_events = dummy; // arguments: node
+
 module.exports = function (gantt) {
   // we could send current instance of gantt to module
   return BaseControl;
@@ -24745,6 +24775,127 @@ module.exports = function (gantt) {
 
 /***/ }),
 
+/***/ "./sources/core/ui/lightbox/controls/color_control.js":
+/*!***************************************************************!*\
+  !*** ./sources/core/ui/lightbox/controls/color_control.js ***!
+  \***************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+  var __extends = __webpack_require__(/*! ../../../../utils/extends */ "./sources/utils/extends.js");
+
+  var htmlHelpers = __webpack_require__(/*! ../../utils/html_helpers */ "./sources/core/ui/utils/html_helpers.js");
+
+  module.exports = function (gantt) {
+    var _super = __webpack_require__(/*! ./select_control */ "./sources/core/ui/lightbox/controls/base_control.js")(gantt);
+
+    function ColorControl() {
+      var self = _super.apply(this, arguments) || this;
+      return self;
+    }
+
+    __extends(ColorControl, _super);
+
+    ColorControl.prototype.render = function (sns) {
+      var colors = gantt.config.colors,
+          locale = gantt.locale.labels,
+          options = [];
+
+      var filter = sns.filter || function (typeKey, typeValue) {
+        if (!colors.placeholder || typeValue !== colors.placeholder) {
+          return true;
+        }
+
+        return false;
+      };
+
+      /**
+        <div id="color-picker">
+          <div class="wrapper-dropdown">
+            <span @click="toggleDropdown()" v-html="selector"></span>
+            <ul class="dropdown" v-show="active">
+              <li v-for="color in colors" @click="setColor(color.hex, color.name)"><span :style="{background: color.hex}"></span> {{color.name}}</li>
+            </ul>
+          </div>
+        </div>
+       */
+
+      var _colorItems = '';
+      Object.keys(colors).map(function(key, index) {
+        var _colorCont = htmlHelpers.getHtmlContainer('span', null, [{ key: 'class', value: 'gantt_cal_color_cont'}, { key: 'style', value: 'background: ' + colors[key]}]);
+        // var _colorName = htmlHelpers.getHtmlContainer('span', { innerHTML: key }, [{ key: 'class', value: 'gantt_cal_color_name'}]);
+        var _colorItem = htmlHelpers.getHtmlContainer('li', { innerHTML: _colorCont + key }, [{ key: "item-id", value: 'color-item-' + index}]);
+        _colorItems += _colorItem;
+      });
+      var _colorDropDown = htmlHelpers.getHtmlContainer('ul', { innerHTML: _colorItems }, [{ key: 'class', value: 'gantt_cal_color_dropdown'}, { key: 'style', value: 'display: none' }]);
+      var _colorSelector = htmlHelpers.getHtmlContainer('span', { innerHTML: '\"Color\"' }, [{ key: 'class', value: 'gantt_cal_color_selector' }]);
+      var wrapDropDownDiv = htmlHelpers.getHtmlDiv({ innerHTML: _colorSelector + _colorDropDown }, [{ key: 'class', value: 'wrapper-dropdown' }]);
+
+      var html = htmlHelpers.getHtmlDiv({ innerHTML: wrapDropDownDiv }, [{ key: 'class', value: 'gantt_cal_color_picker' }]);
+
+      return html;
+    };
+
+    ColorControl.prototype.init_events = function (node) {
+      var _colorInput = gantt.form_blocks.color._get_input(node);
+      var _colorDropDown = node.querySelector('.gantt_cal_color_dropdown');
+      var _colorItems = _colorDropDown.querySelectorAll('li');
+      _colorInput.addEventListener('click', function(e) {
+        e.preventDefault();
+        _colorDropDown.style.display = _colorDropDown.style.display !== "block" ? "block" : "none";
+      });
+      _colorItems.forEach((item) => {
+        item.addEventListener('click', function(e) {
+          _colorInput.innerHTML = this.innerHTML;
+          _colorDropDown.style.display = "none";
+        });
+      })
+    };
+
+    ColorControl.prototype.set_value = function (node, value) {
+      var _colors = gantt.config.colors;
+      var _colorKey = Object.keys(_colors).find((key) => key.toLowerCase() === value.toLowerCase() || _colors[key].toLowerCase() === value.toLowerCase());
+      _colorKey = _colorKey || value;
+      var _colorCont = htmlHelpers.getHtmlContainer('span', null, [{ key: 'class', value: 'gantt_cal_color_cont'}, { key: 'style', value: 'background: ' + value}]);
+      gantt.form_blocks.color._get_input(node).innerHTML = _colorCont + _colorKey;
+    };
+  
+    ColorControl.prototype.get_value = function (node) {
+      var _val = gantt.form_blocks.color._get_input(node).querySelector('span').style.backgroundColor;
+
+      function ColorToHex(color) {
+        var hexadecimal = Number(color.trim()).toString(16);
+        return hexadecimal.length == 1 ? "0" + hexadecimal : hexadecimal;
+      }
+      
+      function ConvertRGBtoHex(red, green, blue) {
+        return "#" + ColorToHex(red) + ColorToHex(green) + ColorToHex(blue);
+      }
+
+      var reg=/^#([0-9a-f]{3}){1,2}$/i;
+      if (!reg.test(_val)) {
+        var _a = _val.split("(")[1].split(")")[0].split(",");
+        _val = ConvertRGBtoHex(_a[0], _a[1], _a[2]);
+      }
+      console.log(_val);
+      return _val;
+    };
+  
+    ColorControl.prototype.focus = function (node) {
+      var a = gantt.form_blocks.color._get_input(node);
+  
+      gantt._focus(a, true);
+    };
+  
+    ColorControl.prototype._get_input = function (node) {
+      return node.querySelector(".gantt_cal_color_selector");
+    };
+
+    return ColorControl;
+  };
+
+/***/ }),
+
 /***/ "./sources/core/ui/lightbox/controls/time_control.js":
 /*!***********************************************************!*\
   !*** ./sources/core/ui/lightbox/controls/time_control.js ***!
@@ -24942,6 +25093,8 @@ module.exports = function (gantt) {
 
   var TextareaControl = __webpack_require__(/*! ./controls/textarea_control */ "./sources/core/ui/lightbox/controls/textarea_control.js")(gantt);
 
+  var ColorControl = __webpack_require__(/*! ./controls/textarea_control */ "./sources/core/ui/lightbox/controls/color_control.js")(gantt);
+
   var TimeControl = __webpack_require__(/*! ./controls/time_control */ "./sources/core/ui/lightbox/controls/time_control.js")(gantt);
 
   var SelectControl = __webpack_require__(/*! ./controls/select_control */ "./sources/core/ui/lightbox/controls/select_control.js")(gantt);
@@ -25060,7 +25213,7 @@ module.exports = function (gantt) {
       lightboxDiv = document.createElement("div");
       classNames = "gantt_cal_light";
       fullWidth = this._is_lightbox_timepicker();
-      if (gantt.config.wide_form || fullWidth) classNames += " gantt_cal_light_wide";
+      // if (gantt.config.wide_form || fullWidth) classNames += " gantt_cal_light_wide";
 
       if (fullWidth) {
         gantt.config.wide_form = true;
@@ -25099,6 +25252,8 @@ module.exports = function (gantt) {
       ds.innerHTML = html;
       bindLabelsToInputs(sns); //sizes
 
+      this._init_sections_events(sns);
+
       this.resizeLightbox();
       ds.style.overflow = backup_overflow;
 
@@ -25126,15 +25281,39 @@ module.exports = function (gantt) {
         button = "<div class='gantt_custom_button' data-index='" + i + "'><div class='gantt_custom_button_" + sns[i].button + "'></div><div class='gantt_custom_button_label'>" + this.locale.labels["button_" + sns[i].button] + "</div></div>";
       }
 
-      if (this.config.wide_form) {
-        html += "<div class='gantt_wrap_section' " + display + ">";
+      // if (this.config.wide_form) {
+      //   html += "<div class='gantt_wrap_section' " + display + ">";
+      // }
+
+      var sectionStyle = "";
+      if (sns[i].width) {
+        sectionStyle += "display: inline-block; width: " + sns[i].width;
       }
 
-      html += "<div id='" + sns[i].id + "' class='gantt_cal_lsection'><label>" + button + this.locale.labels["section_" + sns[i].name] + "</label></div>" + block.render.call(this, sns[i]);
-      html += "</div>";
+      html += "<div style='" + sectionStyle + "'><div id='" + sns[i].id + "' class='gantt_cal_lsection'><label>" + button + this.locale.labels["section_" + sns[i].name] + "</label></div>" + block.render.call(this, sns[i]);
+      html += "</div></div>";
     }
 
     return html;
+  };
+
+  gantt._init_sections_events = function (sns) {
+    for (var i = 0; i < sns.length; i++) {
+      var section = sns[i];
+
+      if (!this.form_blocks[section.type]) {
+        continue; //skip incorrect sections, same check is done during rendering
+      }
+
+      var node = document.getElementById(section.id).nextSibling;
+      var block = this.form_blocks[section.type];
+
+      try {
+        block.init_events.call(gantt, node);
+      } catch(e) {
+        console.log("init_events is not defined on ", section);
+      }
+    }
   };
 
   gantt.resizeLightbox = function () {
@@ -25647,6 +25826,7 @@ module.exports = function (gantt) {
     },
     template: new TemplateControl(),
     textarea: new TextareaControl(),
+    color: new ColorControl(),
     select: new SelectControl(),
     time: new TimeControl(),
     duration: new DurationControl(),
@@ -29320,8 +29500,10 @@ function createTaskRenderer(gantt) {
     div.className = css;
     var styles = ["left:" + pos.left + "px", "top:" + (padd + pos.top) + 'px', "height:" + (taskType == cfg.types.milestone ? pos.height : height) + 'px', "line-height:" + Math.max(height < 30 ? height - 2 : height, 0) + 'px', "width:" + width + 'px'];
 
-    if (task.color) {
-      styles.push("background-color:" + task.color);
+    if (!(cfg.highlight_critical_path && gantt.isCriticalTask && gantt.isCriticalTask(task))) {
+      if (task.color && !gantt.isSummaryTask(task)) {
+        styles.push("background-color:" + task.color); 
+      }
     }
 
     if (task.textColor) {
@@ -29459,9 +29641,15 @@ function createTaskRenderer(gantt) {
     var width = Math.round(maxWidth * done);
     width = Math.min(maxWidth, width);
 
-    if (task.progressColor) {
-      pr.style.backgroundColor = task.progressColor;
-      pr.style.opacity = 1;
+    if (!(cfg.highlight_critical_path && gantt.isCriticalTask && gantt.isCriticalTask(task))) {
+      if (task.progressColor && !gantt.isSummaryTask(task)) {
+        pr.style.backgroundColor = task.progressColor;
+        pr.style.opacity = 1;
+      }
+      else {
+        pr.style.backgroundColor = "rgba(33, 33, 33, 0.5)";
+        pr.style.opacity = 1;
+      }
     }
 
     pr.style.width = width + 'px';
@@ -34934,6 +35122,9 @@ var htmlHelpers = {
   },
   getHtmlInput: function getHtmlInput(attributes) {
     return "<input" + _getHtmlAttributes(attributes || []) + ">";
+  },
+  getHtmlContainer: function getHtmlContainer(tag, options, attributes) {
+    return _getHtmlContainer(tag, options, attributes);
   }
 };
 
@@ -46738,6 +46929,7 @@ var locale = {
         section_description: "Description",
         section_time: "Time period",
         section_type: "Type",
+        section_color: "Color",
         /* grid columns */
         column_wbs: "WBS",
         column_text: "Task name",
